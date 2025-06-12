@@ -435,6 +435,7 @@ class CheckboxSelectionWidgetState
       checkColor: stateManager.configuration.style.checkCheckboxColor ?? stateManager.configuration.style.cellCheckedColor,
       side: stateManager.configuration.style.cellCheckedSide,
       checkBoxSize: stateManager.configuration.style.checkBoxSize,
+      checkBoxPadding: stateManager.configuration.style.checkBoxPadding,
     );
   }
 }

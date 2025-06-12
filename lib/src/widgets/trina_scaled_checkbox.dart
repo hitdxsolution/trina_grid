@@ -19,6 +19,8 @@ class TrinaScaledCheckbox extends StatelessWidget {
 
   final double? checkBoxSize;
 
+  final EdgeInsets? checkBoxPadding;
+
   const TrinaScaledCheckbox({
     super.key,
     required this.value,
@@ -30,28 +32,38 @@ class TrinaScaledCheckbox extends StatelessWidget {
     this.checkColor = const Color(0xFFDCF5FF),
     this.side,
     this.checkBoxSize,
+    this.checkBoxPadding,
   });
+
+  Widget _buildCheckboxSize({required Widget child}) {
+    if (checkBoxSize == null) {
+      return Transform.scale(
+        scale: scale,
+        child: child,
+      );
+    }
+
+    return Container(
+      alignment: Alignment.center,
+      padding: checkBoxPadding,
+      child: SizedBox(
+        width: checkBoxSize,
+        height: checkBoxSize,
+        child:child,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Align(
-        alignment: Alignment.center,
-        child: SizedBox(
-          width: checkBoxSize,
-          height: checkBoxSize,
-          child: Transform.scale(
-            scale: scale,
-            child: Checkbox(
-              value: value,
-              tristate: tristate,
-              onChanged: handleOnChanged,
-              activeColor: value == null ? unselectedColor : activeColor,
-              checkColor: checkColor,
-              side: side,
-            ),
-          ),
-        ),
+    return _buildCheckboxSize(
+      child: Checkbox(
+        value: value,
+        tristate: tristate,
+        onChanged: handleOnChanged,
+        activeColor: value == null ? unselectedColor : activeColor,
+        checkColor: checkColor,
+        side: side,
       ),
     );
   }
