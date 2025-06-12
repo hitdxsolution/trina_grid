@@ -430,9 +430,9 @@ class CheckboxSelectionWidgetState
       handleOnChanged: disable ? null : _handleOnChanged,
       tristate: _tristate,
       scale: 0.86,
-      unselectedColor: stateManager.configuration.style.cellUnselectedColor,
-      activeColor: stateManager.configuration.style.cellActiveColor,
-      checkColor: stateManager.configuration.style.cellCheckedColor,
+      unselectedColor: stateManager.configuration.style.unSelectedCheckboxColor ?? stateManager.configuration.style.cellUnselectedColor,
+      activeColor: stateManager.configuration.style.activeCheckBoxColor ?? stateManager.configuration.style.cellActiveColor,
+      checkColor: stateManager.configuration.style.checkCheckboxColor ?? stateManager.configuration.style.cellCheckedColor,
       side: stateManager.configuration.style.cellCheckedSide,
     );
   }
