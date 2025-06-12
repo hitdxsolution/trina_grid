@@ -34,18 +34,20 @@ class TrinaScaledCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: checkBoxSize,
-      height: checkBoxSize,
-      child: Transform.scale(
-        scale: scale,
-        child: Checkbox(
-          value: value,
-          tristate: tristate,
-          onChanged: handleOnChanged,
-          activeColor: value == null ? unselectedColor : activeColor,
-          checkColor: checkColor,
-          side: side,
+    return Center(
+      child: SizedBox(
+        width: checkBoxSize,
+        height: checkBoxSize,
+        child: Transform.scale(
+          scale: scale,
+          child: Checkbox(
+            value: value,
+            tristate: tristate,
+            onChanged: handleOnChanged,
+            activeColor: value == null ? unselectedColor : activeColor,
+            checkColor: checkColor,
+            side: side,
+          ),
         ),
       ),
     );
