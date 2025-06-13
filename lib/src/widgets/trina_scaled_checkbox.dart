@@ -58,6 +58,8 @@ class TrinaScaledCheckbox extends StatelessWidget {
   Widget build(BuildContext context) {
     return _buildCheckboxSize(
       child: Checkbox(
+        hoverColor: Colors.transparent,
+        overlayColor: WidgetStateProperty.all(Colors.transparent),
         value: value,
         tristate: tristate,
         onChanged: handleOnChanged,

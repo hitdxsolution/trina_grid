@@ -507,10 +507,12 @@ class CheckboxAllSelectionWidgetState
       handleOnChanged: _handleOnChanged,
       tristate: true,
       scale: 0.86,
-      unselectedColor: stateManager.configuration.style.columnUnselectedColor,
-      activeColor: stateManager.configuration.style.columnActiveColor,
-      checkColor: stateManager.configuration.style.columnCheckedColor,
-      side: stateManager.configuration.style.columnCheckedSide,
+      unselectedColor: stateManager.configuration.style.unSelectedCheckboxColor ?? stateManager.configuration.style.cellUnselectedColor,
+      activeColor: stateManager.configuration.style.activeCheckBoxColor ?? stateManager.configuration.style.cellActiveColor,
+      checkColor: stateManager.configuration.style.checkCheckboxColor ?? stateManager.configuration.style.cellCheckedColor,
+      side: stateManager.configuration.style.cellCheckedSide,
+      checkBoxSize: stateManager.configuration.style.checkBoxSize,
+      checkBoxPadding: stateManager.configuration.style.checkBoxPadding,
     );
   }
 }

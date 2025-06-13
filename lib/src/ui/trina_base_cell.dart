@@ -313,7 +313,10 @@ class _CellContainerState extends TrinaStateWithChange<_CellContainer> {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: _decoration,
+      //사용하지 않아 제거 함.
+      decoration: BoxDecoration(
+      ),
+      // decoration: _decoration,
       child: Padding(padding: widget.cellPadding, child: widget.child),
     );
   }

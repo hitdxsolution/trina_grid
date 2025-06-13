@@ -74,3 +74,6 @@ export './src/export/trina_grid_export_csv.dart';
 export './src/export/trina_grid_export_json.dart';
 // Export pdf package types needed for export
 export 'package:pdf/pdf.dart' show PdfPageFormat;
+
+//추가 export
+export './src/ui/columns/trina_column_title.dart';
