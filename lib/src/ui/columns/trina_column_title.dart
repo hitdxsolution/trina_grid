@@ -405,7 +405,10 @@ class _ColumnWidget extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Row(
                   children: [
-                    if (column.enableRowChecked && column.rowCheckBoxGroupDepth == 0 && column.enableTitleChecked && !column.isColumnCheckboxHide) CheckboxAllSelectionWidget(stateManager: stateManager),
+                    if (column.enableRowChecked && column.rowCheckBoxGroupDepth == 0 && column.enableTitleChecked && !column.isColumnCheckboxHide) ...[
+                      //todo 최대 화면에서 CheckboxAllSelectionWidget 잔상이 계속 뜸, 그냥 주석 처리해서 지워둠 추후 살리는 방향으로 개발되어야 함.
+                      // if (!style.isColumnCheckboxHide) CheckboxAllSelectionWidget(stateManager: stateManager),
+                    ],
                     Expanded(
                       child: _ColumnTextWidget(
                         column: column,
