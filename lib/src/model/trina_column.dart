@@ -283,6 +283,9 @@ class TrinaColumn {
   /// If null, it falls back to the grid's enterKeyAction configuration.
   final TrinaGridEnterKeyAction? filterEnterKeyAction;
 
+  //옵션 추가
+  final bool isColumnCheckboxHide;
+
   TrinaColumn({
     required this.title,
     required this.field,
@@ -309,6 +312,7 @@ class TrinaColumn {
     this.enableColumnDrag = true,
     this.enableRowDrag = false,
     this.enableRowChecked = false,
+    this.isColumnCheckboxHide = false,
     this.rowCheckBoxGroupDepth = 0,
     this.enableTitleChecked = true,
     this.enableSorting = true,

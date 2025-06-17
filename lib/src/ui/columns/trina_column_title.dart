@@ -428,7 +428,8 @@ class _ColumnWidget extends StatelessWidget {
                   children: [
                     if (column.enableRowChecked &&
                         column.rowCheckBoxGroupDepth == 0 &&
-                        column.enableTitleChecked)
+                        column.enableTitleChecked &&
+                        !column.isColumnCheckboxHide)
                       CheckboxAllSelectionWidget(stateManager: stateManager),
                     Expanded(
                       child: _ColumnTextWidget(
