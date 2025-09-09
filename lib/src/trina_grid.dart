@@ -788,6 +788,7 @@ class TrinaGridState extends TrinaStateWithChange<TrinaGrid> {
                   LayoutId(
                     id: 'scroll_height',
                     child: Container(
+                      width: 16,
                       height: 16,
                       color: Colors.teal,
                     ),
