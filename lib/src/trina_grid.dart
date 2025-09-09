@@ -785,14 +785,6 @@ class TrinaGridState extends TrinaStateWithChange<TrinaGrid> {
                       shadow: style.enableGridBorderShadow,
                     ),
                   ),
-                  LayoutId(
-                    id: _StackName.scrollHeight,
-                    child: Container(
-                      width: 16,
-                      height: 16,
-                      color: Colors.teal,
-                    ),
-                  ),
                   if (showColumnFooter)
                     LayoutId(
                       id: _StackName.leftFrozenColumnFooters,
@@ -1003,12 +995,14 @@ class TrinaGridLayoutDelegate extends MultiChildLayoutDelegate {
     }
 
     if (hasChild(_StackName.leftFrozenDivider)) {
+      final scrollSafeHeight = _stateManager.configuration.style.scrollSafeHeight ?? 0;
+
       var s = layoutChild(
         _StackName.leftFrozenDivider,
         BoxConstraints.tight(
           Size(
             gridBorderWidth,
-            _safe(size.height - columnsTopOffset - bodyRowsBottomOffset),
+            _safe(size.height - columnsTopOffset - bodyRowsBottomOffset - scrollSafeHeight),
           ),
         ),
       );
@@ -1048,12 +1042,14 @@ class TrinaGridLayoutDelegate extends MultiChildLayoutDelegate {
     }
 
     if (hasChild(_StackName.rightFrozenDivider)) {
+      final scrollSafeHeight = _stateManager.configuration.style.scrollSafeHeight ?? 0;
+
       var s = layoutChild(
         _StackName.rightFrozenDivider,
         BoxConstraints.tight(
           Size(
             gridBorderWidth,
-            _safe(size.height - columnsTopOffset - bodyRowsBottomOffset),
+            _safe(size.height - columnsTopOffset - bodyRowsBottomOffset - scrollSafeHeight),
           ),
         ),
       );
