@@ -494,7 +494,7 @@ class CheckboxAllSelectionWidgetState extends TrinaStateWithChange<CheckboxAllSe
       value: _checked,
       handleOnChanged: _handleOnChanged,
       tristate: true,
-      scale: 0.86,
+      scale: 1,
       unselectedColor: stateManager.configuration.style.columnUnselectedColor,
       activeColor: stateManager.configuration.style.columnActiveColor,
       checkColor: stateManager.configuration.style.columnCheckedColor,
