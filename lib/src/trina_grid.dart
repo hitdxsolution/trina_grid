@@ -786,7 +786,7 @@ class TrinaGridState extends TrinaStateWithChange<TrinaGrid> {
                     ),
                   ),
                   LayoutId(
-                    id: 'scroll_height',
+                    id: _StackName.scrollHeight,
                     child: Container(
                       width: 16,
                       height: 16,
@@ -1417,4 +1417,5 @@ enum _StackName {
   footerDivider,
   loading,
   noRows,
+  scrollHeight,
 }
