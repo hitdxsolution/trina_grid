@@ -320,6 +320,7 @@ class TrinaGridStyleConfig {
     this.checkBoxPadding,
     this.isColumnCheckboxHide = false,
     this.trinaGridBorder,
+    this.trinaGridPadding,
   })  : columnCheckedColor = (columnCheckedColor ?? activatedColor),
         cellCheckedColor = (cellCheckedColor ?? activatedColor),
         columnUnselectedColor = (columnUnselectedColor ?? iconColor),
@@ -409,6 +410,7 @@ class TrinaGridStyleConfig {
     this.checkBoxPadding,
     this.isColumnCheckboxHide = false,
     this.trinaGridBorder,
+    this.trinaGridPadding,
   })  : columnCheckedColor = (columnCheckedColor ?? activatedColor),
         cellCheckedColor = (cellCheckedColor ?? activatedColor),
         columnUnselectedColor = (columnUnselectedColor ?? iconColor),
@@ -650,6 +652,7 @@ class TrinaGridStyleConfig {
 
   /// trina grid border
   final BoxBorder? trinaGridBorder;
+  final EdgeInsetsGeometry? trinaGridPadding;
 
   TrinaGridStyleConfig copyWith({
     bool? enableGridBorderShadow,

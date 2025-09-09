@@ -1297,7 +1297,7 @@ class _GridContainer extends StatelessWidget {
                 ),
           ),
           child: Padding(
-            padding: EdgeInsets.all(style.gridPadding),
+            padding: style.trinaGridPadding ?? EdgeInsets.all(style.gridPadding),
             child: borderRadius == BorderRadius.zero ? child : ClipRRect(borderRadius: borderRadius, child: child),
           ),
         ),
