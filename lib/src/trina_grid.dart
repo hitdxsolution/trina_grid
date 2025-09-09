@@ -781,7 +781,7 @@ class TrinaGridState extends TrinaStateWithChange<TrinaGrid> {
                     id: _StackName.leftFrozenDivider,
                     child: TrinaShadowLine(
                       axis: Axis.vertical,
-                      // color: style.gridBorderColor,
+                      color: style.gridBorderColor,
                       shadow: style.enableGridBorderShadow,
                     ),
                   ),
@@ -806,7 +806,7 @@ class TrinaGridState extends TrinaStateWithChange<TrinaGrid> {
                     id: _StackName.rightFrozenDivider,
                     child: TrinaShadowLine(
                       axis: Axis.vertical,
-                      // color: style.gridBorderColor,
+                      color: style.gridBorderColor,
                       shadow: style.enableGridBorderShadow,
                       reverse: true,
                     ),
@@ -859,7 +859,7 @@ class TrinaGridState extends TrinaStateWithChange<TrinaGrid> {
                     id: _StackName.footerDivider,
                     child: TrinaShadowLine(
                       axis: Axis.horizontal,
-                      // color: style.gridBorderColor,
+                      color: style.gridBorderColor,
                       shadow: style.enableGridBorderShadow,
                       reverse: true,
                     ),
@@ -1290,10 +1290,11 @@ class _GridContainer extends StatelessWidget {
           decoration: BoxDecoration(
             color: style.gridBackgroundColor,
             borderRadius: style.gridBorderRadius,
-            border: Border.all(
-              color: style.gridBorderColor,
-              width: style.gridBorderWidth,
-            ),
+            border: style.trinaGridBorder ??
+                Border.all(
+                  color: style.gridBorderColor,
+                  width: style.gridBorderWidth,
+                ),
           ),
           child: Padding(
             padding: EdgeInsets.all(style.gridPadding),
