@@ -33,9 +33,7 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
   TrinaColumnSort _sort = TrinaColumnSort.none;
 
   bool get showContextIcon {
-    return widget.column.enableContextMenu ||
-        widget.column.enableDropToResize ||
-        !_sort.isNone;
+    return widget.column.enableContextMenu || widget.column.enableDropToResize || !_sort.isNone;
   }
 
   bool get enableGesture {
@@ -44,9 +42,7 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
 
   MouseCursor get contextMenuCursor {
     if (enableGesture) {
-      return widget.column.enableDropToResize
-          ? SystemMouseCursors.resizeLeftRight
-          : SystemMouseCursors.click;
+      return widget.column.enableDropToResize ? SystemMouseCursors.resizeLeftRight : SystemMouseCursors.click;
     }
 
     return SystemMouseCursors.basic;
@@ -101,8 +97,7 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
   /// the pointer moves beyond a small threshold.
   void _handleOnPointMove(PointerMoveEvent event) {
     // Mark point as moving if distance moved is above a threshold
-    _isPointMoving |=
-        (_columnRightPosition - event.position).distanceSquared > 0.5;
+    _isPointMoving |= (_columnRightPosition - event.position).distanceSquared > 0.5;
 
     if (!_isPointMoving) return;
 
@@ -200,9 +195,7 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
           icon: TrinaGridColumnIcon(
             sort: _sort,
             color: style.iconColor,
-            icon: widget.column.enableContextMenu
-                ? style.columnContextIcon
-                : style.columnResizeIcon,
+            icon: widget.column.enableContextMenu ? style.columnContextIcon : style.columnResizeIcon,
             ascendingIcon: style.columnAscendingIcon,
             descendingIcon: style.columnDescendingIcon,
           ),
@@ -226,8 +219,7 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
       showContextIcon: showContextIcon,
       contextMenuIcon: contextMenuIcon,
       isFiltered: isFiltered,
-      showContextMenu:
-          mounted && widget.column.enableContextMenu ? _showContextMenu : null,
+      showContextMenu: mounted && widget.column.enableContextMenu ? _showContextMenu : null,
     );
   }
 
@@ -295,9 +287,7 @@ class TrinaGridColumnIcon extends StatelessWidget {
               )
             : ascendingIcon!;
       case TrinaColumnSort.descending:
-        return descendingIcon == null
-            ? const Icon(Icons.sort, color: Colors.red)
-            : descendingIcon!;
+        return descendingIcon == null ? const Icon(Icons.sort, color: Colors.red) : descendingIcon!;
       default:
         return Icon(icon, color: color);
     }
@@ -347,8 +337,7 @@ class _DraggableWidget extends StatelessWidget {
             alignment: column.titleTextAlign.alignmentValue,
             width: TrinaGridSettings.minColumnWidth,
             height: stateManager.columnHeight,
-            backgroundColor:
-                stateManager.configuration.style.gridBackgroundColor,
+            backgroundColor: stateManager.configuration.style.gridBackgroundColor,
             borderColor: stateManager.configuration.style.gridBorderColor,
             child: Text(
               column.title,
@@ -410,13 +399,9 @@ class _DefaultColumnTitleContent extends StatelessWidget {
     required this.height,
   });
 
-  EdgeInsets get padding =>
-      column.titlePadding ??
-      stateManager.configuration.style.defaultColumnTitlePadding;
+  EdgeInsets get padding => column.titlePadding ?? stateManager.configuration.style.defaultColumnTitlePadding;
 
-  bool get showSizedBoxForIcon =>
-      column.isShowRightIcon &&
-      (column.titleTextAlign.isRight || stateManager.isRTL);
+  bool get showSizedBoxForIcon => column.isShowRightIcon && (column.titleTextAlign.isRight || stateManager.isRTL);
 
   TrinaGridStyleConfig get style => stateManager.style;
 
@@ -430,23 +415,16 @@ class _DefaultColumnTitleContent extends StatelessWidget {
       decoration: BoxDecoration(
         color: column.backgroundColor,
         border: BorderDirectional(
-          end: style.enableColumnBorderVertical
-              ? BorderSide(color: style.borderColor, width: 1.0)
-              : BorderSide.none,
+          end: style.enableColumnBorderVertical ? BorderSide(color: style.borderColor, width: 1.0) : BorderSide.none,
         ),
       ),
       child: Row(
         children: [
-          if (column.enableRowChecked &&
-              column.rowCheckBoxGroupDepth == 0 &&
-              column.enableTitleChecked)
+          if (column.enableRowChecked && column.rowCheckBoxGroupDepth == 0 && column.enableTitleChecked && !column.isColumnCheckboxHide)
+            //todo 최대 화면에서 CheckboxAllSelectionWidget 잔상이 계속 뜸, 그냥 주석 처리해서 지워둠 추후 살리는 방향으로 개발되어야 함.
             Flexible(
               child: CheckboxAllSelectionWidget(stateManager: stateManager),
             ),
-          // if (column.enableRowChecked && column.rowCheckBoxGroupDepth == 0 && column.enableTitleChecked && !column.isColumnCheckboxHide) ...[
-          //todo 최대 화면에서 CheckboxAllSelectionWidget 잔상이 계속 뜸, 그냥 주석 처리해서 지워둠 추후 살리는 방향으로 개발되어야 함.
-          // if (!style.isColumnCheckboxHide) CheckboxAllSelectionWidget(stateManager: stateManager),
-          // ],
           Expanded(
             child: _ColumnTextWidget(
               column: column,
@@ -467,12 +445,10 @@ class CheckboxAllSelectionWidget extends TrinaStatefulWidget {
   const CheckboxAllSelectionWidget({required this.stateManager, super.key});
 
   @override
-  CheckboxAllSelectionWidgetState createState() =>
-      CheckboxAllSelectionWidgetState();
+  CheckboxAllSelectionWidgetState createState() => CheckboxAllSelectionWidgetState();
 }
 
-class CheckboxAllSelectionWidgetState
-    extends TrinaStateWithChange<CheckboxAllSelectionWidget> {
+class CheckboxAllSelectionWidgetState extends TrinaStateWithChange<CheckboxAllSelectionWidget> {
   bool? _checked;
 
   @override
@@ -569,26 +545,22 @@ class _ColumnTextWidgetState extends TrinaStateWithChange<_ColumnTextWidget> {
     stateManager.showFilterPopup(context, calledColumn: widget.column);
   }
 
-  String? get _title =>
-      widget.column.titleSpan == null ? widget.column.title : null;
+  String? get _title => widget.column.titleSpan == null ? widget.column.title : null;
 
   List<InlineSpan> get _children => [
         if (widget.column.titleSpan != null) widget.column.titleSpan!,
-        if (_isFilteredList &&
-            stateManager.configuration.style.filterIcon != null)
+        if (_isFilteredList && stateManager.configuration.style.filterIcon != null)
           WidgetSpan(
             alignment: PlaceholderAlignment.middle,
             child: IconButton(
               icon: Icon(
                 stateManager.configuration.style.filterIcon!.icon,
-                color: stateManager.configuration.style.filterHeaderIconColor ??
-                       stateManager.configuration.style.iconColor,
+                color: stateManager.configuration.style.filterHeaderIconColor ?? stateManager.configuration.style.iconColor,
                 size: stateManager.configuration.style.iconSize,
               ),
               onPressed: _handleOnPressedFilter,
               constraints: BoxConstraints(
-                maxHeight: widget.height +
-                    (widget.stateManager.style.cellHorizontalBorderWidth * 2),
+                maxHeight: widget.height + (widget.stateManager.style.cellHorizontalBorderWidth * 2),
               ),
             ),
           ),
