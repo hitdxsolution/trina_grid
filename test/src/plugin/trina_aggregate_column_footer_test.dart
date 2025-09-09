@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart';
 import 'package:mockito/mockito.dart';
 import 'package:trina_grid/trina_grid.dart';
 import 'package:rxdart/rxdart.dart';
@@ -21,8 +22,7 @@ void main() {
     TrinaAggregateColumnIterateRowType iterateRowType =
         TrinaAggregateColumnIterateRowType.filteredAndPaginated,
     TrinaAggregateFilter? filter,
-    String? locale,
-    String? format,
+    NumberFormat? format,
     List<InlineSpan> Function(String)? titleSpanBuilder,
     AlignmentGeometry? alignment,
     EdgeInsets? padding,
@@ -64,8 +64,7 @@ void main() {
               groupedRowType: groupedRowType,
               iterateRowType: iterateRowType,
               filter: filter,
-              format: format ?? '#,###',
-              locale: locale,
+              numberFormat: format ?? NumberFormat('#,###'),
               titleSpanBuilder: titleSpanBuilder,
               alignment: alignment,
               padding: padding,
@@ -250,7 +249,7 @@ void main() {
         TrinaRow(cells: {'column': TrinaCell(value: 3000)}),
       ]),
       type: TrinaAggregateColumnType.count,
-      format: 'Total : #,###',
+      format: NumberFormat('Total : #,###'),
     ).test(
       'When count is set, the value should be displayed in the specified format.',
       (tester) async {

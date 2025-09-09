@@ -5,7 +5,7 @@ import 'package:trina_grid/trina_grid.dart';
 class TrinaGridChangeColumnFilterEvent extends TrinaGridEvent {
   final TrinaColumn column;
   final TrinaFilterType filterType;
-  final String filterValue;
+  final dynamic filterValue;
   final int? debounceMilliseconds;
   final TrinaGridEventType? eventType;
 

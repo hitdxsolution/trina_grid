@@ -1,5 +1,7 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:trina_grid/src/ui/widgets/trina_date_picker.dart';
+import 'package:trina_grid/src/ui/miscellaneous/trina_popup_cell_state_with_custom_popup.dart';
+import 'package:trina_grid/src/ui/widgets/trina_time_picker.dart';
 import 'package:trina_grid/trina_grid.dart';
 
 import 'popup_cell.dart';
@@ -29,297 +31,226 @@ class TrinaDateTimeCell extends StatefulWidget implements PopupCell {
   TrinaDateTimeCellState createState() => TrinaDateTimeCellState();
 }
 
-class TrinaDateTimeCellState extends State<TrinaDateTimeCell>
-    with PopupCellState<TrinaDateTimeCell> {
-  TrinaGridStateManager? popupStateManager;
+class TrinaDateTimeCellState
+    extends TrinaPopupCellStateWithCustomPopup<TrinaDateTimeCell> {
+  @override
+  IconData? get popupMenuIcon => widget.column.type.dateTime.popupIcon;
 
   @override
-  List<TrinaColumn> popupColumns = [];
+  late final Widget popupContent;
 
-  @override
-  List<TrinaRow> popupRows = [];
+  TrinaColumnTypeDateTime get _column => widget.column.type.dateTime;
 
-  @override
-  IconData? get icon =>
-      (widget.column.type as TrinaColumnTypeDateTime).popupIcon;
+  late final _dateTimeIsValidNotifier = ValueNotifier<bool>(true);
 
-  @override
-  void openPopup() async {
-    if (widget.column.checkReadOnly(widget.row, widget.cell)) {
-      return;
-    }
-    isOpenedPopup = true;
+  /// The selected date and time
+  late DateTime? dateTime;
 
-    // First select date
-    DateTime? selectedDate;
-    final columnType = widget.column.type as TrinaColumnTypeDateTime;
+  bool _isTimeValid = true;
 
-    if (widget.stateManager.selectDateCallback != null) {
-      final sm = widget.stateManager;
-      selectedDate = await sm.selectDateCallback!(widget.cell, widget.column);
-      if (selectedDate == null) {
-        isOpenedPopup = false;
-        return;
-      }
-    } else {
-      // Create a completer to handle the date selection
-      final completer = Completer<DateTime?>();
+  bool isDateTimeInRange(DateTime? initialDateTime) {
+    if (initialDateTime == null) return false;
 
-      TrinaGridDatePicker(
-        context: context,
-        initDate: TrinaDateTimeHelper.parseOrNullWithFormat(
-          widget.cell.value,
-          columnType.format,
-        ),
-        startDate: columnType.startDate,
-        endDate: columnType.endDate,
-        dateFormat: columnType.dateFormat,
-        headerDateFormat: columnType.headerDateFormat,
-        onSelected: (event) {
-          if (event.cell != null) {
-            final selectedDateStr = event.cell!.value.toString();
-            try {
-              final date = columnType.dateFormat.parse(selectedDateStr);
-              completer.complete(date);
-            } catch (e) {
-              completer.complete(null);
-            }
-          } else {
-            completer.complete(null);
-          }
-        },
-        itemHeight: widget.stateManager.rowTotalHeight,
-        configuration: widget.stateManager.configuration,
-      );
+    final startDate = _column.startDate;
+    final endDate = _column.endDate;
 
-      selectedDate = await completer.future;
-      if (selectedDate == null) {
-        isOpenedPopup = false;
-        return;
-      }
-    }
+    final isAfterStart =
+        startDate == null || !initialDateTime.isBefore(startDate);
+    final isBeforeEnd = endDate == null || !initialDateTime.isAfter(endDate);
 
-    // Then select time
-    // Create a completer to handle the time selection
-    final timeCompleter = Completer<String?>();
-
-    // Get current date and time parts
-    final DateTime currentDateTime =
-        widget.cell.value != null && widget.cell.value.toString().isNotEmpty
-            ? columnType.dateFormat.parse(widget.cell.value.toString())
-            : DateTime.now();
-
-    // Open time picker dialog
-    final localeText = widget.stateManager.configuration.localeText;
-    final style = widget.stateManager.style;
-
-    final configuration = widget.stateManager.configuration.copyWith(
-      tabKeyAction: TrinaGridTabKeyAction.normal,
-      style: style.copyWith(
-        enableColumnBorderVertical: false,
-        enableColumnBorderHorizontal: false,
-        enableCellBorderVertical: false,
-        enableCellBorderHorizontal: false,
-        enableRowColorAnimation: false,
-        oddRowColor: const TrinaOptional(null),
-        evenRowColor: const TrinaOptional(null),
-        activatedColor: style.gridBackgroundColor,
-        gridBorderColor: style.gridBackgroundColor,
-        borderColor: style.gridBackgroundColor,
-        activatedBorderColor: style.gridBackgroundColor,
-        inactivatedBorderColor: style.gridBackgroundColor,
-        rowHeight: style.rowHeight,
-        defaultColumnTitlePadding: TrinaGridSettings.columnTitlePadding,
-        defaultCellPadding: const EdgeInsets.symmetric(horizontal: 3),
-        gridBorderRadius: style.gridPopupBorderRadius,
-      ),
-      columnSize: const TrinaGridColumnSizeConfig(
-        autoSizeMode: TrinaAutoSizeMode.none,
-        resizeMode: TrinaResizeMode.none,
-      ),
-    );
-
-    if (!mounted) {
-      return;
-    }
-
-    TrinaDualGridPopup(
-      context: context,
-      onSelected: (TrinaDualOnSelectedEvent event) {
-        if (event.gridA == null || event.gridB == null) {
-          timeCompleter.complete(null);
-        } else {
-          timeCompleter.complete(
-            '${event.gridA!.cell!.value}:${event.gridB!.cell!.value}',
-          );
-        }
-      },
-      gridPropsA: TrinaDualGridProps(
-        columns: [
-          TrinaColumn(
-            title: localeText.hour,
-            field: 'hour',
-            readOnly: true,
-            type: TrinaColumnType.text(),
-            enableSorting: false,
-            enableColumnDrag: false,
-            enableContextMenu: false,
-            enableDropToResize: false,
-            textAlign: TrinaColumnTextAlign.center,
-            titleTextAlign: TrinaColumnTextAlign.center,
-            width: 134,
-            renderer: _timePartCellRenderer,
-          ),
-        ],
-        rows: Iterable<int>.generate(24)
-            .map(
-              (hour) => TrinaRow(
-                cells: {
-                  'hour': TrinaCell(value: hour.toString().padLeft(2, '0')),
-                },
-              ),
-            )
-            .toList(growable: false),
-        onLoaded: (TrinaGridOnLoadedEvent event) {
-          final stateManager = event.stateManager;
-          final rows = stateManager.refRows;
-          final length = rows.length;
-
-          stateManager.setSelectingMode(TrinaGridSelectingMode.none);
-
-          final currentHour = currentDateTime.hour.toString().padLeft(2, '0');
-
-          for (var i = 0; i < length; i += 1) {
-            if (rows[i].cells['hour']!.value == currentHour) {
-              stateManager.setCurrentCell(rows[i].cells['hour'], i);
-
-              stateManager.moveScrollByRow(
-                TrinaMoveDirection.up,
-                i + 1 + offsetOfScrollRowIdx,
-              );
-
-              return;
-            }
-          }
-        },
-        configuration: configuration,
-      ),
-      gridPropsB: TrinaDualGridProps(
-        columns: [
-          TrinaColumn(
-            title: localeText.minute,
-            field: 'minute',
-            readOnly: true,
-            type: TrinaColumnType.text(),
-            enableSorting: false,
-            enableColumnDrag: false,
-            enableContextMenu: false,
-            enableDropToResize: false,
-            textAlign: TrinaColumnTextAlign.center,
-            titleTextAlign: TrinaColumnTextAlign.center,
-            width: 134,
-            renderer: _timePartCellRenderer,
-          ),
-        ],
-        rows: Iterable<int>.generate(60)
-            .map(
-              (minute) => TrinaRow(
-                cells: {
-                  'minute': TrinaCell(value: minute.toString().padLeft(2, '0')),
-                },
-              ),
-            )
-            .toList(growable: false),
-        onLoaded: (TrinaGridOnLoadedEvent event) {
-          final stateManager = event.stateManager;
-          final rows = stateManager.refRows;
-          final length = rows.length;
-
-          stateManager.setSelectingMode(TrinaGridSelectingMode.none);
-
-          final currentMinute =
-              currentDateTime.minute.toString().padLeft(2, '0');
-
-          for (var i = 0; i < length; i += 1) {
-            if (rows[i].cells['minute']!.value == currentMinute) {
-              stateManager.setCurrentCell(rows[i].cells['minute'], i);
-
-              stateManager.moveScrollByRow(
-                TrinaMoveDirection.up,
-                i + 1 + offsetOfScrollRowIdx,
-              );
-
-              return;
-            }
-          }
-        },
-        configuration: configuration,
-      ),
-      mode: TrinaGridMode.select,
-      width: 276,
-      height: 300,
-      divider: const TrinaDualGridDivider(show: false),
-    );
-
-    final timeString = await timeCompleter.future;
-
-    isOpenedPopup = false;
-
-    if (timeString != null) {
-      final timeParts = timeString.split(':');
-      final hours = int.parse(timeParts[0]);
-      final minutes = int.parse(timeParts[1]);
-
-      // Combine date and time
-      final selectedDateTime = DateTime(
-        selectedDate.year,
-        selectedDate.month,
-        selectedDate.day,
-        hours,
-        minutes,
-      );
-
-      handleSelected(
-        columnType.dateFormat.format(selectedDateTime),
-      );
-    } else {
-      widget.stateManager.setKeepFocus(true);
-      textFocus.requestFocus();
-    }
+    return isAfterStart && isBeforeEnd;
   }
 
-  Widget _timePartCellRenderer(TrinaColumnRendererContext renderContext) {
-    final cell = renderContext.cell;
+  void onDateChanged(DateTime date) {
+    dateTime = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      dateTime?.hour ?? 0,
+      dateTime?.minute ?? 0,
+    );
+    updateValidationState();
+  }
 
-    final isCurrentCell = renderContext.stateManager.isCurrentCell(cell);
+  void onTimeChanged(TimeOfDay time) {
+    final baseDate = dateTime ?? _column.startDate ?? DateTime.now();
+    dateTime = DateTime(
+      baseDate.year,
+      baseDate.month,
+      baseDate.day,
+      time.hour,
+      time.minute,
+    );
+    updateValidationState();
+  }
 
-    final cellColor = isCurrentCell && renderContext.stateManager.hasFocus
-        ? widget.stateManager.style.activatedBorderColor
-        : widget.stateManager.style.gridBackgroundColor;
+  void onTimeValidationChanged(bool isValid) {
+    _isTimeValid = isValid;
+    updateValidationState();
+  }
 
-    final textColor = isCurrentCell && renderContext.stateManager.hasFocus
-        ? widget.stateManager.style.gridBackgroundColor
-        : widget.stateManager.style.cellTextStyle.color;
+  void updateValidationState() {
+    _dateTimeIsValidNotifier.value =
+        isDateTimeInRange(dateTime) && _isTimeValid;
+  }
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: cellColor,
-        shape: BoxShape.circle,
-        border: !isCurrentCell
-            ? null
-            : !renderContext.stateManager.hasFocus
-                ? Border.all(
-                    color: widget.stateManager.style.activatedBorderColor,
-                    width: 1,
-                  )
-                : null,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(5),
-        child: Center(
-          child: Text(cell.value, style: TextStyle(color: textColor)),
-        ),
-      ),
+  void onOkPressed() {
+    if (dateTime != null) {
+      handleSelected(_column.dateFormat.format(dateTime!));
+    }
+    Navigator.of(context).pop();
+  }
+
+  @override
+  void dispose() {
+    _dateTimeIsValidNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    dateTime = _getInitialDateTime();
+    _dateTimeIsValidNotifier.value = isDateTimeInRange(dateTime);
+
+    popupContent = _PopupContent(
+      onDateChanged: onDateChanged,
+      onTimeChanged: onTimeChanged,
+      onOkPressed: onOkPressed,
+      initialDateTime: dateTime,
+      startDate: _column.startDate,
+      endDate: _column.endDate,
+      dateTimeIsValidNotifier: _dateTimeIsValidNotifier,
+      onTimeValidationChanged: onTimeValidationChanged,
+    );
+    // It's important to call super.initState() after initializing [popupContent]
+    // because it's used in the super class `initState()`.
+    super.initState();
+  }
+
+  DateTime? _getInitialDateTime() {
+    var initialDateTime = _column.dateFormat.tryParse(widget.cell.value);
+
+    if (initialDateTime != null && isDateTimeInRange(initialDateTime)) {
+      return initialDateTime;
+    }
+
+    final now = DateTime.now();
+    if (isDateTimeInRange(now)) {
+      return now;
+    }
+
+    if (_column.startDate != null && isDateTimeInRange(_column.startDate)) {
+      return _column.startDate;
+    }
+
+    return null;
+  }
+}
+
+class _PopupContent extends StatelessWidget {
+  final void Function(DateTime) onDateChanged;
+  final void Function(TimeOfDay) onTimeChanged;
+  final void Function(bool) onTimeValidationChanged;
+  final VoidCallback onOkPressed;
+  final DateTime? initialDateTime;
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final ValueNotifier<bool> dateTimeIsValidNotifier;
+
+  const _PopupContent({
+    required this.onDateChanged,
+    required this.onTimeChanged,
+    required this.onOkPressed,
+    required this.initialDateTime,
+    required this.startDate,
+    required this.endDate,
+    required this.dateTimeIsValidNotifier,
+    required this.onTimeValidationChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, parentConstraints) {
+        final screenSize = MediaQuery.of(context).size;
+        final showAsVertical = screenSize.width < 640;
+        final popupConstraints = showAsVertical
+            ? const BoxConstraints(
+                maxWidth: 330,
+                maxHeight: 530,
+                minHeight: 440,
+              )
+            : const BoxConstraints(maxWidth: 560, maxHeight: 360);
+
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: popupConstraints,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: Flex(
+                    direction: showAsVertical ? Axis.vertical : Axis.horizontal,
+                    children: [
+                      SizedBox(
+                        width: 300,
+                        height: 330,
+                        child: TrinaDatePicker(
+                          onDateChanged: onDateChanged,
+                          initialDate: initialDateTime,
+                          firstDate: startDate,
+                          lastDate: endDate,
+                        ),
+                      ),
+                      if (showAsVertical)
+                        const Divider(color: Colors.black26)
+                      else
+                        const VerticalDivider(width: 10, color: Colors.black26),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TrinaTimePicker(
+                            autoFocusMode: TrinaTimePickerAutoFocusMode.none,
+                            initialTime: initialDateTime != null
+                                ? TimeOfDay.fromDateTime(initialDateTime!)
+                                : const TimeOfDay(hour: 0, minute: 0),
+                            onChanged: onTimeChanged,
+                            onValidationChanged: onTimeValidationChanged,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('Cancel'),
+                        ),
+                        const SizedBox(width: 10),
+                        ValueListenableBuilder(
+                          valueListenable: dateTimeIsValidNotifier,
+                          builder: (context, value, _) {
+                            return TextButton(
+                              onPressed: value ? onOkPressed : null,
+                              child: const Text('OK'),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

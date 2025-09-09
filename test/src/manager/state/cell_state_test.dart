@@ -17,6 +17,7 @@ void main() {
     BoxConstraints? layout,
     TrinaGridConfiguration configuration = const TrinaGridConfiguration(),
     TrinaGridMode? mode,
+    bool isRTL = false,
   }) {
     final stateManager = TrinaGridStateManager(
       columns: columns,
@@ -28,7 +29,8 @@ void main() {
     );
 
     stateManager.setEventManager(MockTrinaGridEventManager());
-
+    stateManager
+        .setTextDirection(isRTL ? TextDirection.rtl : TextDirection.ltr);
     if (layout != null) {
       stateManager.setLayout(layout);
     }
@@ -818,6 +820,248 @@ void main() {
 
       // then
       expect(filteredValue, newValue);
+    });
+  });
+  group('canMoveCell', () {
+    late TrinaGridStateManager stateManager;
+
+    final List<TrinaColumn> columns = [
+      ...ColumnHelper.textColumn('body', count: 3, width: 150),
+    ];
+    setUp(() {
+      List<TrinaRow> rows = RowHelper.count(3, columns);
+
+      stateManager = createStateManager(columns: columns, rows: rows);
+    });
+
+    testWidgets(
+      'when cellPosition is null, should return false',
+      (WidgetTester tester) async {
+        // when
+        final bool result =
+            stateManager.canMoveCell(null, TrinaMoveDirection.left);
+        // then
+        expect(result, isFalse);
+      },
+    );
+
+    testWidgets(
+        'when moveDirection is TrinaMoveDirection.up, '
+        'and not at the top row, should return true',
+        (WidgetTester tester) async {
+      // given
+      final cellPosition = TrinaGridCellPosition(columnIdx: 0, rowIdx: 1);
+      // when
+      final bool result =
+          stateManager.canMoveCell(cellPosition, TrinaMoveDirection.up);
+      // then
+      expect(result, isTrue);
+    });
+
+    testWidgets(
+        'when moveDirection is TrinaMoveDirection.up, '
+        'and at the top row, should return false', (WidgetTester tester) async {
+      // given
+      final cellPosition = TrinaGridCellPosition(columnIdx: 0, rowIdx: 0);
+      // when
+      final bool result =
+          stateManager.canMoveCell(cellPosition, TrinaMoveDirection.up);
+      // then
+      expect(result, isFalse);
+    });
+
+    testWidgets(
+        'when moveDirection is TrinaMoveDirection.down, '
+        'and not at the bottom row, should return true',
+        (WidgetTester tester) async {
+      // given
+      final cellPosition = TrinaGridCellPosition(columnIdx: 0, rowIdx: 1);
+      // when
+      final bool result =
+          stateManager.canMoveCell(cellPosition, TrinaMoveDirection.down);
+      // then
+      expect(result, isTrue);
+    });
+
+    testWidgets(
+        'when moveDirection is TrinaMoveDirection.down, '
+        'and at the bottom row, should return false',
+        (WidgetTester tester) async {
+      // given
+      final cellPosition = TrinaGridCellPosition(columnIdx: 0, rowIdx: 2);
+      // when
+      final bool result =
+          stateManager.canMoveCell(cellPosition, TrinaMoveDirection.down);
+      // then
+      expect(result, isFalse);
+    });
+
+    group('with frozen columns', () {
+      setUp(() {
+        stateManager
+            .setLayout(const BoxConstraints(maxWidth: 500, maxHeight: 500));
+      });
+      testWidgets(
+        'when moveDirection is TrinaMoveDirection.left, '
+        'cellPosition is at 2nd column, '
+        'first column is frozen, '
+        'we are not at left edge, '
+        'should return true',
+        (WidgetTester tester) async {
+          stateManager.toggleFrozenColumn(columns[0], TrinaColumnFrozen.start);
+          // given
+          final cellPosition = TrinaGridCellPosition(columnIdx: 1, rowIdx: 0);
+
+          // when
+          final bool result =
+              stateManager.canMoveCell(cellPosition, TrinaMoveDirection.left);
+
+          // then
+          expect(result, isTrue);
+        },
+      );
+      testWidgets(
+        'when moveDirection is TrinaMoveDirection.left, '
+        'cellPosition is at first column, '
+        'first column is frozen, '
+        'we are at left edge, '
+        'should return false',
+        (WidgetTester tester) async {
+          stateManager.toggleFrozenColumn(columns[0], TrinaColumnFrozen.start);
+          // given
+          final cellPosition = TrinaGridCellPosition(columnIdx: 0, rowIdx: 0);
+
+          // when
+          final bool result =
+              stateManager.canMoveCell(cellPosition, TrinaMoveDirection.left);
+
+          // then
+          expect(result, isFalse);
+        },
+      );
+      testWidgets(
+        'when moveDirection is TrinaMoveDirection.right, '
+        'cellPosition is at first column, '
+        'first column is frozen, '
+        'we are not at right edge, '
+        'should return true',
+        (WidgetTester tester) async {
+          stateManager.toggleFrozenColumn(columns[0], TrinaColumnFrozen.start);
+          // given
+          final cellPosition = TrinaGridCellPosition(columnIdx: 0, rowIdx: 0);
+
+          // when
+          final bool result =
+              stateManager.canMoveCell(cellPosition, TrinaMoveDirection.right);
+
+          // then
+          expect(result, isTrue);
+        },
+      );
+      testWidgets(
+        'when moveDirection is TrinaMoveDirection.right, '
+        'cellPosition is at first column, '
+        'first & second column are frozen, '
+        'we are not at right edge, '
+        'should return true',
+        (WidgetTester tester) async {
+          stateManager.toggleFrozenColumn(columns[0], TrinaColumnFrozen.start);
+          stateManager.toggleFrozenColumn(columns[1], TrinaColumnFrozen.start);
+          // given
+          final cellPosition = TrinaGridCellPosition(columnIdx: 0, rowIdx: 0);
+
+          // when
+          final bool result =
+              stateManager.canMoveCell(cellPosition, TrinaMoveDirection.right);
+
+          // then
+          expect(result, isTrue);
+        },
+      );
+      testWidgets(
+        'when moveDirection is TrinaMoveDirection.right, '
+        'cellPosition is at third column, '
+        'first & second column are frozen, '
+        'we are at right edge, '
+        'should return true',
+        (WidgetTester tester) async {
+          stateManager.toggleFrozenColumn(columns[0], TrinaColumnFrozen.start);
+          stateManager.toggleFrozenColumn(columns[1], TrinaColumnFrozen.start);
+          // given
+          final cellPosition = TrinaGridCellPosition(columnIdx: 2, rowIdx: 0);
+
+          // when
+          final bool result =
+              stateManager.canMoveCell(cellPosition, TrinaMoveDirection.right);
+
+          // then
+          expect(result, isFalse);
+        },
+      );
+    });
+
+    group('no frozen columns', () {
+      testWidgets(
+          'when moveDirection is TrinaMoveDirection.left, '
+          'cellPosition is at 2nd column, '
+          'we are not at left edge, '
+          'should return true', (WidgetTester tester) async {
+        // given
+        final cellPosition = TrinaGridCellPosition(columnIdx: 1, rowIdx: 0);
+
+        // when
+        final bool result =
+            stateManager.canMoveCell(cellPosition, TrinaMoveDirection.left);
+
+        // then
+        expect(result, isTrue);
+      });
+      testWidgets(
+          'when moveDirection is TrinaMoveDirection.left, '
+          'cellPosition is at first column, '
+          'we are at left edge, '
+          'should return false', (WidgetTester tester) async {
+        // given
+        final cellPosition = TrinaGridCellPosition(columnIdx: 0, rowIdx: 0);
+
+        // when
+        final bool result =
+            stateManager.canMoveCell(cellPosition, TrinaMoveDirection.left);
+
+        // then
+        expect(result, isFalse);
+      });
+
+      testWidgets(
+          'when moveDirection is TrinaMoveDirection.right, '
+          'cellPosition is at first column, '
+          'we have enough columns to move right, '
+          'should return true', (WidgetTester tester) async {
+        // given
+        final cellPosition = TrinaGridCellPosition(columnIdx: 0, rowIdx: 2);
+
+        // when
+        final bool result =
+            stateManager.canMoveCell(cellPosition, TrinaMoveDirection.right);
+
+        // then
+        expect(result, isTrue);
+      });
+      testWidgets(
+          'when moveDirection is TrinaMoveDirection.right, '
+          'cellPosition is at last column, '
+          'we at right edge, '
+          'should return false', (WidgetTester tester) async {
+        // given
+        final cellPosition = TrinaGridCellPosition(columnIdx: 2, rowIdx: 2);
+
+        // when
+        final bool result =
+            stateManager.canMoveCell(cellPosition, TrinaMoveDirection.right);
+
+        // then
+        expect(result, isFalse);
+      });
     });
   });
 }

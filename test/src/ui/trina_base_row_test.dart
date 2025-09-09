@@ -27,6 +27,18 @@ void main() {
     when(stateManager.style).thenReturn(configuration.style);
     when(stateManager.localeText).thenReturn(const TrinaGridLocaleText());
     when(stateManager.rowHeight).thenReturn(45);
+    when(stateManager.getRowHeight(0)).thenReturn(45.0);
+    when(stateManager.getRowHeight(1)).thenReturn(45.0);
+    when(stateManager.getRowHeight(2)).thenReturn(45.0);
+    when(stateManager.getRowHeight(3)).thenReturn(45.0);
+    when(stateManager.getRowHeight(4)).thenReturn(45.0);
+    when(stateManager.getRowHeight(5)).thenReturn(45.0);
+    when(stateManager.getRowHeight(6)).thenReturn(45.0);
+    when(stateManager.getRowHeight(7)).thenReturn(45.0);
+    when(stateManager.getRowHeight(8)).thenReturn(45.0);
+    when(stateManager.getRowHeight(9)).thenReturn(45.0);
+    // Add a catch-all for any other row index
+    when(stateManager.getRowHeight(argThat(isA<int>()))).thenReturn(45.0);
     when(stateManager.isSelecting).thenReturn(true);
     when(stateManager.hasCurrentSelectingPosition).thenReturn(true);
     when(stateManager.isEditing).thenReturn(true);
@@ -130,7 +142,7 @@ void main() {
 
       expect(
         rowContainerDecoration.border!.top.width,
-        TrinaGridSettings.rowBorderWidth,
+        stateManager.configuration.style.cellHorizontalBorderWidth,
       );
     },
   );
@@ -153,7 +165,7 @@ void main() {
 
       expect(
         rowContainerDecoration.border!.bottom.width,
-        TrinaGridSettings.rowBorderWidth,
+        stateManager.configuration.style.cellHorizontalBorderWidth,
       );
     },
   );

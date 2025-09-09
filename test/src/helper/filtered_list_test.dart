@@ -747,4 +747,64 @@ void main() {
       },
     );
   });
+
+  group('Edge case tests for range boundary conditions', () {
+    late FilteredList<int> list;
+
+    setUp(() {
+      list = FilteredList(initialList: [1, 2, 3, 4, 5, 6]);
+    });
+
+    test(
+      'Setting range to exactly maxLength should work without index out of bounds',
+      () {
+        // Test with unfiltered list: maxLength = 6
+        list.setFilterRange(FilteredListRange(0, 6));
+        expect(list, [1, 2, 3, 4, 5, 6]);
+        expect(list.length, 6);
+
+        // Test accessing elements to ensure no index out of bounds
+        expect(list[0], 1);
+        expect(list[5], 6);
+      },
+    );
+
+    test(
+      'Setting range to exactly filteredList length should work without index out of bounds',
+      () {
+        // Filter for even numbers: [2, 4, 6] - maxLength = 3
+        list.setFilter((element) => element % 2 == 0);
+        expect(list.filteredList, [2, 4, 6]);
+
+        // Set range to exactly the filtered length
+        list.setFilterRange(FilteredListRange(0, 3));
+        expect(list, [2, 4, 6]);
+        expect(list.length, 3);
+
+        // Test accessing elements to ensure no index out of bounds
+        expect(list[0], 2);
+        expect(list[2], 6);
+      },
+    );
+
+    test(
+      'Setting range that would go beyond maxLength should be safely clamped',
+      () {
+        // Test with unfiltered list: maxLength = 6
+        list.setFilterRange(FilteredListRange(0, 10)); // Beyond maxLength
+        expect(list, [1, 2, 3, 4, 5, 6]);
+        expect(list.length, 6);
+      },
+    );
+
+    test(
+      'Setting range with from equals to maxLength should return empty list',
+      () {
+        // Test with unfiltered list: maxLength = 6
+        list.setFilterRange(FilteredListRange(6, 8)); // from >= maxLength
+        expect(list, []);
+        expect(list.length, 0);
+      },
+    );
+  });
 }

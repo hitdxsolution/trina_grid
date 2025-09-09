@@ -893,11 +893,13 @@ void main() {
       );
 
       expect(stateManager.showFrozenColumn, false);
-      expect(stateManager.columns[0].frozen, TrinaColumnFrozen.none);
+      expect(stateManager.columns[0].frozen, TrinaColumnFrozen.start,
+          reason: 'Frozen state should be preserved even when not shown.');
       expect(stateManager.columns[1].frozen, TrinaColumnFrozen.none);
       expect(stateManager.columns[2].frozen, TrinaColumnFrozen.none);
       expect(stateManager.columns[3].frozen, TrinaColumnFrozen.none);
-      expect(stateManager.columns[4].frozen, TrinaColumnFrozen.none);
+      expect(stateManager.columns[4].frozen, TrinaColumnFrozen.end,
+          reason: 'Frozen state should be preserved even when not shown.');
     },
   );
 
@@ -1857,15 +1859,17 @@ void main() {
     });
 
     testWidgets(
-      'When calling hideColumn with flag false on a fixed column with hide true, '
-      'if the constraint width of the fixed column is narrow, the column should be unfrozen.',
+      'When calling hideColumn with flag false on a hidden-frozen column, '
+      'if the width of the grid is not enough to display the column as frozen, '
+      'then `showFrozenColumn` should be false.',
       (WidgetTester tester) async {
         // given
         var columns = [
           TrinaColumn(
             title: '',
-            field: '',
+            field: 'column0',
             width: 700,
+            frozen: TrinaColumnFrozen.start,
             type: TrinaColumnType.text(),
             hide: true,
           ),
@@ -1880,9 +1884,7 @@ void main() {
           scroll: scroll,
         );
 
-        stateManager.setLayout(const BoxConstraints(maxWidth: 800));
-
-        stateManager.columns.first.frozen = TrinaColumnFrozen.start;
+        stateManager.setLayout(const BoxConstraints(maxWidth: 600));
 
         // when
         expect(stateManager.refColumns.originalList.first.hide, isTrue);
@@ -1890,9 +1892,15 @@ void main() {
         stateManager.hideColumn(columns.first, false);
 
         // then
-        expect(stateManager.columns.first.hide, isFalse);
-
-        expect(stateManager.columns.first.frozen, TrinaColumnFrozen.none);
+        expect(stateManager.refColumns.first.hide, isFalse);
+        expect(
+          stateManager.refColumns
+              .where((e) => e.field == 'column0')
+              .first
+              .frozen,
+          TrinaColumnFrozen.start,
+        );
+        expect(stateManager.showFrozenColumn, isFalse);
       },
     );
 
@@ -2048,7 +2056,7 @@ void main() {
     );
 
     test(
-      'When hide is false, frozen columns should be none.',
+      'When hide is false, columns frozen property should not change.',
       () async {
         final columns = ColumnHelper.textColumn(
           'title',
@@ -2066,7 +2074,6 @@ void main() {
 
         stateManager.setLayout(const BoxConstraints(maxWidth: 300));
 
-        // Initialize all columns' frozen to none for testing purposes.
         for (final column in columns) {
           column.frozen = TrinaColumnFrozen.start;
         }
@@ -2075,9 +2082,9 @@ void main() {
 
         // called columns
         expect(columns[0].hide, false);
-        expect(columns[0].frozen, TrinaColumnFrozen.none);
+        expect(columns[0].frozen, TrinaColumnFrozen.start);
         expect(columns[1].hide, false);
-        expect(columns[1].frozen, TrinaColumnFrozen.none);
+        expect(columns[1].frozen, TrinaColumnFrozen.start);
         // not called columns
         expect(columns[2].hide, true);
         expect(columns[2].frozen, TrinaColumnFrozen.start);
@@ -2520,105 +2527,6 @@ void main() {
           stateManager.limitToggleFrozenColumn(column, TrinaColumnFrozen.start),
           true,
         );
-      },
-    );
-  });
-
-  group('limitHideColumn', () {
-    test(
-      'When column hidden is true, false should be returned.',
-      () async {
-        final TrinaColumn column = TrinaColumn(
-          title: 'title1',
-          field: 'field1',
-          type: TrinaColumnType.text(),
-          frozen: TrinaColumnFrozen.end,
-          width: 394,
-        );
-
-        TrinaGridStateManager stateManager = getStateManager(
-          columns: [
-            column,
-            ...ColumnHelper.textColumn('title', count: 3, width: 100),
-          ],
-          rows: [],
-          gridFocusNode: null,
-          scroll: scroll,
-        );
-
-        stateManager.setLayout(const BoxConstraints(maxWidth: 500));
-
-        expect(stateManager.limitHideColumn(column, true), false);
-      },
-    );
-
-    test(
-      'When column frozen is none, false should be returned.',
-      () async {
-        final TrinaColumn column = TrinaColumn(
-          title: 'title1',
-          field: 'field1',
-          type: TrinaColumnType.text(),
-          frozen: TrinaColumnFrozen.none,
-          hide: true,
-          width: 394,
-        );
-
-        TrinaGridStateManager stateManager = getStateManager(
-          columns: [
-            column,
-            ...ColumnHelper.textColumn('title', count: 3, width: 100),
-          ],
-          rows: [],
-          gridFocusNode: null,
-          scroll: scroll,
-        );
-
-        stateManager.setLayout(const BoxConstraints(maxWidth: 500));
-
-        expect(stateManager.limitHideColumn(column, false), false);
-      },
-    );
-
-    test(
-      'When column frozen is start, false should be returned.',
-      () async {
-        final TrinaColumn column = TrinaColumn(
-          title: 'title1',
-          field: 'field1',
-          type: TrinaColumnType.text(),
-          frozen: TrinaColumnFrozen.start,
-          hide: true,
-          width: 394,
-        );
-
-        TrinaGridStateManager stateManager = getStateManager(
-          columns: [
-            column,
-            ...ColumnHelper.textColumn('title', count: 3, width: 100),
-          ],
-          rows: [],
-          gridFocusNode: null,
-          scroll: scroll,
-        );
-
-        stateManager.setLayout(const BoxConstraints(maxWidth: 500));
-        // If showFrozenColumn is false in stateManager.setLayout,
-        // Force the column's frozen state to none and change it to left.
-        column.frozen = TrinaColumnFrozen.start;
-
-        // Column width should be greater than 394 for column unhide.
-        // print(stateManager.maxWidth! - column.width);
-        // No left frozen column 0
-        // print(stateManager.leftFrozenColumnsWidth);
-        // No right frozen column 0
-        // print(stateManager.rightFrozenColumnsWidth);
-        // 200
-        // print(TrinaGridSettings.bodyMinWidth);
-        // 6
-        // print(TrinaGridSettings.totalShadowLineWidth);
-
-        expect(stateManager.limitHideColumn(column, false), true);
       },
     );
   });

@@ -25,13 +25,14 @@ class TrinaCellRendererContext {
 }
 
 class TrinaCell {
-  /// Creates a cell with an optional initial value, key, renderer, and onChanged callback.
+  /// Creates a cell with an optional initial value, key, renderer, onChanged callback, and onKeyPressed callback.
   ///
   /// The [value] parameter sets the initial value of the cell.
   /// The [key] parameter provides a unique identifier for the cell.
   /// The [renderer] parameter allows for custom rendering of the cell.
   /// The [onChanged] parameter allows for cell-level control over value changes.
-  TrinaCell({dynamic value, Key? key, this.renderer, this.onChanged})
+  /// The [onKeyPressed] parameter allows for capturing keyboard events in the cell.
+  TrinaCell({dynamic value, Key? key, this.renderer, this.onChanged, this.onKeyPressed, this.padding})
       : _key = key ?? UniqueKey(),
         _value = value,
         _originalValue = value,
@@ -46,6 +47,9 @@ class TrinaCell {
   /// Stores the old value when change tracking is enabled
   dynamic _oldValue;
 
+  /// Whether or not we are tracking changes
+  bool _isTracking = false;
+
   dynamic _valueForSorting;
 
   /// Custom renderer for this specific cell.
@@ -55,6 +59,14 @@ class TrinaCell {
   /// Callback that is triggered when this specific cell's value is changed.
   /// This allows for cell-level control over value changes.
   final TrinaOnChangedEventCallback? onChanged;
+
+  /// Callback that is triggered when a key is pressed in this specific cell.
+  /// This allows for capturing keyboard events like Enter, Tab, Escape, etc.
+  final TrinaOnKeyPressedEventCallback? onKeyPressed;
+
+  /// Custom padding for this specific cell.
+  /// If provided, this will override the column padding and default padding.
+  final EdgeInsets? padding;
 
   /// Returns true if this cell has a custom renderer.
   bool get hasRenderer => renderer != null;
@@ -108,19 +120,23 @@ class TrinaCell {
 
   /// Returns true if the cell has uncommitted changes
   bool get isDirty {
-    return _oldValue != null;
+    // The logic is now simple: are we tracking, and are the values different?
+    return _isTracking && _value != _oldValue;
   }
 
-  /// Commit changes by clearing the old value
+  /// Commit changes by accepting the new value and stopping tracking.
   void commitChanges() {
     _oldValue = null;
+    _isTracking = false;
   }
 
-  /// Revert changes by restoring the old value
+  /// Revert changes by restoring the old value and stopping tracking.
   void revertChanges() {
-    if (_oldValue != null) {
+    if (_isTracking) {
+      // Only revert if a change was being tracked
       _value = _oldValue;
       _oldValue = null;
+      _isTracking = false;
     }
   }
 
@@ -128,13 +144,15 @@ class TrinaCell {
     if (_value == changed) {
       return;
     }
-
     _value = changed;
   }
 
   /// Helper method to store the old value when change tracking is enabled
   void trackChange() {
-    _oldValue ??= _value;
+    if (!_isTracking) {
+      _isTracking = true;
+      _oldValue = _value;
+    }
   }
 
   dynamic get valueForSorting {
@@ -178,7 +196,7 @@ class TrinaCell {
   }
 }
 
-_assertUnInitializedCell(bool flag) {
+void _assertUnInitializedCell(bool flag) {
   assert(
     flag,
     'TrinaCell is not initialized.'

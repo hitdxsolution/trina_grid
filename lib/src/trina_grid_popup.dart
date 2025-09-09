@@ -56,6 +56,9 @@ class TrinaGridPopup {
   /// {@macro trina_grid_property_rowColorCallback}
   final TrinaRowColorCallback? rowColorCallback;
 
+  /// {@macro trina_grid_property_cellColorCallback}
+  final TrinaCellColorCallback? cellColorCallback;
+
   /// {@macro trina_grid_property_columnMenuDelegate}
   final TrinaColumnMenuDelegate? columnMenuDelegate;
 
@@ -99,6 +102,7 @@ class TrinaGridPopup {
     this.createFooter,
     this.noRowsWidget,
     this.rowColorCallback,
+    this.cellColorCallback,
     this.columnMenuDelegate,
     this.configuration = const TrinaGridConfiguration(),
     this.mode = TrinaGridMode.normal,
@@ -109,10 +113,10 @@ class TrinaGridPopup {
     open();
   }
 
-  setColumnConfig() {
+  List<TrinaColumn> setColumnConfig() {
     columns.map((element) {
-      if (configuration.style.filterHeaderColor != null) {
-        element.backgroundColor = configuration.style.filterHeaderColor!;
+      if (configuration.style.filterPopupHeaderColor != null) {
+        element.backgroundColor = configuration.style.filterPopupHeaderColor!;
       }
     }).toList();
     return columns;
@@ -162,6 +166,7 @@ class TrinaGridPopup {
                           createFooter: createFooter,
                           noRowsWidget: noRowsWidget,
                           rowColorCallback: rowColorCallback,
+                          cellColorCallback: cellColorCallback,
                           columnMenuDelegate: columnMenuDelegate,
                           configuration: configuration,
                           mode: mode,

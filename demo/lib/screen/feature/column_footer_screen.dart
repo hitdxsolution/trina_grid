@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:trina_grid/trina_grid.dart';
 
 import '../../dummy_data/development.dart';
@@ -35,7 +36,7 @@ class _ColumnFooterScreenState extends State<ColumnFooterScreen> {
           return TrinaAggregateColumnFooter(
             rendererContext: rendererContext,
             type: TrinaAggregateColumnType.count,
-            format: 'Checked : #,###.###',
+            numberFormat: NumberFormat('Checked : #,###.###'),
             filter: (cell) => cell.row.checked == true,
             alignment: Alignment.center,
           );
@@ -50,7 +51,7 @@ class _ColumnFooterScreenState extends State<ColumnFooterScreen> {
           return TrinaAggregateColumnFooter(
             rendererContext: rendererContext,
             type: TrinaAggregateColumnType.sum,
-            format: '#,###',
+            numberFormat: NumberFormat('#,###'),
             alignment: Alignment.center,
             titleSpanBuilder: (text) {
               return [
@@ -74,7 +75,7 @@ class _ColumnFooterScreenState extends State<ColumnFooterScreen> {
           return TrinaAggregateColumnFooter(
             rendererContext: rendererContext,
             type: TrinaAggregateColumnType.average,
-            format: '#,###.###',
+            numberFormat: NumberFormat('#,###.###'),
             alignment: Alignment.center,
             titleSpanBuilder: (text) {
               return [
@@ -94,7 +95,7 @@ class _ColumnFooterScreenState extends State<ColumnFooterScreen> {
           return TrinaAggregateColumnFooter(
             rendererContext: rendererContext,
             type: TrinaAggregateColumnType.min,
-            format: '#,###',
+            numberFormat: NumberFormat('#,###'),
             alignment: Alignment.center,
             titleSpanBuilder: (text) {
               return [
@@ -114,7 +115,7 @@ class _ColumnFooterScreenState extends State<ColumnFooterScreen> {
           return TrinaAggregateColumnFooter(
             rendererContext: rendererContext,
             type: TrinaAggregateColumnType.max,
-            format: '#,###',
+            numberFormat: NumberFormat('#,###'),
             alignment: Alignment.center,
             titleSpanBuilder: (text) {
               return [
@@ -134,7 +135,7 @@ class _ColumnFooterScreenState extends State<ColumnFooterScreen> {
             rendererContext: rendererContext,
             type: TrinaAggregateColumnType.count,
             filter: (cell) => cell.value == 'Android',
-            format: 'Android : #,###',
+            numberFormat: NumberFormat('Android : #,###'),
             alignment: Alignment.center,
           );
         },

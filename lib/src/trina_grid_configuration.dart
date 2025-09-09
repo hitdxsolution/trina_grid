@@ -110,7 +110,8 @@ class TrinaGridConfiguration {
     this.enableMoveDownAfterSelecting = false,
     this.enableMoveHorizontalInEditing = false,
     this.enableAutoSelectFirstRow = true,
-    this.rowSelectionCheckBoxBehavior = TrinaGridRowSelectionCheckBoxBehavior.none,
+    this.rowSelectionCheckBoxBehavior =
+        TrinaGridRowSelectionCheckBoxBehavior.none,
     this.enterKeyAction = TrinaGridEnterKeyAction.editingAndMoveDown,
     this.tabKeyAction = TrinaGridTabKeyAction.normal,
     this.selectingMode = TrinaGridSelectingMode.cell,
@@ -126,7 +127,8 @@ class TrinaGridConfiguration {
     this.enableMoveDownAfterSelecting = false,
     this.enableMoveHorizontalInEditing = false,
     this.enableAutoSelectFirstRow = true,
-    this.rowSelectionCheckBoxBehavior = TrinaGridRowSelectionCheckBoxBehavior.none,
+    this.rowSelectionCheckBoxBehavior =
+        TrinaGridRowSelectionCheckBoxBehavior.none,
     this.enterKeyAction = TrinaGridEnterKeyAction.editingAndMoveDown,
     this.tabKeyAction = TrinaGridTabKeyAction.normal,
     this.selectingMode = TrinaGridSelectingMode.cell,
@@ -144,7 +146,8 @@ class TrinaGridConfiguration {
     TrinaFilterTypeStartsWith.name = localeText.filterStartsWith;
     TrinaFilterTypeEndsWith.name = localeText.filterEndsWith;
     TrinaFilterTypeGreaterThan.name = localeText.filterGreaterThan;
-    TrinaFilterTypeGreaterThanOrEqualTo.name = localeText.filterGreaterThanOrEqualTo;
+    TrinaFilterTypeGreaterThanOrEqualTo.name =
+        localeText.filterGreaterThanOrEqualTo;
     TrinaFilterTypeLessThan.name = localeText.filterLessThan;
     TrinaFilterTypeLessThanOrEqualTo.name = localeText.filterLessThanOrEqualTo;
   }
@@ -180,10 +183,14 @@ class TrinaGridConfiguration {
     TrinaGridLocaleText? localeText,
   }) {
     return TrinaGridConfiguration(
-      enableMoveDownAfterSelecting: enableMoveDownAfterSelecting ?? this.enableMoveDownAfterSelecting,
-      enableMoveHorizontalInEditing: enableMoveHorizontalInEditing ?? this.enableMoveHorizontalInEditing,
-      enableAutoSelectFirstRow: enableAutoSelectFirstRow ?? this.enableAutoSelectFirstRow,
-      rowSelectionCheckBoxBehavior: rowSelectionCheckBoxBehavior ?? this.rowSelectionCheckBoxBehavior,
+      enableMoveDownAfterSelecting:
+          enableMoveDownAfterSelecting ?? this.enableMoveDownAfterSelecting,
+      enableMoveHorizontalInEditing:
+          enableMoveHorizontalInEditing ?? this.enableMoveHorizontalInEditing,
+      enableAutoSelectFirstRow:
+          enableAutoSelectFirstRow ?? this.enableAutoSelectFirstRow,
+      rowSelectionCheckBoxBehavior:
+          rowSelectionCheckBoxBehavior ?? this.rowSelectionCheckBoxBehavior,
       enterKeyAction: enterKeyAction ?? this.enterKeyAction,
       tabKeyAction: tabKeyAction ?? this.tabKeyAction,
       selectingMode: selectingMode ?? this.selectingMode,
@@ -201,10 +208,13 @@ class TrinaGridConfiguration {
     return identical(this, other) ||
         other is TrinaGridConfiguration &&
             runtimeType == other.runtimeType &&
-            enableMoveDownAfterSelecting == other.enableMoveDownAfterSelecting &&
-            enableMoveHorizontalInEditing == other.enableMoveHorizontalInEditing &&
+            enableMoveDownAfterSelecting ==
+                other.enableMoveDownAfterSelecting &&
+            enableMoveHorizontalInEditing ==
+                other.enableMoveHorizontalInEditing &&
             enableAutoSelectFirstRow == other.enableAutoSelectFirstRow &&
-            rowSelectionCheckBoxBehavior == other.rowSelectionCheckBoxBehavior &&
+            rowSelectionCheckBoxBehavior ==
+                other.rowSelectionCheckBoxBehavior &&
             enterKeyAction == other.enterKeyAction &&
             tabKeyAction == other.tabKeyAction &&
             selectingMode == other.selectingMode &&
@@ -235,9 +245,11 @@ class TrinaGridConfiguration {
 }
 
 class TrinaGridStyleConfig {
-  static const TextStyle defaultLightCellTextStyle = TextStyle(fontSize: 14, color: Colors.black);
+  static const TextStyle defaultLightCellTextStyle =
+      TextStyle(fontSize: 14, color: Colors.black);
 
-  static const TextStyle defaultDarkCellTextStyle = TextStyle(fontSize: 14, color: Colors.white);
+  static const TextStyle defaultDarkCellTextStyle =
+      TextStyle(fontSize: 14, color: Colors.white);
 
   const TrinaGridStyleConfig({
     this.enableGridBorderShadow = false,
@@ -261,11 +273,13 @@ class TrinaGridStyleConfig {
     this.rowHoveredColor = const Color(0xFFB1B3B7),
     this.cellColorInEditState = Colors.white,
     this.cellColorInReadOnlyState = const Color(0xFFDBDBDC),
+    this.cellReadonlyColor,
+    this.cellDefaultColor,
     this.cellColorGroupedRow,
     this.cellDirtyColor = const Color(0xFFFFF9C4),
     this.frozenRowColor = const Color(0xFFF8F8F8),
     this.frozenRowBorderColor = const Color(0xFFE0E0E0),
-    this.dragTargetColumnColor = const Color(0xFFDCF5FF),
+    this.dragTargetColumnColor = const Color.fromARGB(129, 220, 245, 255),
     this.iconColor = Colors.black38,
     this.disabledIconColor = Colors.black12,
     this.menuBackgroundColor = Colors.white,
@@ -306,7 +320,11 @@ class TrinaGridStyleConfig {
     this.gridPopupBorderRadius = BorderRadius.zero,
     this.gridPadding = TrinaGridSettings.gridPadding,
     this.gridBorderWidth = TrinaGridSettings.gridBorderWidth,
+    this.cellVerticalBorderWidth = TrinaGridSettings.cellVerticalBorderWidth,
+    this.cellHorizontalBorderWidth =
+        TrinaGridSettings.cellHorizontalBorderWidth,
     this.filterHeaderColor,
+    this.filterPopupHeaderColor,
     this.filterHeaderIconColor,
     this.unSelectedCheckboxColor,
     this.checkCheckboxColor,
@@ -344,6 +362,8 @@ class TrinaGridStyleConfig {
     this.rowHoveredColor = const Color(0xFF3D3D3D),
     this.cellColorInEditState = const Color(0xFF666666),
     this.cellColorInReadOnlyState = const Color(0xFF222222),
+    this.cellReadonlyColor,
+    this.cellDefaultColor,
     this.cellColorGroupedRow,
     this.cellDirtyColor = const Color(0xFF5D4037),
     this.frozenRowColor = const Color(0xFF222222),
@@ -389,7 +409,11 @@ class TrinaGridStyleConfig {
     this.gridPopupBorderRadius = BorderRadius.zero,
     this.gridPadding = TrinaGridSettings.gridPadding,
     this.gridBorderWidth = TrinaGridSettings.gridBorderWidth,
+    this.cellVerticalBorderWidth = TrinaGridSettings.cellVerticalBorderWidth,
+    this.cellHorizontalBorderWidth =
+        TrinaGridSettings.cellHorizontalBorderWidth,
     this.filterHeaderColor,
+    this.filterPopupHeaderColor,
     this.filterHeaderIconColor,
     this.unSelectedCheckboxColor,
     this.checkCheckboxColor,
@@ -479,7 +503,7 @@ class TrinaGridStyleConfig {
   /// Cell color in edit state. (only current cell)
   final Color cellColorInEditState;
 
-  /// Cell color in read-only state
+  /// Cell color in read-only state (only current cell)
   final Color cellColorInReadOnlyState;
 
   /// Background color of cells grouped by column.
@@ -487,6 +511,12 @@ class TrinaGridStyleConfig {
 
   /// Background color of cells with uncommitted changes (dirty cells)
   final Color cellDirtyColor;
+
+  /// Background color of readonly cells
+  final Color? cellReadonlyColor;
+
+  /// Default background color of cells
+  final Color? cellDefaultColor;
 
   /// Background color for frozen rows
   final Color frozenRowColor;
@@ -605,6 +635,9 @@ class TrinaGridStyleConfig {
   final double gridBorderWidth;
 
   /// Set color of filter popup header
+  final Color? filterPopupHeaderColor;
+
+  /// Set color of main grid filter header
   final Color? filterHeaderColor;
 
   /// Set color of filter popup header icon
@@ -613,6 +646,11 @@ class TrinaGridStyleConfig {
   /// A flag indicating whether the style is dark or not
   final bool isDarkStyle;
 
+  /// Cell vertical border width
+  final double cellVerticalBorderWidth;
+
+  /// Cell horizontal border width
+  final double cellHorizontalBorderWidth;
   /// checkbox color 분리
   final Color? unSelectedCheckboxColor;
   final Color? checkCheckboxColor;
@@ -620,7 +658,6 @@ class TrinaGridStyleConfig {
   final double? checkBoxSize;
   final EdgeInsets? checkBoxPadding;
   final bool isColumnCheckboxHide;
-
   TrinaGridStyleConfig copyWith({
     bool? enableGridBorderShadow,
     bool? enableColumnBorderVertical,
@@ -640,6 +677,7 @@ class TrinaGridStyleConfig {
     BorderSide? cellCheckedSide,
     Color? cellColorInEditState,
     Color? cellColorInReadOnlyState,
+    Color? cellReadonlyColor,
     TrinaOptional<Color?>? cellColorGroupedRow,
     Color? dragTargetColumnColor,
     Color? iconColor,
@@ -673,64 +711,184 @@ class TrinaGridStyleConfig {
     BorderRadiusGeometry? gridPopupBorderRadius,
     double? gridPadding,
     double? gridBorderWidth,
+    double? cellVerticalBorderWidth,
+    double? cellHorizontalBorderWidth,
+    Color? filterPopupHeaderColor,
     Color? filterHeaderColor,
     Color? filterHeaderIconColor,
   }) {
-    return TrinaGridStyleConfig(
-      enableGridBorderShadow: enableGridBorderShadow ?? this.enableGridBorderShadow,
-      enableColumnBorderVertical: enableColumnBorderVertical ?? this.enableColumnBorderVertical,
-      enableColumnBorderHorizontal: enableColumnBorderHorizontal ?? this.enableColumnBorderHorizontal,
-      enableCellBorderVertical: enableCellBorderVertical ?? this.enableCellBorderVertical,
-      enableCellBorderHorizontal: enableCellBorderHorizontal ?? this.enableCellBorderHorizontal,
-      enableRowColorAnimation: enableRowColorAnimation ?? this.enableRowColorAnimation,
-      filterIcon: filterIcon ?? this.filterIcon,
-      gridBackgroundColor: gridBackgroundColor ?? this.gridBackgroundColor,
-      rowColor: rowColor ?? this.rowColor,
-      oddRowColor: oddRowColor == null ? this.oddRowColor : oddRowColor.value,
-      evenRowColor: evenRowColor == null ? this.evenRowColor : evenRowColor.value,
-      activatedColor: activatedColor ?? this.activatedColor,
-      columnCheckedColor: columnCheckedColor ?? this.columnCheckedColor,
-      columnCheckedSide: columnCheckedSide ?? this.columnCheckedSide,
-      cellCheckedColor: cellCheckedColor ?? this.cellCheckedColor,
-      cellCheckedSide: cellCheckedSide ?? this.cellCheckedSide,
-      cellColorInEditState: cellColorInEditState ?? this.cellColorInEditState,
-      cellColorInReadOnlyState: cellColorInReadOnlyState ?? this.cellColorInReadOnlyState,
-      cellColorGroupedRow: cellColorGroupedRow == null ? this.cellColorGroupedRow : cellColorGroupedRow.value,
-      dragTargetColumnColor: dragTargetColumnColor ?? this.dragTargetColumnColor,
-      iconColor: iconColor ?? this.iconColor,
-      disabledIconColor: disabledIconColor ?? this.disabledIconColor,
-      menuBackgroundColor: menuBackgroundColor ?? this.menuBackgroundColor,
-      gridBorderColor: gridBorderColor ?? this.gridBorderColor,
-      borderColor: borderColor ?? this.borderColor,
-      activatedBorderColor: activatedBorderColor ?? this.activatedBorderColor,
-      inactivatedBorderColor: inactivatedBorderColor ?? this.inactivatedBorderColor,
-      iconSize: iconSize ?? this.iconSize,
-      rowHeight: rowHeight ?? this.rowHeight,
-      columnHeight: columnHeight ?? this.columnHeight,
-      columnFilterHeight: columnFilterHeight ?? this.columnFilterHeight,
-      defaultColumnTitlePadding: defaultColumnTitlePadding ?? this.defaultColumnTitlePadding,
-      defaultColumnFilterPadding: defaultColumnFilterPadding ?? this.defaultColumnFilterPadding,
-      defaultCellPadding: defaultCellPadding ?? this.defaultCellPadding,
-      columnTextStyle: columnTextStyle ?? this.columnTextStyle,
-      columnUnselectedColor: columnUnselectedColor ?? this.columnUnselectedColor,
-      columnActiveColor: columnActiveColor ?? this.columnActiveColor,
-      cellUnselectedColor: cellUnselectedColor ?? this.cellUnselectedColor,
-      cellActiveColor: cellActiveColor ?? this.cellActiveColor,
-      cellTextStyle: cellTextStyle ?? this.cellTextStyle,
-      columnContextIcon: columnContextIcon ?? this.columnContextIcon,
-      columnResizeIcon: columnResizeIcon ?? this.columnResizeIcon,
-      columnAscendingIcon: columnAscendingIcon == null ? this.columnAscendingIcon : columnAscendingIcon.value,
-      columnDescendingIcon: columnDescendingIcon == null ? this.columnDescendingIcon : columnDescendingIcon.value,
-      rowGroupExpandedIcon: rowGroupExpandedIcon ?? this.rowGroupExpandedIcon,
-      rowGroupCollapsedIcon: rowGroupCollapsedIcon ?? this.rowGroupCollapsedIcon,
-      rowGroupEmptyIcon: rowGroupEmptyIcon ?? this.rowGroupEmptyIcon,
-      gridBorderRadius: gridBorderRadius ?? this.gridBorderRadius,
-      gridPopupBorderRadius: gridPopupBorderRadius ?? this.gridPopupBorderRadius,
-      gridPadding: gridPadding ?? this.gridPadding,
-      gridBorderWidth: gridBorderWidth ?? this.gridBorderWidth,
-      filterHeaderColor: filterHeaderColor ?? this.filterHeaderColor,
-      filterHeaderIconColor: filterHeaderIconColor ?? this.filterHeaderIconColor,
-    );
+    // Preserve the dark style flag by using the appropriate constructor
+    if (isDarkStyle) {
+      return TrinaGridStyleConfig.dark(
+        cellVerticalBorderWidth:
+            cellVerticalBorderWidth ?? this.cellVerticalBorderWidth,
+        cellHorizontalBorderWidth:
+            cellHorizontalBorderWidth ?? this.cellHorizontalBorderWidth,
+        enableGridBorderShadow:
+            enableGridBorderShadow ?? this.enableGridBorderShadow,
+        enableColumnBorderVertical:
+            enableColumnBorderVertical ?? this.enableColumnBorderVertical,
+        enableColumnBorderHorizontal:
+            enableColumnBorderHorizontal ?? this.enableColumnBorderHorizontal,
+        enableCellBorderVertical:
+            enableCellBorderVertical ?? this.enableCellBorderVertical,
+        enableCellBorderHorizontal:
+            enableCellBorderHorizontal ?? this.enableCellBorderHorizontal,
+        enableRowColorAnimation:
+            enableRowColorAnimation ?? this.enableRowColorAnimation,
+        filterIcon: filterIcon ?? this.filterIcon,
+        gridBackgroundColor: gridBackgroundColor ?? this.gridBackgroundColor,
+        rowColor: rowColor ?? this.rowColor,
+        oddRowColor: oddRowColor == null ? this.oddRowColor : oddRowColor.value,
+        evenRowColor:
+            evenRowColor == null ? this.evenRowColor : evenRowColor.value,
+        activatedColor: activatedColor ?? this.activatedColor,
+        columnCheckedColor: columnCheckedColor ?? this.columnCheckedColor,
+        columnCheckedSide: columnCheckedSide ?? this.columnCheckedSide,
+        cellCheckedColor: cellCheckedColor ?? this.cellCheckedColor,
+        cellCheckedSide: cellCheckedSide ?? this.cellCheckedSide,
+        cellColorInEditState: cellColorInEditState ?? this.cellColorInEditState,
+        cellColorInReadOnlyState:
+            cellColorInReadOnlyState ?? this.cellColorInReadOnlyState,
+        cellReadonlyColor: cellReadonlyColor ?? this.cellReadonlyColor,
+        cellColorGroupedRow: cellColorGroupedRow == null
+            ? this.cellColorGroupedRow
+            : cellColorGroupedRow.value,
+        dragTargetColumnColor:
+            dragTargetColumnColor ?? this.dragTargetColumnColor,
+        iconColor: iconColor ?? this.iconColor,
+        disabledIconColor: disabledIconColor ?? this.disabledIconColor,
+        menuBackgroundColor: menuBackgroundColor ?? this.menuBackgroundColor,
+        gridBorderColor: gridBorderColor ?? this.gridBorderColor,
+        borderColor: borderColor ?? this.borderColor,
+        activatedBorderColor: activatedBorderColor ?? this.activatedBorderColor,
+        inactivatedBorderColor:
+            inactivatedBorderColor ?? this.inactivatedBorderColor,
+        iconSize: iconSize ?? this.iconSize,
+        rowHeight: rowHeight ?? this.rowHeight,
+        columnHeight: columnHeight ?? this.columnHeight,
+        columnFilterHeight: columnFilterHeight ?? this.columnFilterHeight,
+        defaultColumnTitlePadding:
+            defaultColumnTitlePadding ?? this.defaultColumnTitlePadding,
+        defaultColumnFilterPadding:
+            defaultColumnFilterPadding ?? this.defaultColumnFilterPadding,
+        defaultCellPadding: defaultCellPadding ?? this.defaultCellPadding,
+        columnTextStyle: columnTextStyle ?? this.columnTextStyle,
+        columnUnselectedColor:
+            columnUnselectedColor ?? this.columnUnselectedColor,
+        columnActiveColor: columnActiveColor ?? this.columnActiveColor,
+        cellUnselectedColor: cellUnselectedColor ?? this.cellUnselectedColor,
+        cellActiveColor: cellActiveColor ?? this.cellActiveColor,
+        cellTextStyle: cellTextStyle ?? this.cellTextStyle,
+        columnContextIcon: columnContextIcon ?? this.columnContextIcon,
+        columnResizeIcon: columnResizeIcon ?? this.columnResizeIcon,
+        columnAscendingIcon: columnAscendingIcon == null
+            ? this.columnAscendingIcon
+            : columnAscendingIcon.value,
+        columnDescendingIcon: columnDescendingIcon == null
+            ? this.columnDescendingIcon
+            : columnDescendingIcon.value,
+        rowGroupExpandedIcon: rowGroupExpandedIcon ?? this.rowGroupExpandedIcon,
+        rowGroupCollapsedIcon:
+            rowGroupCollapsedIcon ?? this.rowGroupCollapsedIcon,
+        rowGroupEmptyIcon: rowGroupEmptyIcon ?? this.rowGroupEmptyIcon,
+        gridBorderRadius: gridBorderRadius ?? this.gridBorderRadius,
+        gridPopupBorderRadius:
+            gridPopupBorderRadius ?? this.gridPopupBorderRadius,
+        gridPadding: gridPadding ?? this.gridPadding,
+        gridBorderWidth: gridBorderWidth ?? this.gridBorderWidth,
+        filterHeaderColor: filterHeaderColor ?? this.filterHeaderColor,
+        filterPopupHeaderColor:
+            filterPopupHeaderColor ?? this.filterPopupHeaderColor,
+        filterHeaderIconColor:
+            filterHeaderIconColor ?? this.filterHeaderIconColor,
+      );
+    } else {
+      return TrinaGridStyleConfig(
+        cellVerticalBorderWidth:
+            cellVerticalBorderWidth ?? this.cellVerticalBorderWidth,
+        cellHorizontalBorderWidth:
+            cellHorizontalBorderWidth ?? this.cellHorizontalBorderWidth,
+        enableGridBorderShadow:
+            enableGridBorderShadow ?? this.enableGridBorderShadow,
+        enableColumnBorderVertical:
+            enableColumnBorderVertical ?? this.enableColumnBorderVertical,
+        enableColumnBorderHorizontal:
+            enableColumnBorderHorizontal ?? this.enableColumnBorderHorizontal,
+        enableCellBorderVertical:
+            enableCellBorderVertical ?? this.enableCellBorderVertical,
+        enableCellBorderHorizontal:
+            enableCellBorderHorizontal ?? this.enableCellBorderHorizontal,
+        enableRowColorAnimation:
+            enableRowColorAnimation ?? this.enableRowColorAnimation,
+        filterIcon: filterIcon ?? this.filterIcon,
+        gridBackgroundColor: gridBackgroundColor ?? this.gridBackgroundColor,
+        rowColor: rowColor ?? this.rowColor,
+        oddRowColor: oddRowColor == null ? this.oddRowColor : oddRowColor.value,
+        evenRowColor:
+            evenRowColor == null ? this.evenRowColor : evenRowColor.value,
+        activatedColor: activatedColor ?? this.activatedColor,
+        columnCheckedColor: columnCheckedColor ?? this.columnCheckedColor,
+        columnCheckedSide: columnCheckedSide ?? this.columnCheckedSide,
+        cellCheckedColor: cellCheckedColor ?? this.cellCheckedColor,
+        cellCheckedSide: cellCheckedSide ?? this.cellCheckedSide,
+        cellColorInEditState: cellColorInEditState ?? this.cellColorInEditState,
+        cellColorInReadOnlyState:
+            cellColorInReadOnlyState ?? this.cellColorInReadOnlyState,
+        cellReadonlyColor: cellReadonlyColor ?? this.cellReadonlyColor,
+        cellColorGroupedRow: cellColorGroupedRow == null
+            ? this.cellColorGroupedRow
+            : cellColorGroupedRow.value,
+        dragTargetColumnColor:
+            dragTargetColumnColor ?? this.dragTargetColumnColor,
+        iconColor: iconColor ?? this.iconColor,
+        disabledIconColor: disabledIconColor ?? this.disabledIconColor,
+        menuBackgroundColor: menuBackgroundColor ?? this.menuBackgroundColor,
+        gridBorderColor: gridBorderColor ?? this.gridBorderColor,
+        borderColor: borderColor ?? this.borderColor,
+        activatedBorderColor: activatedBorderColor ?? this.activatedBorderColor,
+        inactivatedBorderColor:
+            inactivatedBorderColor ?? this.inactivatedBorderColor,
+        iconSize: iconSize ?? this.iconSize,
+        rowHeight: rowHeight ?? this.rowHeight,
+        columnHeight: columnHeight ?? this.columnHeight,
+        columnFilterHeight: columnFilterHeight ?? this.columnFilterHeight,
+        defaultColumnTitlePadding:
+            defaultColumnTitlePadding ?? this.defaultColumnTitlePadding,
+        defaultColumnFilterPadding:
+            defaultColumnFilterPadding ?? this.defaultColumnFilterPadding,
+        defaultCellPadding: defaultCellPadding ?? this.defaultCellPadding,
+        columnTextStyle: columnTextStyle ?? this.columnTextStyle,
+        columnUnselectedColor:
+            columnUnselectedColor ?? this.columnUnselectedColor,
+        columnActiveColor: columnActiveColor ?? this.columnActiveColor,
+        cellUnselectedColor: cellUnselectedColor ?? this.cellUnselectedColor,
+        cellActiveColor: cellActiveColor ?? this.cellActiveColor,
+        cellTextStyle: cellTextStyle ?? this.cellTextStyle,
+        columnContextIcon: columnContextIcon ?? this.columnContextIcon,
+        columnResizeIcon: columnResizeIcon ?? this.columnResizeIcon,
+        columnAscendingIcon: columnAscendingIcon == null
+            ? this.columnAscendingIcon
+            : columnAscendingIcon.value,
+        columnDescendingIcon: columnDescendingIcon == null
+            ? this.columnDescendingIcon
+            : columnDescendingIcon.value,
+        rowGroupExpandedIcon: rowGroupExpandedIcon ?? this.rowGroupExpandedIcon,
+        rowGroupCollapsedIcon:
+            rowGroupCollapsedIcon ?? this.rowGroupCollapsedIcon,
+        rowGroupEmptyIcon: rowGroupEmptyIcon ?? this.rowGroupEmptyIcon,
+        gridBorderRadius: gridBorderRadius ?? this.gridBorderRadius,
+        gridPopupBorderRadius:
+            gridPopupBorderRadius ?? this.gridPopupBorderRadius,
+        gridPadding: gridPadding ?? this.gridPadding,
+        gridBorderWidth: gridBorderWidth ?? this.gridBorderWidth,
+        filterHeaderColor: filterHeaderColor ?? this.filterHeaderColor,
+        filterPopupHeaderColor:
+            filterPopupHeaderColor ?? this.filterPopupHeaderColor,
+        filterHeaderIconColor:
+            filterHeaderIconColor ?? this.filterHeaderIconColor,
+      );
+    }
   }
 
   @override
@@ -740,7 +898,8 @@ class TrinaGridStyleConfig {
             runtimeType == other.runtimeType &&
             enableGridBorderShadow == other.enableGridBorderShadow &&
             enableColumnBorderVertical == other.enableColumnBorderVertical &&
-            enableColumnBorderHorizontal == other.enableColumnBorderHorizontal &&
+            enableColumnBorderHorizontal ==
+                other.enableColumnBorderHorizontal &&
             enableCellBorderVertical == other.enableCellBorderVertical &&
             enableCellBorderHorizontal == other.enableCellBorderHorizontal &&
             enableRowColorAnimation == other.enableRowColorAnimation &&
@@ -756,6 +915,7 @@ class TrinaGridStyleConfig {
             cellCheckedSide == other.cellCheckedSide &&
             cellColorInEditState == other.cellColorInEditState &&
             cellColorInReadOnlyState == other.cellColorInReadOnlyState &&
+            cellReadonlyColor == other.cellReadonlyColor &&
             cellColorGroupedRow == other.cellColorGroupedRow &&
             dragTargetColumnColor == other.dragTargetColumnColor &&
             iconColor == other.iconColor &&
@@ -789,6 +949,11 @@ class TrinaGridStyleConfig {
             gridPopupBorderRadius == other.gridPopupBorderRadius &&
             gridPadding == other.gridPadding &&
             gridBorderWidth == other.gridBorderWidth &&
+            cellVerticalBorderWidth == other.cellVerticalBorderWidth &&
+            cellHorizontalBorderWidth == other.cellHorizontalBorderWidth &&
+            filterHeaderColor == other.filterHeaderColor &&
+            filterPopupHeaderColor == other.filterPopupHeaderColor &&
+            filterHeaderIconColor == other.filterHeaderIconColor &&
             isDarkStyle == other.isDarkStyle;
   }
 
@@ -812,6 +977,7 @@ class TrinaGridStyleConfig {
         cellCheckedSide,
         cellColorInEditState,
         cellColorInReadOnlyState,
+        cellReadonlyColor,
         cellColorGroupedRow,
         dragTargetColumnColor,
         iconColor,
@@ -845,6 +1011,9 @@ class TrinaGridStyleConfig {
         gridPopupBorderRadius,
         gridPadding,
         gridBorderWidth,
+        cellVerticalBorderWidth,
+        cellHorizontalBorderWidth,
+        filterPopupHeaderColor,
         filterHeaderColor,
         filterHeaderIconColor,
         isDarkStyle
@@ -866,7 +1035,14 @@ class TrinaGridScrollbarConfig {
   const TrinaGridScrollbarConfig({
     // Basic scrollbar behavior settings
     this.isAlwaysShown = false,
-    this.dragDevices,
+    this.dragDevices = const <PointerDeviceKind>{
+      PointerDeviceKind.mouse,
+      PointerDeviceKind.touch,
+      PointerDeviceKind.stylus,
+      PointerDeviceKind.invertedStylus,
+      PointerDeviceKind.trackpad,
+      PointerDeviceKind.unknown,
+    },
     this.isDraggable = true,
 
     // Advanced scrollbar appearance settings
@@ -888,7 +1064,13 @@ class TrinaGridScrollbarConfig {
   final bool isAlwaysShown;
 
   /// Set of devices that can interact with the scrollbar
-  final Set<PointerDeviceKind>? dragDevices;
+  ///
+  /// By default [PointerDeviceKind.mouse], [PointerDeviceKind.touch],
+  /// [PointerDeviceKind.stylus], [PointerDeviceKind.invertedStylus],
+  /// and [PointerDeviceKind.trackpad] are configured to create drag gestures.
+  ///
+  /// See [ScrollBehavior.dragDevices] for more information.
+  final Set<PointerDeviceKind> dragDevices;
 
   /// Whether scrollbar thumbs can be dragged with pointer devices
   final bool isDraggable;
@@ -930,16 +1112,19 @@ class TrinaGridScrollbarConfig {
   final bool columnShowScrollWidth;
 
   /// Get effective thumb color
-  Color get effectiveThumbColor => thumbColor ?? Colors.grey.withAlpha((153).toInt());
+  Color get effectiveThumbColor =>
+      thumbColor ?? Colors.grey.withAlpha((153).toInt());
 
   /// Get effective thumb hover color
-  Color get effectiveThumbHoverColor => thumbHoverColor ?? effectiveThumbColor.withAlpha(200);
+  Color get effectiveThumbHoverColor =>
+      thumbHoverColor ?? effectiveThumbColor.withAlpha(200);
 
   /// Get effective track color
   Color get effectiveTrackColor => trackColor ?? Colors.grey.withAlpha(51);
 
   /// Get effective track hover color
-  Color get effectiveTrackHoverColor => trackHoverColor ?? effectiveTrackColor.withAlpha(80);
+  Color get effectiveTrackHoverColor =>
+      trackHoverColor ?? effectiveTrackColor.withAlpha(80);
 
   /// Get effective radius for the scrollbar
   double get effectiveRadius => radius ?? thickness / 2;
@@ -967,7 +1152,23 @@ class TrinaGridScrollbarConfig {
   }
 
   @override
-  int get hashCode => Object.hashAll([isAlwaysShown, dragDevices, isDraggable, thumbVisible, showTrack, showHorizontal, showVertical, thickness, minThumbLength, radius, thumbColor, trackColor, thumbHoverColor, trackHoverColor, columnShowScrollWidth]);
+  int get hashCode => Object.hashAll([
+        isAlwaysShown,
+        dragDevices,
+        isDraggable,
+        thumbVisible,
+        showTrack,
+        showHorizontal,
+        showVertical,
+        thickness,
+        minThumbLength,
+        radius,
+        thumbColor,
+        trackColor,
+        thumbHoverColor,
+        trackHoverColor,
+        columnShowScrollWidth
+      ]);
 }
 
 extension TrinaGridConfigurationScrollbarExtension on TrinaGridConfiguration {
@@ -1052,12 +1253,14 @@ class TrinaGridColumnFilterConfig {
 
   bool get hasUserFilter => _userFilters != null && _userFilters.isNotEmpty;
 
-  List<TrinaFilterType> get filters => hasUserFilter ? _userFilters! : FilterHelper.defaultFilters;
+  List<TrinaFilterType> get filters =>
+      hasUserFilter ? _userFilters! : FilterHelper.defaultFilters;
 
   int get debounceMilliseconds => _debounceMilliseconds;
 
   TrinaFilterType resolver<T>() {
-    return filters.firstWhereOrNull((element) => element.runtimeType == T) ?? filters.first;
+    return filters.firstWhereOrNull((element) => element.runtimeType == T) ??
+        filters.first;
   }
 
   TrinaFilterType getDefaultColumnFilter(TrinaColumn column) {
@@ -1074,7 +1277,13 @@ class TrinaGridColumnFilterConfig {
 
   @override
   bool operator ==(covariant Object other) {
-    return identical(this, other) || other is TrinaGridColumnFilterConfig && runtimeType == other.runtimeType && listEquals(_userFilters, other._userFilters) && _userResolveDefaultColumnFilter == other._userResolveDefaultColumnFilter && _debounceMilliseconds == other._debounceMilliseconds;
+    return identical(this, other) ||
+        other is TrinaGridColumnFilterConfig &&
+            runtimeType == other.runtimeType &&
+            listEquals(_userFilters, other._userFilters) &&
+            _userResolveDefaultColumnFilter ==
+                other._userResolveDefaultColumnFilter &&
+            _debounceMilliseconds == other._debounceMilliseconds;
   }
 
   @override
@@ -1140,11 +1349,16 @@ class TrinaGridColumnSizeConfig {
     return TrinaGridColumnSizeConfig(
       autoSizeMode: autoSizeMode ?? this.autoSizeMode,
       resizeMode: resizeMode ?? this.resizeMode,
-      restoreAutoSizeAfterHideColumn: restoreAutoSizeAfterHideColumn ?? this.restoreAutoSizeAfterHideColumn,
-      restoreAutoSizeAfterFrozenColumn: restoreAutoSizeAfterFrozenColumn ?? this.restoreAutoSizeAfterFrozenColumn,
-      restoreAutoSizeAfterMoveColumn: restoreAutoSizeAfterMoveColumn ?? this.restoreAutoSizeAfterMoveColumn,
-      restoreAutoSizeAfterInsertColumn: restoreAutoSizeAfterInsertColumn ?? this.restoreAutoSizeAfterInsertColumn,
-      restoreAutoSizeAfterRemoveColumn: restoreAutoSizeAfterRemoveColumn ?? this.restoreAutoSizeAfterRemoveColumn,
+      restoreAutoSizeAfterHideColumn:
+          restoreAutoSizeAfterHideColumn ?? this.restoreAutoSizeAfterHideColumn,
+      restoreAutoSizeAfterFrozenColumn: restoreAutoSizeAfterFrozenColumn ??
+          this.restoreAutoSizeAfterFrozenColumn,
+      restoreAutoSizeAfterMoveColumn:
+          restoreAutoSizeAfterMoveColumn ?? this.restoreAutoSizeAfterMoveColumn,
+      restoreAutoSizeAfterInsertColumn: restoreAutoSizeAfterInsertColumn ??
+          this.restoreAutoSizeAfterInsertColumn,
+      restoreAutoSizeAfterRemoveColumn: restoreAutoSizeAfterRemoveColumn ??
+          this.restoreAutoSizeAfterRemoveColumn,
     );
   }
 
@@ -1155,11 +1369,16 @@ class TrinaGridColumnSizeConfig {
             runtimeType == other.runtimeType &&
             autoSizeMode == other.autoSizeMode &&
             resizeMode == other.resizeMode &&
-            restoreAutoSizeAfterHideColumn == other.restoreAutoSizeAfterHideColumn &&
-            restoreAutoSizeAfterFrozenColumn == other.restoreAutoSizeAfterFrozenColumn &&
-            restoreAutoSizeAfterMoveColumn == other.restoreAutoSizeAfterMoveColumn &&
-            restoreAutoSizeAfterInsertColumn == other.restoreAutoSizeAfterInsertColumn &&
-            restoreAutoSizeAfterRemoveColumn == other.restoreAutoSizeAfterRemoveColumn;
+            restoreAutoSizeAfterHideColumn ==
+                other.restoreAutoSizeAfterHideColumn &&
+            restoreAutoSizeAfterFrozenColumn ==
+                other.restoreAutoSizeAfterFrozenColumn &&
+            restoreAutoSizeAfterMoveColumn ==
+                other.restoreAutoSizeAfterMoveColumn &&
+            restoreAutoSizeAfterInsertColumn ==
+                other.restoreAutoSizeAfterInsertColumn &&
+            restoreAutoSizeAfterRemoveColumn ==
+                other.restoreAutoSizeAfterRemoveColumn;
   }
 
   @override
@@ -1937,9 +2156,11 @@ enum TrinaGridEnterKeyAction {
   /// Pressing the Enter key does nothing.
   none;
 
-  bool get isEditingAndMoveDown => this == TrinaGridEnterKeyAction.editingAndMoveDown;
+  bool get isEditingAndMoveDown =>
+      this == TrinaGridEnterKeyAction.editingAndMoveDown;
 
-  bool get isEditingAndMoveRight => this == TrinaGridEnterKeyAction.editingAndMoveRight;
+  bool get isEditingAndMoveRight =>
+      this == TrinaGridEnterKeyAction.editingAndMoveRight;
 
   bool get isToggleEditing => this == TrinaGridEnterKeyAction.toggleEditing;
 

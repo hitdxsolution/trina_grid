@@ -88,6 +88,7 @@ class TrinaGridStateChangeNotifier extends TrinaChangeNotifier
     this.onActiveCellChanged,
     this.onColumnsMoved,
     this.rowColorCallback,
+    this.cellColorCallback,
     this.selectDateCallback,
     this.createHeader,
     this.createFooter,
@@ -178,6 +179,9 @@ class TrinaGridStateChangeNotifier extends TrinaChangeNotifier
 
   @override
   final TrinaRowColorCallback? rowColorCallback;
+
+  @override
+  final TrinaCellColorCallback? cellColorCallback;
 
   @override
   final CreateHeaderCallBack? createHeader;
@@ -322,6 +326,7 @@ class TrinaGridStateManager extends TrinaGridStateChangeNotifier {
     super.onActiveCellChanged,
     super.onColumnsMoved,
     super.rowColorCallback,
+    super.cellColorCallback,
     super.selectDateCallback,
     super.createHeader,
     super.createFooter,

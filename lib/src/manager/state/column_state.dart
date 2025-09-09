@@ -3,7 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../../trina_grid.dart';
+import 'package:trina_grid/trina_grid.dart';
 import '../../ui/cells/trina_default_cell.dart';
 
 abstract class IColumnState {
@@ -112,10 +112,6 @@ abstract class IColumnState {
   void autoFitColumn(BuildContext context, TrinaColumn column);
 
   /// Hide or show the [column] with [hide] value.
-  ///
-  /// When [column.frozen.isFrozen] and [hide] is false,
-  /// [column.frozen] is changed to [TrinaColumnFrozen.none]
-  /// if the frozen column width constraint is narrow.
   void hideColumn(
     TrinaColumn column,
     bool hide, {
@@ -123,10 +119,6 @@ abstract class IColumnState {
   });
 
   /// Hide or show the [columns] with [hide] value.
-  ///
-  /// When [column.frozen.isFrozen] in [columns] and [hide] is false,
-  /// [column.frozen] is changed to [TrinaColumnFrozen.none]
-  /// if the frozen column width constraint is narrow.
   void hideColumns(
     List<TrinaColumn> columns,
     bool hide, {
@@ -157,16 +149,6 @@ abstract class IColumnState {
   ///
   /// [frozen] is the value you want to change.
   bool limitToggleFrozenColumn(TrinaColumn column, TrinaColumnFrozen frozen);
-
-  /// When changing a column from hidden state to unhidden state,
-  /// Check the constraint on the frozen column.
-  /// If the hidden column is a frozen column
-  /// The width of the currently frozen column is limited.
-  bool limitHideColumn(
-    TrinaColumn column,
-    bool hide, {
-    double accumulateWidth = 0,
-  });
 }
 
 mixin ColumnState implements ITrinaGridState {
@@ -652,12 +634,7 @@ mixin ColumnState implements ITrinaGridState {
       return;
     }
 
-    if (limitHideColumn(column, hide)) {
-      column.frozen = TrinaColumnFrozen.none;
-    }
-
     column.hide = hide;
-
     _updateAfterHideColumn(columns: [column], notify: notify);
   }
 
@@ -671,8 +648,13 @@ mixin ColumnState implements ITrinaGridState {
       return;
     }
 
-    _updateLimitedHideColumns(columns, hide);
+    for (final column in columns) {
+      if (hide == column.hide) {
+        continue;
+      }
 
+      column.hide = hide;
+    }
     _updateAfterHideColumn(columns: columns, notify: notify);
   }
 
@@ -762,7 +744,7 @@ mixin ColumnState implements ITrinaGridState {
           enableDropToResize: true,
           enableContextMenu: false,
           enableColumnDrag: false,
-          backgroundColor: configuration.style.filterHeaderColor),
+          backgroundColor: configuration.style.filterPopupHeaderColor),
       TrinaColumn(
         title: 'hidden column',
         field: columnField,
@@ -790,10 +772,15 @@ mixin ColumnState implements ITrinaGridState {
       }
     }
 
+    // Use dark configuration if the current configuration is in dark mode
+    final baseConfiguration = configuration.style.isDarkStyle
+        ? const TrinaGridConfiguration.dark()
+        : const TrinaGridConfiguration();
+
     TrinaGridPopup(
       context: context,
-      configuration: configuration.copyWith(
-        style: configuration.style.copyWith(
+      configuration: baseConfiguration.copyWith(
+        style: baseConfiguration.style.copyWith(
           gridBorderRadius: configuration.style.gridPopupBorderRadius,
           enableRowColorAnimation: false,
           oddRowColor: const TrinaOptional(null),
@@ -840,22 +827,6 @@ mixin ColumnState implements ITrinaGridState {
     }
 
     return _limitFrozenColumn(frozen, column.width);
-  }
-
-  @override
-  bool limitHideColumn(
-    TrinaColumn column,
-    bool hide, {
-    double accumulateWidth = 0,
-  }) {
-    if (hide == true) {
-      return false;
-    }
-
-    return _limitFrozenColumn(
-      column.frozen,
-      column.width + accumulateWidth,
-    );
   }
 
   /// Check the width limit before changing the TrinaColumnFrozen value.
@@ -990,31 +961,6 @@ mixin ColumnState implements ITrinaGridState {
       if (column.frozen.isFrozen) {
         accumulateWidth += column.width;
       }
-    }
-  }
-
-  /// Change the value of [TrinaColumn.hide] of [columns] to [hide].
-  ///
-  /// When there is a frozen column when it is unhidden in a hidden state,
-  /// it is limited to the width of the frozen column area.
-  /// Updated to unfreeze [TrinaColumn.frozen].
-  void _updateLimitedHideColumns(List<TrinaColumn> columns, bool hide) {
-    double accumulateWidth = 0;
-
-    for (final column in columns) {
-      if (hide == column.hide) {
-        continue;
-      }
-
-      if (limitHideColumn(column, hide, accumulateWidth: accumulateWidth)) {
-        column.frozen = TrinaColumnFrozen.none;
-      }
-
-      if (column.frozen.isFrozen) {
-        accumulateWidth += column.width;
-      }
-
-      column.hide = hide;
     }
   }
 

@@ -95,7 +95,7 @@ enum TrinaAggregateColumnGroupedRowType {
 ///     return TrinaAggregateColumnFooter(
 ///       rendererContext: rendererContext,
 ///       type: TrinaAggregateColumnType.sum,
-///       format: 'Sum : #,###.###',
+///       numberFormat: NumberFormat('Sum: #,###.###'),
 ///       alignment: Alignment.center,
 ///     );
 ///   },
@@ -135,6 +135,7 @@ class TrinaAggregateColumnFooter extends TrinaStatefulWidget {
   /// format: 'Android: #,###', // Android: 100 (if the result is 100)
   /// format: '#,###.###', // 1,000,000.123 (expressed to 3 decimal places)
   /// ```
+  @Deprecated('Use numberFormat instead.')
   final String format;
 
   /// Setting the locale of the resulting value.
@@ -143,6 +144,7 @@ class TrinaAggregateColumnFooter extends TrinaStatefulWidget {
   /// ```dart
   /// locale: 'da_DK',
   /// ```
+  @Deprecated('Use numberFormat and set the locale there instead.')
   final String? locale;
 
   /// You can customize the resulting values.
@@ -166,6 +168,17 @@ class TrinaAggregateColumnFooter extends TrinaStatefulWidget {
 
   final EdgeInsets? padding;
 
+  /// The number format to use for the aggregated value.
+  /// If not provided, it uses the default format: NumberFormat("#,###").
+  ///
+  /// Examples,
+  ///
+  /// ```dart
+  /// numberFormat: NumberFormat('Total: #,###.###'),
+  /// numberFormat: NumberFormat.simpleCurrency(),
+  /// ```
+  final NumberFormat? numberFormat;
+
   final bool formatAsCurrency;
 
   const TrinaAggregateColumnFooter({
@@ -175,12 +188,14 @@ class TrinaAggregateColumnFooter extends TrinaStatefulWidget {
         TrinaAggregateColumnIterateRowType.filteredAndPaginated,
     this.groupedRowType = TrinaAggregateColumnGroupedRowType.all,
     this.filter,
-    this.format = '#,###',
+    @Deprecated('Use numberFormat instead.') this.format = "#,###",
+    @Deprecated('Use numberFormat and set the locale in there instead.')
     this.locale,
     this.titleSpanBuilder,
     this.alignment,
     this.padding,
-    this.formatAsCurrency = false,
+    this.numberFormat,
+    @Deprecated('Use numberFormat instead.') this.formatAsCurrency = false,
     super.key,
   });
 
@@ -192,7 +207,6 @@ class TrinaAggregateColumnFooter extends TrinaStatefulWidget {
 class TrinaAggregateColumnFooterState
     extends TrinaStateWithChange<TrinaAggregateColumnFooter> {
   num? _aggregatedValue;
-
   late final NumberFormat _numberFormat;
 
   late final num? Function({
@@ -259,9 +273,10 @@ class TrinaAggregateColumnFooterState
   void initState() {
     super.initState();
 
-    _numberFormat = widget.formatAsCurrency
-        ? NumberFormat.simpleCurrency(locale: widget.locale)
-        : NumberFormat(widget.format, widget.locale);
+    _numberFormat = widget.numberFormat ??
+        (widget.formatAsCurrency
+            ? NumberFormat.simpleCurrency()
+            : NumberFormat("#,###"));
 
     _setAggregator();
 

@@ -35,6 +35,8 @@ TrinaGridConfiguration(
     // Cell styles
     cellColorInEditState: Colors.white,
     cellColorInReadOnlyState: Colors.grey[200]!,
+    cellHorizontalBorderWidth: 1.0,
+    cellVerticalBorderWidth: 1.0,
     
     // Text styles
     columnTextStyle: TextStyle(
@@ -56,12 +58,48 @@ TrinaGridConfiguration(
     iconSize: 18,
     iconColor: Colors.black54,
     
+    // Filter colors
+    filterHeaderColor: Colors.blue[50],      // Filter row background & input fields
+    filterPopupHeaderColor: Colors.grey[100], // Filter popup headers
+    filterHeaderIconColor: Colors.blue,      // Filter icons (indicators, controls)
+    
     // Even/odd row colors
     oddRowColor: Colors.grey[100],
     evenRowColor: Colors.white,
   ),
 )
 ```
+
+### Filter Color Configuration
+
+The filter color properties allow you to customize the appearance of filter-related elements:
+
+- **`filterHeaderColor`**: Background color for the main grid filter row and filter input fields (text fields, multiline inputs)
+- **`filterPopupHeaderColor`**: Background color for filter popup headers (used in separate popup dialogs)
+- **`filterHeaderIconColor`**: Color for filter-related icons (filter indicators in column titles, clear/edit buttons in multiline filters)
+
+```dart
+TrinaGridConfiguration(
+  style: TrinaGridStyleConfig(
+    // Main grid filter row styling
+    filterHeaderColor: Colors.lightBlue[50],
+    
+    // Popup filter header styling  
+    filterPopupHeaderColor: Colors.grey[200],
+    
+    // Filter icon coloring
+    filterHeaderIconColor: Colors.blue,
+    
+    // Regular icons (fallback)
+    iconColor: Colors.grey[600],
+  ),
+)
+```
+
+**Priority System:**
+- Filter inputs use `filterHeaderColor` first, then fall back to `cellColorInEditState`/`cellColorInReadOnlyState`
+- Filter icons use `filterHeaderIconColor` first, then fall back to `iconColor`
+- All properties are optional and maintain backward compatibility
 
 ### Scrollbar Configuration
 
@@ -269,6 +307,34 @@ TrinaCell(
     context.cell.value.toString(),
     style: const TextStyle(fontWeight: FontWeight.bold),
   ),
+  // Custom padding for this specific cell
+  padding: const EdgeInsets.all(16.0),
+)
+```
+
+### Cell-Level Padding
+
+Cells can override the default padding with the `padding` property. The padding system follows a priority hierarchy:
+
+1. **Cell padding** (highest priority) - Custom padding set on individual cells
+2. **Column padding** - Padding defined at the column level with `cellPadding`
+3. **Configuration padding** (lowest priority) - Global default padding from grid configuration
+
+```dart
+// Examples of cell-level padding
+TrinaCell(
+  value: 'Emphasized Cell',
+  padding: const EdgeInsets.all(20.0), // More padding for emphasis
+)
+
+TrinaCell(
+  value: 'Compact Cell',
+  padding: const EdgeInsets.symmetric(vertical: 4.0), // Less vertical space
+)
+
+TrinaCell(
+  value: 'Asymmetric Cell',
+  padding: const EdgeInsets.only(left: 16.0, right: 8.0), // Different sides
 )
 ```
 
@@ -301,6 +367,8 @@ TrinaGrid(
       iconColor: Colors.blue,
       enableCellBorderHorizontal: true,
       enableCellBorderVertical: true,
+      cellVerticalBorderWidth: 1.0,
+      cellHorizontalBorderWidth: 1.0,
       gridBorderRadius: BorderRadius.circular(8),
       gridPopupBorderRadius: BorderRadius.circular(8),
       enableGridBorderShadow: true,

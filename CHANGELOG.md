@@ -1,8 +1,87 @@
 # Changelog
 
-## [1.6.10] - 2025. 06. 01
+## [2.1.0] - 2025. 09. 01
 
-* Add selecting mode configuration to TrinaGrid
+* Fix: Restored mouse scrolling/dragging functionality that was broken since v1.6.11. @doonfrs
+* Breaking Change: Enhanced rowWrapper callback to include TrinaRow data parameter and renamed row widget parameter to rowWidget for clarity. @doonfrs
+
+
+## [2.0.1] - 2025. 09. 01
+
+* Feature: Enhanced filter color customization system. @doonfrs
+* Feature: Added cell-level padding property to TrinaCell. @doonfrs
+* Feature: Added validate parameter to changeCellValue method. @doonfrs
+* Feature: Added keyboard event handling to TrinaCell. @doonfrs
+* Feature: Enhanced TrinaGrid with customizable cell text style. @doonfrs
+* Feature: Added cell color functionality to TrinaGrid. @doonfrs
+* Enhancement: Added cell field to TrinaGridOnChangedEvent. @doonfrs
+* Fix: Preserved horizontal borders for cells with custom background colors. @doonfrs
+* Fix: Set default cellReadonlyColor to null to use default cell style. @doonfrs
+* Fix: Improved text cell vertical alignment during editing. @doonfrs
+* Fix: Reduced multi-line filter icon size to 16px. @doonfrs
+* Fix: Improved vertical centering and text styling for edited cells. @doonfrs
+* Fix: Enabled onSelected callback to fire in normal mode with comprehensive row selection support. @doonfrs
+* Fix: Resolved frozen row alignment issue with dynamic row heights. @doonfrs
+* Fix: Improved popup handling in TrinaDateCell. @doonfrs
+* Fix: Improved date time cell styling and height adaptation. @doonfrs
+* Fix: Prevented cell overflow when both Row checking & drag are enabled. @DMouayad
+* Fix: Fixed checkbox overflow in column title. @DMouayad
+* Fix: Grid no longer absorbs unregistered shortcuts. @DMouayad
+* Fix: Key events now properly ignored when grid doesn't have primary focus. @DMouayad
+* Fix: Editing popup no longer shown for readonly cells. @DMouayad
+
+## [2.0.0] - 2025. 08. 16
+
+* Feature: Added new popup cells editing widget, including TrinaSelectMenu, TrinaTimePicker, and TrinaPopup. @DMouayad
+* Feature: Added dynamic row height support. @doonfrs
+* Fix: Ensure combined date and time validation in TrinaDateTimeCell. @DMouayad
+* Feature: Improved initial value handling for date/time pickers. @DMouayad
+* Feature: Enhanced pagination footer with direct page input functionality. @doonfrs
+* Feature: Added CustomFooterScreen to demo and home screens. @doonfrs
+* Feature: Improved time picker UI with scroll-to-change hint. @DMouayad
+* Feature: Added closePopupOnSelection option for date columns. @DMouayad
+* Feature: Added examples for select and time column constraints in editing popups. @DMouayad
+* Fix: Prevent sorting from being triggered when clicking context menu in custom title. @DMouayad
+* Feature: Added loading customization to TrinaLazyPagination. @DMouayad
+* Feature: Added custom pagination UI and demo support. @DMouayad
+* Fix: Corrected empty cell value handling for date/dateTime columns with custom format. @DMouayad
+* Fix: Corrected column title height when enableColumnDrag is false. @DMouayad
+* Feature: Added read-only color configuration to TrinaGrid. @doonfrs
+
+## [1.6.12] - 2025. 07. 28
+
+* Revert Merge cell feature and add it to private branch. ( by @doonfrs )
+* Fix 'There may be a logical error statement in the file filtered_list.dart' ( by @doonfrs )
+
+
+## [1.6.11] - 2025. 07. 28
+
+* fix: can't start editing while pressing SHIFT key ( by @DMouayad )
+* fix: update number formatting in TrinaAggregateColumnFooter ( by @doonfrs )
+* fix bug [Bug] Drag&Drop moves selected row but not the dragged row ( by @doonfrs )
+* fix bug [Bug] TrinaColumn.formattedValueForType() has to call column types applyFormat() in case TrinaColumnTypeHasFormat implemented by column type. ( by @doonfrs )
+* feat: add cell merging functionality ( by @doonfrs )
+* fix: column-title background color not applied ( by @DMouayad )
+* fix: handle null maxWidth in layout offsets ( by @doonfrs )
+* dev: move pluto grid reference into support section ( by @Elia Tolin )
+* dev: increase size of Try Live Demo and convert to paragraph "please star" section ( by Elia Tolin)
+* fix: unregistered key events do not function when grid in focus ( by @DMouayad)
+* fix: Fix empty cell value for date\dateTime columns with custom format (#129) ( by @DMouayad )
+
+
+## [1.6.10] - 2025. 07. 08
+
+* fix: show_column_menu in scaled screens ( by @WagDevX )
+* Use NumberFormat to format the value of TrinaAggregateColumnFooter ( by @DMouayad )
+* fix: discontinued cells vertical border when enableCellBorderHorizontal is false ( by @DMouayad )
+* fix: change tracking doesn't work when pasting into a cell ( by @DMouayad )
+* fix: change tracking doesn't work when cell initial value is null ( by @DMouayad )
+* fix: validation in TrinaColumnTypeDate by using dateFormat instead of DateTime for parsing ( by @DMouayad )
+* Add configuration for cell border width ( by @DMouayad )
+* fix: column sorting when TrinaColumn.titleRenderer is provided ( by @DMouayad )
+* Implement RTL-aware movement for grid navigation ( by @doonfrs )
+* Fix column freezing not resorted #110 ( by @DMouayad )
+* fix failing tests for cell height in popup grids ( by @DMouayad )
 
 ## [1.6.9] - 2025. 05. 28
 

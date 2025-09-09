@@ -110,7 +110,7 @@ class FilteredList<E> extends ListBase<E> implements AbstractFilteredList<E> {
       return 0;
     }
 
-    if (_range!.to > _maxLength) {
+    if (_range!.to >= _maxLength) {
       return _maxLength;
     }
 

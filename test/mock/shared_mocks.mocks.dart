@@ -2186,25 +2186,6 @@ class MockTrinaGridStateManager extends _i1.Mock
       ) as bool);
 
   @override
-  bool limitHideColumn(
-    _i2.TrinaColumn? column,
-    bool? hide, {
-    double? accumulateWidth = 0.0,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #limitHideColumn,
-          [
-            column,
-            hide,
-          ],
-          {#accumulateWidth: accumulateWidth},
-        ),
-        returnValue: false,
-        returnValueForMissingStub: false,
-      ) as bool);
-
-  @override
   void setIsDraggingRow(
     bool? flag, {
     bool? notify = true,
@@ -2377,6 +2358,7 @@ class MockTrinaGridStateManager extends _i1.Mock
     bool? callOnChangedEvent = true,
     bool? force = false,
     bool? notify = true,
+    bool? validate = true,
   }) =>
       super.noSuchMethod(
         Invocation.method(
@@ -2389,6 +2371,7 @@ class MockTrinaGridStateManager extends _i1.Mock
             #callOnChangedEvent: callOnChangedEvent,
             #force: force,
             #notify: notify,
+            #validate: validate,
           },
         ),
         returnValueForMissingStub: null,
@@ -3315,6 +3298,50 @@ class MockTrinaGridStateManager extends _i1.Mock
         ),
         returnValueForMissingStub: null,
       );
+
+  @override
+  void setRowHeight(
+    int? rowIndex,
+    double? height,
+  ) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #setRowHeight,
+          [
+            rowIndex,
+            height,
+          ],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void resetRowHeight(int? rowIndex) => super.noSuchMethod(
+        Invocation.method(
+          #resetRowHeight,
+          [rowIndex],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void resetAllRowHeights() => super.noSuchMethod(
+        Invocation.method(
+          #resetAllRowHeights,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  double getRowHeight(int? rowIndex) => (super.noSuchMethod(
+        Invocation.method(
+          #getRowHeight,
+          [rowIndex],
+        ),
+        returnValue: 0.0,
+        returnValueForMissingStub: 0.0,
+      ) as double);
 
   @override
   _i5.Offset toDirectionalOffset(_i5.Offset? offset) => (super.noSuchMethod(

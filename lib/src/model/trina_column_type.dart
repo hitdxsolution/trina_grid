@@ -1,30 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:trina_grid/src/ui/widgets/trina_dropdown_menu.dart';
 import 'package:trina_grid/trina_grid.dart';
 
+/// Defines the behavior and properties of a `TrinaColumn`.
+///
+/// The column type determines how the data in a cell is parsed, validated,
+/// compared for sorting, and rendered in both view and edit modes.
+///
+/// Use the factory constructors like [TrinaColumnType.text],
+/// [TrinaColumnType.number], or [TrinaColumnType.select] to create
+/// pre-configured column types.
 abstract interface class TrinaColumnType {
+  /// The default value for a new cell in a column of this type.
   dynamic get defaultValue;
 
-  /// Set as a string column.
-  factory TrinaColumnType.text({dynamic defaultValue = ''}) {
+  /// Creates a column for plain text.
+  factory TrinaColumnType.text({
+    /// {@macro TrinaColumnType.defaultValue}
+    dynamic defaultValue = '',
+  }) {
     return TrinaColumnTypeText(defaultValue: defaultValue);
   }
 
-  /// Set to numeric column.
+  /// Creates a column for numeric values.
   ///
-  /// [format]
-  /// '#,###' (Comma every three digits)
-  /// '#,###.###' (Allow three decimal places)
-  ///
-  /// [negative] Allow negative numbers
-  ///
-  /// [applyFormatOnInit] When the editor loads, it resets the value to [format].
-  ///
-  /// [allowFirstDot] When accepting negative numbers, a dot is allowed at the beginning.
-  /// This option is required on devices where the .- symbol works with one button.
-  ///
-  /// [locale] Specifies the numeric locale of the column.
-  /// If not specified, the default locale is used.
+  /// - [format]: A `NumberFormat` string (e.g., '#,###', '#,###.###').
+  /// - [negative]: Whether to allow negative numbers.
+  /// - [applyFormatOnInit]: Whether to apply the format when the editor loads.
+  /// - [allowFirstDot]: Allows a leading dot for negative number entry on
+  ///   certain keyboards.
+  /// - [locale]: The locale for number formatting.
   factory TrinaColumnType.number({
+    /// {@macro TrinaColumnType.defaultValue}
     dynamic defaultValue = 0,
     bool negative = true,
     String format = '#,###',
@@ -42,22 +49,18 @@ abstract interface class TrinaColumnType {
     );
   }
 
-  /// Set to currency column.
+  /// Creates a column for currency values.
   ///
-  /// [format]
-  /// '#,###' (Comma every three digits)
-  /// '#,###.###' (Allow three decimal places)
-  ///
-  /// [negative] Allow negative numbers
-  ///
-  /// [applyFormatOnInit] When the editor loads, it resets the value to [format].
-  ///
-  /// [allowFirstDot] When accepting negative numbers, a dot is allowed at the beginning.
-  /// This option is required on devices where the .- symbol works with one button.
-  ///
-  /// [locale] Specifies the currency locale of the column.
-  /// If not specified, the default locale is used.
+  /// - [format]: A `NumberFormat` string (e.g., '#,###', '#,###.###').
+  /// - [negative]: Whether to allow negative numbers.
+  /// - [applyFormatOnInit]: Whether to apply the format when the editor loads.
+  /// - [allowFirstDot]: Allows a leading dot for negative number entry.
+  /// - [locale]: The locale for currency formatting.
+  /// - [name]: The currency name (e.g., 'USD').
+  /// - [symbol]: The currency symbol (e.g., '$').
+  /// - [decimalDigits]: The number of decimal places.
   factory TrinaColumnType.currency({
+    /// {@macro TrinaColumnType.defaultValue}
     dynamic defaultValue = 0,
     bool negative = true,
     String? format,
@@ -81,26 +84,18 @@ abstract interface class TrinaColumnType {
     );
   }
 
-  /// Set to percentage column.
+  /// Creates a column for percentage values.
   ///
-  /// [decimalDigits] Number of decimal places to display.
-  ///
-  /// [showSymbol] Whether to show the % symbol.
-  ///
-  /// [symbolPosition] Position of % symbol (before/after).
-  ///
-  /// [negative] Allow negative numbers.
-  ///
-  /// [applyFormatOnInit] When the editor loads, it resets the value to the format.
-  ///
-  /// [allowFirstDot] When accepting negative numbers, a dot is allowed at the beginning.
-  /// This option is required on devices where the .- symbol works with one button.
-  ///
-  /// [locale] Specifies the numeric locale of the column.
-  /// If not specified, the default locale is used.
-  ///
-  /// [decimalInput] When true, the user can input values like 50 instead of 0.5 for 50%.
+  /// - [decimalDigits]: The number of decimal places to display.
+  /// - [showSymbol]: Whether to show the '%' symbol.
+  /// - [symbolPosition]: The position of the '%' symbol.
+  /// - [negative]: Whether to allow negative numbers.
+  /// - [applyFormatOnInit]: Whether to apply the format when the editor loads.
+  /// - [allowFirstDot]: Allows a leading dot for negative number entry.
+  /// - [locale]: The locale for number formatting.
+  /// - [decimalInput]: If true, input '50' is treated as 50% (0.5).
   factory TrinaColumnType.percentage({
+    /// {@macro TrinaColumnType.defaultValue}
     dynamic defaultValue = 0,
     int decimalDigits = 2,
     bool showSymbol = true,
@@ -124,47 +119,194 @@ abstract interface class TrinaColumnType {
     );
   }
 
-  /// Provides a selection list and sets it as a selection column.
+  /// Creates a column with a simple dropdown selection list.
   ///
-  /// If [enableColumnFilter] is true, column filtering is enabled in the selection popup.
+  /// This is a basic dropdown without search or filtering. For more advanced
+  /// options, see [TrinaColumnType.selectWithSearch] or
+  /// [TrinaColumnType.selectWithFilters].
   ///
-  /// Set the suffixIcon in the [popupIcon] cell. Tapping this icon will open a selection popup.
-  /// The default icon is displayed, and if this value is set to null , the icon does not appear.
+  /// - [items]: The list of values to display in the popup menu.
+  /// - [onItemSelected]: A callback invoked when an item is selected.
+  /// - [enableColumnFilter]: Whether to enable the default column filter UI.
+  /// - [popupIcon]: The icon used to open the selection menu.
+  ///
+  /// ### Popup Menu Properties
+  ///
+  /// These properties are ignored if [TrinaColumn.editCellRenderer]
+  ///  or [TrinaGridStateManager.editCellRenderer] is provided.
+  ///
+  /// - [menuItemBuilder]:
+  ///   {@macro TrinaDropdownMenu.itemBuilder}
+  /// - [menuItemHeight]:
+  ///   {@macro TrinaDropdownMenu.itemHeight}
+  /// - [menuMaxHeight]:
+  ///   {@macro TrinaDropdownMenu.maxHeight}
+  /// - [menuWidth]:
+  ///   {@macro TrinaDropdownMenu.width}
+  /// - [itemToString]:
+  ///   {@macro TrinaDropdownMenu.itemToString}
+  /// - [itemToValue]:
+  ///   {@macro TrinaDropdownMenu.itemToValue}
+  ///
   factory TrinaColumnType.select(
-    List<dynamic> items, {
-    final Function(TrinaGridOnSelectedEvent event)? onItemSelected,
+    List items, {
+    void Function(dynamic item)? onItemSelected,
     dynamic defaultValue = '',
     bool enableColumnFilter = false,
     IconData? popupIcon = Icons.arrow_drop_down,
-    Widget Function(dynamic item)? builder,
-    double? width,
+    double? menuWidth,
+    double menuItemHeight = 40,
+    double menuMaxHeight = 300,
+    ItemBuilder<dynamic>? menuItemBuilder,
+    String Function(dynamic item)? itemToString,
+    dynamic Function(dynamic item)? itemToValue,
   }) {
     return TrinaColumnTypeSelect(
-      onItemSelected: onItemSelected ?? (event) {},
+      menuVariant: TrinaDropdownMenuVariant.select,
+      onItemSelected: onItemSelected,
       defaultValue: defaultValue,
       items: items,
       enableColumnFilter: enableColumnFilter,
       popupIcon: popupIcon,
-      builder: builder,
-      width: width,
+      menuItemBuilder: menuItemBuilder,
+      menuWidth: menuWidth,
+      menuItemHeight: menuItemHeight,
+      menuMaxHeight: menuMaxHeight,
+      itemToString: itemToString,
+      itemToValue: itemToValue,
     );
   }
 
-  /// Set as a date column.
+  /// Creates a column with a searchable dropdown selection list.
   ///
-  /// [startDate] Range start date (If there is no value, Can select the date without limit)
+  /// - [items]: The list of values to display in the popup menu.
+  /// - [itemToString]: **Required.** A function to convert an item to its string
+  ///   representation for searching.
+  /// - [onItemSelected]: A callback invoked when an item is selected.
+  /// - [enableColumnFilter]: Whether to enable the default column filter UI.
+  /// - [popupIcon]: The icon used to open the selection menu.
   ///
-  /// [endDate] Range end date
+  /// ### Popup Menu Properties
+  /// These properties are ignored if [TrinaColumn.editCellRenderer]
+  ///  or [TrinaGridStateManager.editCellRenderer] is provided.
   ///
-  /// [format] 'yyyy-MM-dd' (2020-01-01)
+  /// - [menuEmptySearchResultBuilder]:
+  ///   {@macro TrinaDropdownMenu.emptySearchResultBuilder}
+  /// - [menuItemBuilder]:
+  ///   {@macro TrinaDropdownMenu.itemBuilder}
+  /// - [menuItemHeight]:
+  ///   {@macro TrinaDropdownMenu.itemHeight}
+  /// - [menuMaxHeight]:
+  ///   {@macro TrinaDropdownMenu.maxHeight}
+  /// - [menuWidth]:
+  ///   {@macro TrinaDropdownMenu.width}
+  /// - [itemToString]:
+  ///   {@macro TrinaDropdownMenu.itemToString}
+  /// - [itemToValue]:
+  ///   {@macro TrinaDropdownMenu.itemToValue}
+  factory TrinaColumnType.selectWithSearch(
+    List items, {
+    required String Function(dynamic item) itemToString,
+    dynamic defaultValue = '',
+    bool enableColumnFilter = false,
+    IconData? popupIcon = Icons.arrow_drop_down,
+    ItemBuilder<dynamic>? menuItemBuilder,
+    double? menuWidth,
+    double menuItemHeight = 40,
+    double menuMaxHeight = 300,
+    void Function(dynamic item)? onItemSelected,
+    WidgetBuilder? menuEmptySearchResultBuilder,
+    dynamic Function(dynamic item)? itemToValue,
+  }) {
+    return TrinaColumnTypeSelect(
+      onItemSelected: onItemSelected,
+      defaultValue: defaultValue,
+      items: items,
+      menuVariant: TrinaDropdownMenuVariant.selectWithSearch,
+      enableColumnFilter: enableColumnFilter,
+      popupIcon: popupIcon,
+      menuItemBuilder: menuItemBuilder,
+      menuWidth: menuWidth,
+      menuItemHeight: menuItemHeight,
+      menuMaxHeight: menuMaxHeight,
+      itemToString: itemToString,
+      itemToValue: itemToValue,
+      menuEmptySearchResultBuilder: menuEmptySearchResultBuilder,
+    );
+  }
+
+  /// Creates a column with a dropdown list that has advanced filtering.
   ///
-  /// [headerFormat] 'yyyy-MM' (2020-01)
-  /// Display year and month in header in date picker popup.
+  /// - [items]: The list of values to display in the popup menu.
+  /// - [onItemSelected]: A callback invoked when an item is selected.
+  /// - [enableColumnFilter]: Whether to enable the default column filter UI.
+  /// - [popupIcon]: The icon used to open the selection menu.
   ///
-  /// [applyFormatOnInit] When the editor loads, it resets the value to [format].
+  /// ### Popup Menu Properties
   ///
-  /// Set the suffixIcon in the [popupIcon] cell. Tap this icon to open the date selection popup.
-  /// The default icon is displayed, and if this value is set to null , the icon does not appear.
+  /// These properties are ignored if [TrinaColumn.editCellRenderer]
+  ///  or [TrinaGridStateManager.editCellRenderer] is provided.
+  ///
+  /// - [menuFilters]:
+  ///   {@macro TrinaDropdownMenu.filters}
+  /// - [menuEmptyFilterResultBuilder]:
+  ///   {@macro TrinaDropdownMenu.emptyFilterResultBuilder}
+  /// - [menuItemBuilder]:
+  ///   {@macro TrinaDropdownMenu.itemBuilder}
+  /// - [menuItemHeight]:
+  ///   {@macro TrinaDropdownMenu.itemHeight}
+  /// - [menuMaxHeight]:
+  ///   {@macro TrinaDropdownMenu.maxHeight}
+  /// - [menuWidth]:
+  ///   {@macro TrinaDropdownMenu.width}
+  /// - [itemToString]:
+  ///   {@macro TrinaDropdownMenu.itemToString}
+  /// - [itemToValue]:
+  ///   {@macro TrinaDropdownMenu.itemToValue}
+  factory TrinaColumnType.selectWithFilters(
+    List items, {
+    required List<TrinaDropdownMenuFilter> menuFilters,
+    dynamic defaultValue = '',
+    bool enableColumnFilter = false,
+    IconData? popupIcon = Icons.arrow_drop_down,
+    ItemBuilder<dynamic>? menuItemBuilder,
+    WidgetBuilder? menuEmptyFilterResultBuilder,
+    double? menuWidth,
+    double menuItemHeight = 40,
+    double menuMaxHeight = 300,
+    bool menuFiltersInitiallyExpanded = true,
+    void Function(dynamic item)? onItemSelected,
+    String Function(dynamic item)? itemToString,
+    dynamic Function(dynamic item)? itemToValue,
+  }) {
+    return TrinaColumnTypeSelect(
+      items: items,
+      menuVariant: TrinaDropdownMenuVariant.selectWithFilters,
+      defaultValue: defaultValue,
+      menuFilters: menuFilters,
+      onItemSelected: onItemSelected,
+      menuEmptyFilterResultBuilder: menuEmptyFilterResultBuilder,
+      enableColumnFilter: enableColumnFilter,
+      popupIcon: popupIcon,
+      menuFiltersInitiallyExpanded: menuFiltersInitiallyExpanded,
+      menuItemBuilder: menuItemBuilder,
+      menuWidth: menuWidth,
+      menuItemHeight: menuItemHeight,
+      menuMaxHeight: menuMaxHeight,
+      itemToString: itemToString,
+      itemToValue: itemToValue,
+    );
+  }
+
+  /// Creates a column for date values.
+  ///
+  /// - [startDate]: The earliest selectable date.
+  /// - [endDate]: The latest selectable date.
+  /// - [format]: The `DateFormat` string for displaying the date.
+  /// - [headerFormat]: The `DateFormat` string for the date picker header.
+  /// - [applyFormatOnInit]: Whether to apply the format when the editor loads.
+  /// - [popupIcon]: The icon used to open the date picker.
+  /// - [closePopupOnSelection]: If true, the popup closes after a date is selected.
   factory TrinaColumnType.date({
     dynamic defaultValue = '',
     DateTime? startDate,
@@ -173,6 +315,7 @@ abstract interface class TrinaColumnType {
     String headerFormat = 'yyyy-MM',
     bool applyFormatOnInit = true,
     IconData? popupIcon = Icons.date_range,
+    bool closePopupOnSelection = false,
   }) {
     return TrinaColumnTypeDate(
       defaultValue: defaultValue,
@@ -182,38 +325,44 @@ abstract interface class TrinaColumnType {
       headerFormat: headerFormat,
       applyFormatOnInit: applyFormatOnInit,
       popupIcon: popupIcon,
+      closePopupOnSelection: closePopupOnSelection,
     );
   }
 
-  /// A column for the time type.
+  /// Creates a column for time values.
   ///
-  /// Set the suffixIcon in the [popupIcon] cell. Tap this icon to open the time selection popup.
-  /// The default icon is displayed, and if this value is set to null , the icon does not appear.
+  /// - [popupIcon]: The icon used to open the time picker.
+  /// - [autoFocusMode]: Determines which field receives focus when the picker opens.
+  /// - [saveAndClosePopupWithEnter]: If true, Enter saves and closes the popup.
+  /// - [minTime]: The minimum selectable time.
+  /// - [maxTime]: The maximum selectable time.
   factory TrinaColumnType.time({
     dynamic defaultValue = '00:00',
     IconData? popupIcon = Icons.access_time,
+    TrinaTimePickerAutoFocusMode autoFocusMode =
+        TrinaTimePickerAutoFocusMode.hourField,
+    bool saveAndClosePopupWithEnter = true,
+    TimeOfDay minTime = const TimeOfDay(hour: 0, minute: 0),
+    TimeOfDay maxTime = const TimeOfDay(hour: 23, minute: 59),
   }) {
     return TrinaColumnTypeTime(
       defaultValue: defaultValue,
       popupIcon: popupIcon,
+      autoFocusMode: autoFocusMode,
+      saveAndClosePopupWithEnter: saveAndClosePopupWithEnter,
+      minTime: minTime,
+      maxTime: maxTime,
     );
   }
 
-  /// Set as a datetime column combining date and time.
+  /// Creates a column for combined date and time values.
   ///
-  /// [startDate] Range start date (If there is no value, Can select the date without limit)
-  ///
-  /// [endDate] Range end date
-  ///
-  /// [format] 'yyyy-MM-dd HH:mm' (2020-01-01 15:30)
-  ///
-  /// [headerFormat] 'yyyy-MM' (2020-01)
-  /// Display year and month in header in date picker popup.
-  ///
-  /// [applyFormatOnInit] When the editor loads, it resets the value to [format].
-  ///
-  /// Set the suffixIcon in the [popupIcon] cell. Tap this icon to open the date & time selection popup.
-  /// The default icon is displayed, and if this value is set to null , the icon does not appear.
+  /// - [startDate]: The earliest selectable date.
+  /// - [endDate]: The latest selectable date.
+  /// - [format]: The `DateFormat` string for displaying the date and time.
+  /// - [headerFormat]: The `DateFormat` string for the date picker header.
+  /// - [applyFormatOnInit]: Whether to apply the format when the editor loads.
+  /// - [popupIcon]: The icon used to open the date & time picker.
   factory TrinaColumnType.dateTime({
     dynamic defaultValue = '',
     DateTime? startDate,
@@ -234,44 +383,66 @@ abstract interface class TrinaColumnType {
     );
   }
 
-  /// Set to boolean column.
+  /// Creates a column for boolean (`true`/`false`) values.
   ///
-  /// [allowEmpty] determines if null/empty values are allowed
-  /// [trueText] text to display for true values (defaults to "Yes")
-  /// [falseText] text to display for false values (defaults to "No")
+  /// - [allowEmpty]: If true, `null` or empty string are considered valid values.
+  /// - [trueText]: The text to display for `true`.
+  /// - [falseText]: The text to display for `false`.
+  /// - [onItemSelected]: A callback invoked when an item is selected.
+  /// - [menuWidth]: The width of the dropdown menu.
+  /// - [popupIcon]: The icon to display in the popup cell.
+  /// - [menuItemBuilder]: A function to provide a custom widget for each item in the list.
   factory TrinaColumnType.boolean({
     dynamic defaultValue = false,
     bool allowEmpty = false,
     String trueText = 'Yes',
     String falseText = 'No',
-    double? width,
+    double? menuWidth,
     IconData? popupIcon,
-    Widget Function(dynamic item)? builder,
-    Function(TrinaGridOnSelectedEvent event)? onItemSelected,
+    Widget Function(dynamic item)? menuItemBuilder,
+    void Function(dynamic item)? onItemSelected,
   }) {
     return TrinaColumnTypeBoolean(
       defaultValue: defaultValue,
       allowEmpty: allowEmpty,
       trueText: trueText,
       falseText: falseText,
-      width: width,
+      menuWidth: menuWidth,
       popupIcon: popupIcon,
-      builder: builder,
-      onItemSelected: onItemSelected ?? (event) {},
+      menuItemBuilder: menuItemBuilder,
+      onItemSelected: onItemSelected,
     );
   }
 
+  /// Determines if [value] is valid for this column type.
   bool isValid(dynamic value);
 
+  /// Compares two values for sorting.
+  ///
+  /// Must return:
+  /// - A negative integer if `a` is less than `b`.
+  /// - Zero if `a` is equal to `b`.
+  /// - A positive integer if `a` is greater than `b`.
   int compare(dynamic a, dynamic b);
 
+  /// Converts a cell value into a comparable format before sorting.
+  ///
+  /// For example, for a date column, this might convert a formatted string
+  /// into a `DateTime` object.
   dynamic makeCompareValue(dynamic v);
 
-  /// If returns (true, correctedValue) then the correctedValue will be applied to the cell,
-  /// see EditingState.changeCellValue() and CellState.filteredCellValue()
+  /// Intercepts and potentially transforms a cell's value before it is updated.
+  ///
+  /// Return a tuple of `(bool, dynamic)`.
+  /// If the first element is `true`, the second element will be used as the
+  /// new cell value.
+  /// If `false`, the original `newValue` is used.
   (bool, dynamic) filteredValue({dynamic newValue, dynamic oldValue});
 }
 
+/// A mixin that provides a default implementation for [TrinaColumnType.filteredValue].
+///
+/// The default implementation is a pass-through that does not alter the value.
 mixin TrinaColumnTypeDefaultMixin {
   (bool, dynamic) filteredValue({dynamic newValue, dynamic oldValue}) =>
       (false, newValue);

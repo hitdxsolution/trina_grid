@@ -73,7 +73,6 @@ mixin VisibilityLayoutState implements ITrinaGridState {
         }
       } else {
         column.startPosition = bodyX;
-        column.frozen = TrinaColumnFrozen.none;
         bodyX += column.width;
       }
     }

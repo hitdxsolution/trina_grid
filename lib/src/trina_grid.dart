@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart' show Intl;
 import 'package:trina_grid/trina_grid.dart';
@@ -14,6 +15,9 @@ typedef TrinaOnLoadedEventCallback = void Function(
 
 typedef TrinaOnChangedEventCallback = void Function(
     TrinaGridOnChangedEvent event);
+
+typedef TrinaOnKeyPressedEventCallback = void Function(
+    TrinaGridOnKeyEvent event);
 
 typedef TrinaOnSelectedEventCallback = void Function(
     TrinaGridOnSelectedEvent event);
@@ -51,6 +55,9 @@ typedef CreateFooterCallBack = Widget Function(
 typedef TrinaRowColorCallback = Color Function(
     TrinaRowColorContext rowColorContext);
 
+typedef TrinaCellColorCallback = Color? Function(
+    TrinaCellColorContext cellColorContext);
+
 typedef TrinaSelectDateCallBack = Future<DateTime?> Function(
     TrinaCell dateCell, TrinaColumn column);
 
@@ -65,7 +72,8 @@ typedef TrinaOnLazyFetchCompletedEventCallback = void Function(
 
 typedef RowWrapper = Widget Function(
   BuildContext context,
-  Widget row,
+  Widget rowWidget,
+  TrinaRow rowData,
   TrinaGridStateManager stateManager,
 );
 
@@ -102,6 +110,7 @@ class TrinaGrid extends TrinaStatefulWidget {
     this.createFooter,
     this.noRowsWidget,
     this.rowColorCallback,
+    this.cellColorCallback,
     this.selectDateCallback,
     this.columnMenuDelegate,
     this.configuration = const TrinaGridConfiguration(),
@@ -356,6 +365,21 @@ class TrinaGrid extends TrinaStatefulWidget {
   /// {@endtemplate}
   final TrinaRowColorCallback? rowColorCallback;
 
+  /// {@template trina_grid_property_cellColorCallback}
+  /// [cellColorCallback] can change the cell background color dynamically according to the state.
+  ///
+  /// Implement a callback that returns a [Color] by referring to the value passed as a callback argument.
+  /// An exception should be handled when a column is deleted.
+  /// ```dart
+  /// cellColorCallback = (TrinaCellColorContext cellColorContext) {
+  ///   return cellColorContext.cell.value == 'highlight'
+  ///       ? const Color(0xFFE2F6DF)
+  ///       : Colors.white;
+  /// }
+  /// ```
+  /// {@endtemplate}
+  final TrinaCellColorCallback? cellColorCallback;
+
   final TrinaSelectDateCallBack? selectDateCallback;
 
   /// {@template trina_grid_property_columnMenuDelegate}
@@ -410,7 +434,7 @@ class TrinaGrid extends TrinaStatefulWidget {
   /// initializeDateFormatting();
   /// ```
   /// {@endtemplate}
-  static setDefaultLocale(String locale) {
+  static void setDefaultLocale(String locale) {
     Intl.defaultLocale = locale;
   }
 
@@ -418,7 +442,7 @@ class TrinaGrid extends TrinaStatefulWidget {
   /// when you need to set date format when changing locale.
   ///
   /// {@macro intl_default_locale}
-  static initializeDateFormat() {
+  static void initializeDateFormat() {
     initializeDateFormatting();
   }
 
@@ -603,6 +627,7 @@ class TrinaGridState extends TrinaStateWithChange<TrinaGrid> {
       onActiveCellChanged: widget.onActiveCellChanged,
       onColumnsMoved: widget.onColumnsMoved,
       rowColorCallback: widget.rowColorCallback,
+      cellColorCallback: widget.cellColorCallback,
       selectDateCallback: widget.selectDateCallback,
       createHeader: widget.createHeader,
       createFooter: widget.createFooter,
@@ -682,26 +707,43 @@ class TrinaGridState extends TrinaStateWithChange<TrinaGrid> {
   }
 
   KeyEventResult _handleGridFocusOnKey(FocusNode focusNode, KeyEvent event) {
-    // Check if the focus is within a header widget - if so, don't capture the keyboard event
-    if (_header != null) {
-      // Get the current primary focus
-      final FocusNode? primaryFocus = FocusManager.instance.primaryFocus;
+    // Get the current primary focus
+    final FocusNode? primaryFocus = FocusManager.instance.primaryFocus;
 
-      // If the primary focus is not the grid's focus node, don't handle the event
-      // This allows TextFields and other input widgets in the header to receive keyboard events
-      if (primaryFocus != null && primaryFocus != _stateManager.gridFocusNode) {
-        // Skip handling this event if it's not focused on the grid
-        return KeyEventResult.ignored;
-      }
+    // If the primary focus is not the grid's focus node, don't handle the event
+    // This allows TextFields and other input widgets (for example, in the header or footer)
+    // to receive keyboard events
+    if (primaryFocus != null && primaryFocus != _stateManager.gridFocusNode) {
+      return KeyEventResult.ignored;
     }
 
-    if (_keyManager.eventResult.isSkip == false) {
-      _keyManager.subject.add(
-        TrinaKeyManagerEvent(focusNode: focusNode, event: event),
-      );
+    final trinaEvent = TrinaKeyManagerEvent(focusNode: focusNode, event: event);
+
+    if (_isRegisteredShortcut(event)) {
+      _keyManager.subject.add(trinaEvent);
+      return KeyEventResult.handled;
     }
 
-    return _keyManager.eventResult.consume(KeyEventResult.handled);
+    // check if it's a character for editing
+    if (_isCharInput(trinaEvent)) {
+      _keyManager.subject.add(trinaEvent);
+      return KeyEventResult.handled;
+    }
+
+    // 4. If it's not a shortcut and not a character for editing, ignore it.
+    return KeyEventResult.ignored;
+  }
+
+  bool _isRegisteredShortcut(KeyEvent keyEvent) {
+    return stateManager.configuration.shortcut.actions.entries.any(
+      (element) => element.key.accepts(keyEvent, HardwareKeyboard.instance),
+    );
+  }
+
+  bool _isCharInput(TrinaKeyManagerEvent trinaEvent) {
+    final hasAllowedModifier =
+        !trinaEvent.isModifierPressed || trinaEvent.isShiftPressed;
+    return trinaEvent.isCharacter && hasAllowedModifier;
   }
 
   @override
@@ -1312,6 +1354,28 @@ class TrinaRowColorContext {
   final TrinaGridStateManager stateManager;
 
   const TrinaRowColorContext({
+    required this.row,
+    required this.rowIdx,
+    required this.stateManager,
+  });
+}
+
+/// Argument of [TrinaGrid.cellColorCallback] callback
+/// to dynamically change the background color of a cell.
+class TrinaCellColorContext {
+  final TrinaCell cell;
+
+  final TrinaColumn column;
+
+  final TrinaRow row;
+
+  final int rowIdx;
+
+  final TrinaGridStateManager stateManager;
+
+  const TrinaCellColorContext({
+    required this.cell,
+    required this.column,
     required this.row,
     required this.rowIdx,
     required this.stateManager,

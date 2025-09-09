@@ -97,13 +97,12 @@ mixin FilteringRowState implements ITrinaGridState {
 
   @override
   void setFilterRows(List<TrinaRow> rows) {
-    _state._filterRows = rows
-        .where(
-          (element) => element.cells[FilterHelper.filterFieldValue]!.value
-              .toString()
-              .isNotEmpty,
-        )
-        .toList();
+    _state._filterRows = rows.where(
+      (element) {
+        final value = element.cells[FilterHelper.filterFieldValue]!.value;
+        return value != null && value.toString().isNotEmpty;
+      },
+    ).toList();
   }
 
   @override

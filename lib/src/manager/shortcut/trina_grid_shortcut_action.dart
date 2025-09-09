@@ -87,8 +87,10 @@ class TrinaGridActionMoveCellFocus extends TrinaGridShortcutAction {
       stateManager.setCurrentCell(stateManager.firstCell, 0);
       return;
     }
+    // Apply RTL-aware direction transformation
+    final rtlAwareDirection = direction.asRTLAwareDirection(stateManager.isRTL);
 
-    stateManager.moveCurrentCell(direction, force: force);
+    stateManager.moveCurrentCell(rtlAwareDirection, force: force);
   }
 }
 
@@ -106,8 +108,10 @@ class TrinaGridActionMoveSelectedCellFocus extends TrinaGridShortcutAction {
     required TrinaGridStateManager stateManager,
   }) {
     if (stateManager.isEditing == true) return;
+    // Apply RTL-aware direction transformation
+    final rtlAwareDirection = direction.asRTLAwareDirection(stateManager.isRTL);
 
-    stateManager.moveSelectingCell(direction);
+    stateManager.moveSelectingCell(rtlAwareDirection);
   }
 }
 
@@ -345,13 +349,15 @@ class TrinaGridActionDefaultEnterKey extends TrinaGridShortcutAction {
     required TrinaKeyManagerEvent keyEvent,
     required TrinaGridStateManager stateManager,
   }) {
-    // In SelectRow mode, the current Row is passed to the onSelected callback.
-    if (stateManager.mode.isSelectMode && stateManager.onSelected != null) {
+    // In SelectRow mode or Normal mode, the current Row is passed to the onSelected callback.
+    if ((stateManager.mode.isSelectMode || stateManager.mode.isNormal) && stateManager.onSelected != null) {
       stateManager.onSelected!(TrinaGridOnSelectedEvent(
         row: stateManager.currentRow,
         rowIdx: stateManager.currentRowIdx,
         cell: stateManager.currentCell,
-        selectedRows: stateManager.mode.isMultiSelectMode
+        // Include currentSelectingRows when we have row selection in any mode
+        selectedRows: (stateManager.mode.isMultiSelectMode || 
+                      (stateManager.mode.isNormal && stateManager.selectingMode.isRow))
             ? stateManager.currentSelectingRows
             : null,
       ));
@@ -429,8 +435,11 @@ class TrinaGridActionDefaultEnterKey extends TrinaGridShortcutAction {
       } else {
         // Check if we're on the last cell of the row
         final position = stateManager.currentCellPosition;
-        if (position != null &&
-            position.columnIdx == stateManager.refColumns.length - 1 &&
+        final columnIndexes = stateManager.columnIndexesByShowFrozen;
+        final currentVisualIndex = columnIndexes.indexOf(position!.columnIdx!);
+        final isAtLastColumn = currentVisualIndex == columnIndexes.length - 1;
+
+        if (isAtLastColumn &&
             position.rowIdx! < stateManager.refRows.length - 1) {
           // Move to first cell of next row
           stateManager.moveCurrentCell(

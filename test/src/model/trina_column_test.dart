@@ -767,6 +767,82 @@ void main() {
 
       expect(column.formattedValueForType('12345'), '12345');
     });
+
+    test(
+        'When column type is currency'
+        'then formatted value should be formatted by currency format.', () {
+      final TrinaColumn column = TrinaColumn(
+        title: 'currency column',
+        field: 'currency_column',
+        type: TrinaColumnType.currency(
+          symbol: '\$',
+          decimalDigits: 2,
+        ),
+      );
+
+      expect(column.formattedValueForType(12345.67), '\$12,345.67');
+    });
+
+    test(
+        'When column type is percentage'
+        'then formatted value should be formatted by percentage format.', () {
+      final TrinaColumn column = TrinaColumn(
+        title: 'percentage column',
+        field: 'percentage_column',
+        type: TrinaColumnType.percentage(
+          decimalDigits: 1,
+          showSymbol: true,
+        ),
+      );
+
+      expect(column.formattedValueForType(0.42), '42.0%');
+    });
+
+    test(
+        'When column type is date'
+        'then formatted value should be formatted by date format.', () {
+      final TrinaColumn column = TrinaColumn(
+        title: 'date column',
+        field: 'date_column',
+        type: TrinaColumnType.date(
+          format: 'yyyy-MM-dd',
+        ),
+      );
+
+      expect(column.formattedValueForType('2023-12-25'), '2023-12-25');
+    });
+
+    test(
+        'When column type is dateTime'
+        'then formatted value should be formatted by dateTime format.', () {
+      final TrinaColumn column = TrinaColumn(
+        title: 'dateTime column',
+        field: 'dateTime_column',
+        type: TrinaColumnType.dateTime(
+          format: 'yyyy-MM-dd HH:mm',
+        ),
+      );
+
+      expect(column.formattedValueForType('2023-12-25 14:30:00'),
+          '2023-12-25 14:30');
+    });
+
+    test(
+        'When column type is boolean'
+        'then formatted value should be formatted by boolean text.', () {
+      final TrinaColumn column = TrinaColumn(
+        title: 'boolean column',
+        field: 'boolean_column',
+        type: TrinaColumnType.boolean(
+          trueText: 'Active',
+          falseText: 'Inactive',
+        ),
+      );
+
+      expect(column.formattedValueForType(true), 'Active');
+      expect(column.formattedValueForType(false), 'Inactive');
+      expect(column.formattedValueForType(null), '');
+    });
   });
 
   group('formattedValueForDisplay', () {

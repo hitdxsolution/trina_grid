@@ -25,7 +25,8 @@ class _DateTimeColumnScreenState extends State<DateTimeColumnScreen> {
   void initState() {
     super.initState();
 
-    final now = DateTime.now();
+    var now = DateTime.now();
+    now = DateTime(now.year, now.month, now.day, now.hour, now.minute);
     final yesterday = now.subtract(const Duration(days: 1));
     final tomorrow = now.add(const Duration(days: 1));
     final nextWeek = now.add(const Duration(days: 7));
@@ -89,7 +90,7 @@ class _DateTimeColumnScreenState extends State<DateTimeColumnScreen> {
         title: '12h Format',
         field: '12h_format',
         type: TrinaColumnType.dateTime(
-          format: 'yyyy-MM-dd hh:mm a',
+          format: 'yyyy-MM-dd hh:mm',
         ),
         width: 180,
       ),
@@ -169,6 +170,14 @@ class _DateTimeColumnScreenState extends State<DateTimeColumnScreen> {
         ),
       ],
       body: TrinaGrid(
+        configuration: TrinaGridConfiguration(
+          style: TrinaGridStyleConfig(
+            rowHeight: 40,
+            cellTextStyle: const TextStyle(
+              fontSize: 12,
+            ),
+          ),
+        ),
         columns: columns,
         rows: rows,
         onLoaded: (TrinaGridOnLoadedEvent event) {

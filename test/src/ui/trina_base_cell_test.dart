@@ -5,8 +5,8 @@ import 'package:trina_grid/trina_grid.dart';
 import 'package:trina_grid/src/ui/ui.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../helper/trina_widget_test_helper.dart';
 import '../../helper/row_helper.dart';
+import '../../helper/trina_widget_test_helper.dart';
 import '../../matcher/trina_object_matcher.dart';
 import '../../mock/shared_mocks.mocks.dart';
 
@@ -14,6 +14,7 @@ void main() {
   late MockTrinaGridStateManager stateManager;
   MockTrinaGridEventManager? eventManager;
   PublishSubject<TrinaNotifierEvent> streamNotifier;
+  final resizingNotifier = ChangeNotifier();
 
   setUp(() {
     const configuration = TrinaGridConfiguration();
@@ -22,10 +23,45 @@ void main() {
     streamNotifier = PublishSubject<TrinaNotifierEvent>();
     when(stateManager.streamNotifier).thenAnswer((_) => streamNotifier);
     when(stateManager.eventManager).thenReturn(eventManager);
+    when(stateManager.resizingChangeNotifier).thenReturn(resizingNotifier);
     when(stateManager.configuration).thenReturn(configuration);
     when(stateManager.style).thenReturn(configuration.style);
     when(stateManager.keyPressed).thenReturn(TrinaGridKeyPressed());
     when(stateManager.rowHeight).thenReturn(
+      stateManager.configuration.style.rowHeight,
+    );
+    when(stateManager.getRowHeight(0)).thenReturn(
+      stateManager.configuration.style.rowHeight,
+    );
+    when(stateManager.getRowHeight(1)).thenReturn(
+      stateManager.configuration.style.rowHeight,
+    );
+    when(stateManager.getRowHeight(2)).thenReturn(
+      stateManager.configuration.style.rowHeight,
+    );
+    when(stateManager.getRowHeight(3)).thenReturn(
+      stateManager.configuration.style.rowHeight,
+    );
+    when(stateManager.getRowHeight(4)).thenReturn(
+      stateManager.configuration.style.rowHeight,
+    );
+    when(stateManager.getRowHeight(5)).thenReturn(
+      stateManager.configuration.style.rowHeight,
+    );
+    when(stateManager.getRowHeight(6)).thenReturn(
+      stateManager.configuration.style.rowHeight,
+    );
+    when(stateManager.getRowHeight(7)).thenReturn(
+      stateManager.configuration.style.rowHeight,
+    );
+    when(stateManager.getRowHeight(8)).thenReturn(
+      stateManager.configuration.style.rowHeight,
+    );
+    when(stateManager.getRowHeight(9)).thenReturn(
+      stateManager.configuration.style.rowHeight,
+    );
+    // Add a catch-all for any other row index
+    when(stateManager.getRowHeight(argThat(isA<int>()))).thenReturn(
       stateManager.configuration.style.rowHeight,
     );
     when(stateManager.columnHeight).thenReturn(
@@ -35,10 +71,7 @@ void main() {
       stateManager.configuration.style.columnHeight,
     );
     when(stateManager.rowTotalHeight).thenReturn(
-      RowHelper.resolveRowTotalHeight(
-        stateManager.configuration.style.rowHeight,
-      ),
-    );
+        RowHelper.resolveRowTotalHeight(stateManager.configuration.style));
     when(stateManager.localeText).thenReturn(const TrinaGridLocaleText());
     when(stateManager.gridFocusNode).thenReturn(FocusNode());
     when(stateManager.keepFocus).thenReturn(true);
@@ -659,6 +692,57 @@ void main() {
       });
     }
 
+    aCellInsideTrinaBaseRow(
+      TrinaGridConfiguration configuration, {
+      bool isCurrentCell = true,
+      bool isSelectedCell = false,
+      bool readOnly = false,
+    }) {
+      return TrinaWidgetTestHelper('a cell inside TrinaBaseRow.',
+          (tester) async {
+        when(stateManager.isCurrentCell(any)).thenReturn(isCurrentCell);
+        when(stateManager.isSelectedCell(any, any, any))
+            .thenReturn(isSelectedCell);
+        when(stateManager.style).thenReturn(configuration.style);
+        when(stateManager.hasFocus).thenReturn(true);
+        when(stateManager.isEditing).thenReturn(true);
+
+        cell = TrinaCell(value: 'one');
+
+        column = TrinaColumn(
+          title: 'header',
+          field: 'header',
+          readOnly: readOnly,
+          type: TrinaColumnType.text(),
+        );
+
+        final TrinaRow row = TrinaRow(
+          cells: {
+            'header': cell,
+          },
+        );
+
+        rowIdx = 0;
+
+        when(stateManager.configuration).thenReturn(configuration);
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Material(
+              child: TrinaBaseRow(
+                rowIdx: rowIdx,
+                row: row,
+                columns: [column!],
+                stateManager: stateManager,
+              ),
+            ),
+          ),
+        );
+
+        await tester.pumpAndSettle(const Duration(seconds: 1));
+      });
+    }
+
     aCellWithConfiguration(
       const TrinaGridConfiguration(
         style: TrinaGridStyleConfig(
@@ -751,5 +835,32 @@ void main() {
         expect(border, isNull);
       },
     );
+
+    aCellInsideTrinaBaseRow(
+      const TrinaGridConfiguration(
+        style: TrinaGridStyleConfig(enableCellBorderHorizontal: true),
+      ),
+      isCurrentCell: false,
+      isSelectedCell: false,
+    ).test(
+        'When enableCellBorderHorizontal is true, cell height should equal stateManager.rowHeight',
+        (tester) async {
+      final cellFinder = find.byType(TrinaBaseCell).first;
+
+      final size = tester.getSize(cellFinder);
+      expect(size.height, TrinaGridSettings.rowHeight);
+    });
+    aCellInsideTrinaBaseRow(
+      const TrinaGridConfiguration(
+        style: TrinaGridStyleConfig(enableCellBorderHorizontal: false),
+      ),
+    ).test(
+        'When enableCellBorderHorizontal is false, cell height should equal stateManager.rowTotalHeight',
+        (tester) async {
+      final cellFinder = find.byType(TrinaBaseCell).first;
+
+      final size = tester.getSize(cellFinder);
+      expect(size.height, stateManager.rowTotalHeight);
+    });
   });
 }

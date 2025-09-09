@@ -46,7 +46,7 @@ class _RowWrapperScreenState extends State<RowWrapperScreen> {
       body: TrinaGrid(
         columns: columns,
         rows: rows,
-        rowWrapper: (context, row, stateManager) {
+        rowWrapper: (context, rowWidget, rowData, stateManager) {
           return Container(
             margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
             decoration: BoxDecoration(
@@ -61,7 +61,7 @@ class _RowWrapperScreenState extends State<RowWrapperScreen> {
               ],
               color: Colors.white,
             ),
-            child: row,
+            child: rowWidget,
           );
         },
       ),

@@ -1,6 +1,6 @@
-# Cell Value Change Handling in TrinaGrid
+# Cell Value Change and Keyboard Event Handling in TrinaGrid
 
-TrinaGrid provides a flexible system for handling cell value changes through callbacks at both the cell level and the grid level. This dual approach gives you fine-grained control over how changes are processed in your application.
+TrinaGrid provides a flexible system for handling cell value changes and keyboard events through callbacks at both the cell level and the grid level. This dual approach gives you fine-grained control over how changes and keyboard interactions are processed in your application.
 
 ## Overview
 
@@ -148,6 +148,7 @@ Both callback types receive a `TrinaGridOnChangedEvent` object that contains inf
 | `column` | `TrinaColumn` | The column object |
 | `rowIdx` | `int` | The index of the row in the current view |
 | `row` | `TrinaRow` | The row object |
+| `cell` | `TrinaCell` | The cell that was changed |
 | `value` | `dynamic` | The new value |
 | `oldValue` | `dynamic` | The previous value |
 
@@ -160,9 +161,131 @@ onChanged: (event) {
   print('Row index: ${event.rowIdx}');
   print('Changed from: ${event.oldValue} to ${event.value}');
   
+  // Direct access to the changed cell
+  print('Cell key: ${event.cell.key}');
+  print('Original value: ${event.cell.originalValue}');
+  print('Is dirty: ${event.cell.isDirty}');
+  
+  // Access formatted value
+  String formattedValue = event.column.formattedValueForDisplay(event.value);
+  print('Formatted value: $formattedValue');
+  
   // Access other cells in the same row
   final otherCellValue = event.row.cells['otherField']?.value;
 }
+```
+
+## Keyboard Event Handling
+
+In addition to value changes, TrinaGrid also provides keyboard event handling through the `onKeyPressed` callback at the cell level. This allows you to capture and respond to keyboard interactions like Enter, Tab, Escape, and modifier key combinations.
+
+### Cell-Level onKeyPressed Callback
+
+The `onKeyPressed` callback is defined on the `TrinaCell` object and is triggered when any key is pressed while the cell is being edited.
+
+### Syntax
+
+```dart
+TrinaCell(
+  value: initialValue,
+  onKeyPressed: (TrinaGridOnKeyEvent event) {
+    // Handle keyboard events
+  },
+)
+```
+
+### When to Use Keyboard Event Callbacks
+
+Keyboard event callbacks are ideal for:
+
+- Implementing custom navigation patterns (e.g., Shift+Enter to move up)
+- Creating keyboard shortcuts for specific cells
+- Validating input as users type
+- Triggering actions based on special keys (Enter, Escape, Tab)
+- Implementing auto-completion or suggestion features
+- Handling modifier key combinations (Ctrl+Enter, Shift+Tab, etc.)
+
+### The TrinaGridOnKeyEvent Object
+
+The `onKeyPressed` callback receives a `TrinaGridOnKeyEvent` object with the following properties:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `column` | `TrinaColumn` | The column where the key was pressed |
+| `row` | `TrinaRow` | The row where the key was pressed |
+| `rowIdx` | `int` | The index of the row |
+| `cell` | `TrinaCell` | The cell where the key was pressed |
+| `event` | `KeyEvent` | The raw Flutter KeyEvent |
+| `isEnter` | `bool` | Whether the Enter key was pressed |
+| `isEscape` | `bool` | Whether the Escape key was pressed |
+| `isTab` | `bool` | Whether the Tab key was pressed |
+| `isShiftPressed` | `bool` | Whether Shift is pressed |
+| `isCtrlPressed` | `bool` | Whether Ctrl/Cmd is pressed |
+| `isAltPressed` | `bool` | Whether Alt is pressed |
+| `logicalKey` | `LogicalKeyboardKey` | The logical key that was pressed |
+| `currentValue` | `String?` | The current text value in the cell (if editing) |
+
+### Example: Keyboard Event Handling
+
+```dart
+TrinaCell(
+  value: 'Press Enter to submit',
+  onKeyPressed: (event) {
+    // Handle Enter key
+    if (event.isEnter && !event.isShiftPressed) {
+      print('Enter pressed - submitting value: ${event.currentValue}');
+      // Perform submission logic
+    } 
+    // Handle Shift+Enter for new line (in multi-line cells)
+    else if (event.isEnter && event.isShiftPressed) {
+      print('Shift+Enter pressed - new line');
+      // Allow new line in multi-line cells
+    }
+    // Handle Tab navigation
+    else if (event.isTab) {
+      if (event.isShiftPressed) {
+        print('Shift+Tab - moving to previous cell');
+      } else {
+        print('Tab - moving to next cell');
+      }
+    }
+    // Handle Escape to cancel
+    else if (event.isEscape) {
+      print('Escape pressed - canceling edit');
+      // The grid will handle reverting the value
+    }
+    // Handle Ctrl+S for save
+    else if (event.isCtrlPressed && event.logicalKey.keyLabel == 'S') {
+      print('Ctrl+S pressed - saving data');
+      // Trigger save operation
+    }
+  },
+)
+```
+
+### Combined Value Change and Keyboard Event Handling
+
+You can use both `onChanged` and `onKeyPressed` callbacks together for comprehensive cell interaction handling:
+
+```dart
+TrinaCell(
+  value: 'Initial Value',
+  onChanged: (event) {
+    // Handle value changes
+    print('Value changed from ${event.oldValue} to ${event.value}');
+    saveToDatabase(event.value);
+  },
+  onKeyPressed: (event) {
+    // Handle keyboard events
+    if (event.isEnter && event.isCtrlPressed) {
+      // Ctrl+Enter to submit and move to next row
+      submitAndMoveToNextRow();
+    } else if (event.isEscape) {
+      // Escape to cancel (handled by grid)
+      showToast('Edit canceled');
+    }
+  },
+)
 ```
 
 ## Best Practices
@@ -182,7 +305,7 @@ onChanged: (event) {
 
 ## Complete Example
 
-Here's a complete example demonstrating both callback types:
+Here's a complete example demonstrating value change and keyboard event handling:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -198,7 +321,7 @@ class _CellChangeHandlingExampleState extends State<CellChangeHandlingExample> {
   late List<TrinaRow> rows;
   late TrinaGridStateManager stateManager;
   
-  // Track changes for display
+  // Track changes and keyboard events for display
   final List<String> changeLog = [];
   
   @override
@@ -217,6 +340,11 @@ class _CellChangeHandlingExampleState extends State<CellChangeHandlingExample> {
         field: 'age',
         type: TrinaColumnType.number(),
       ),
+      TrinaColumn(
+        title: 'Notes',
+        field: 'notes',
+        type: TrinaColumnType.text(),
+      ),
     ];
     
     // Create rows with cell-level callbacks
@@ -234,6 +362,15 @@ class _CellChangeHandlingExampleState extends State<CellChangeHandlingExample> {
                 _logChange('VALIDATION: Name too short!');
               }
             },
+            onKeyPressed: (event) {
+              // Handle keyboard events for name field
+              if (event.isEnter && event.isCtrlPressed) {
+                _logChange('KEYBOARD: Ctrl+Enter pressed in Name field');
+                // Could trigger form submission here
+              } else if (event.isTab) {
+                _logChange('KEYBOARD: Tab pressed, moving to next field');
+              }
+            },
           ),
           'age': TrinaCell(
             value: 30,
@@ -244,6 +381,27 @@ class _CellChangeHandlingExampleState extends State<CellChangeHandlingExample> {
               // Cell-specific validation
               if (event.value < 18) {
                 _logChange('VALIDATION: Must be 18 or older!');
+              }
+            },
+            onKeyPressed: (event) {
+              // Handle keyboard events for age field
+              if (event.isEnter) {
+                _logChange('KEYBOARD: Enter pressed in Age field');
+              }
+            },
+          ),
+          'notes': TrinaCell(
+            value: 'Press Shift+Enter for special action',
+            onKeyPressed: (event) {
+              // Demonstrate various keyboard interactions
+              if (event.isEnter && event.isShiftPressed) {
+                _logChange('KEYBOARD: Shift+Enter - Special action triggered!');
+                // Could insert line break or perform special action
+              } else if (event.isEscape) {
+                _logChange('KEYBOARD: Escape pressed - Edit canceled');
+              } else if (event.isCtrlPressed && event.logicalKey.keyLabel == 'S') {
+                _logChange('KEYBOARD: Ctrl+S - Save triggered');
+                // Could trigger save operation
               }
             },
           ),
@@ -264,7 +422,7 @@ class _CellChangeHandlingExampleState extends State<CellChangeHandlingExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Cell Change Handling')),
+      appBar: AppBar(title: Text('Cell Change & Keyboard Event Handling')),
       body: Column(
         children: [
           Expanded(
@@ -309,4 +467,4 @@ class _CellChangeHandlingExampleState extends State<CellChangeHandlingExample> {
 }
 ```
 
-This example demonstrates how to use both cell-level and grid-level callbacks to handle changes in a TrinaGrid, with a visual log showing the sequence of events.
+This example demonstrates how to use cell-level callbacks for both value changes and keyboard events, along with grid-level callbacks to handle changes in a TrinaGrid, with a visual log showing the sequence of events and keyboard interactions.

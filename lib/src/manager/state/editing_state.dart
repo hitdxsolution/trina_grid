@@ -45,12 +45,14 @@ abstract class IEditingState {
 
   /// Change cell value
   /// [callOnChangedEvent] triggers a [TrinaOnChangedEventCallback] callback.
+  /// [validate] determines whether to validate the value before setting it.
   void changeCellValue(
     TrinaCell cell,
     dynamic value, {
     bool callOnChangedEvent = true,
     bool force = false,
     bool notify = true,
+    bool validate = true,
   });
 }
 
@@ -260,6 +262,7 @@ mixin EditingState implements ITrinaGridState {
     bool callOnChangedEvent = true,
     bool force = false,
     bool notify = true,
+    bool validate = true,
   }) {
     final currentColumn = cell.column;
     final currentRow = cell.row;
@@ -272,7 +275,10 @@ mixin EditingState implements ITrinaGridState {
       oldValue: oldValue,
     );
 
-    value = castValueByColumnType(value, currentColumn);
+    // Only cast value if we're validating
+    if (validate) {
+      value = castValueByColumnType(value, currentColumn);
+    }
 
     if (force == false &&
         canNotChangeCellValue(
@@ -283,30 +289,32 @@ mixin EditingState implements ITrinaGridState {
       return;
     }
 
-    // Validate the value before applying the change
-    final validationError = validateValue(
-      value,
-      currentColumn,
-      currentRow,
-      rowIdx,
-      oldValue,
-    );
+    // Validate the value before applying the change (only if validate is true)
+    if (validate) {
+      final validationError = validateValue(
+        value,
+        currentColumn,
+        currentRow,
+        rowIdx,
+        oldValue,
+      );
 
-    if (validationError != null) {
-      // Trigger validation failed callback
-      if (onValidationFailed != null) {
-        onValidationFailed!(
-          TrinaGridValidationEvent(
-            column: currentColumn,
-            row: currentRow,
-            rowIdx: rowIdx,
-            value: value,
-            oldValue: oldValue,
-            errorMessage: validationError,
-          ),
-        );
+      if (validationError != null) {
+        // Trigger validation failed callback
+        if (onValidationFailed != null) {
+          onValidationFailed!(
+            TrinaGridValidationEvent(
+              column: currentColumn,
+              row: currentRow,
+              rowIdx: rowIdx,
+              value: value,
+              oldValue: oldValue,
+              errorMessage: validationError,
+            ),
+          );
+        }
+        return;
       }
-      return;
     }
 
     // Store the old value if change tracking is enabled
@@ -322,6 +330,7 @@ mixin EditingState implements ITrinaGridState {
       column: currentColumn,
       rowIdx: rowIdx,
       row: currentRow,
+      cell: cell,
       value: value,
       oldValue: oldValue,
     );
@@ -428,6 +437,14 @@ mixin EditingState implements ITrinaGridState {
           continue;
         }
 
+        // Store the old value if change tracking is enabled
+        if (this case final TrinaGridStateManager stateManager
+            when stateManager.enableChangeTracking) {
+          if (!currentCell.isDirty) {
+            currentCell.trackChange();
+          }
+        }
+
         refRows[rowIdx].setState(TrinaRowState.updated);
 
         currentCell.value = newValue;
@@ -438,6 +455,7 @@ mixin EditingState implements ITrinaGridState {
           column: currentColumn,
           rowIdx: rowIdx,
           row: refRows[rowIdx],
+          cell: currentCell,
           value: newValue,
           oldValue: oldValue,
         );

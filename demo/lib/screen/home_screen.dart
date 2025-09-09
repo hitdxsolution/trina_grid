@@ -24,6 +24,7 @@ import '../widget/trina_text_color_animation.dart';
 import 'feature/add_and_remove_column_row_screen.dart';
 import 'feature/add_rows_asynchronously.dart';
 import 'feature/column_renderer_screen.dart';
+import 'feature/cell_color_screen.dart';
 import 'feature/cell_renderer_screen.dart';
 import 'feature/cell_selection_screen.dart';
 import 'feature/column_filtering_screen.dart';
@@ -37,6 +38,7 @@ import 'feature/column_resizing_screen.dart';
 import 'feature/column_sorting_screen.dart';
 import 'feature/copy_and_paste_screen.dart';
 import 'feature/currency_type_column_screen.dart';
+import 'feature/custom_pagination_screen.dart';
 import 'feature/dark_mode_screen.dart';
 import 'feature/date_type_column_screen.dart';
 import 'feature/dual_mode_screen.dart';
@@ -63,6 +65,8 @@ import 'feature/scrollbars.dart';
 import 'feature/date_time_column_screen.dart';
 import 'feature/row_wrapper_screen.dart';
 import 'feature/multiitems_delegate_demo_screen.dart';
+import 'feature/custom_footer_screen.dart';
+import 'feature/dynamic_row_height_demo.dart';
 
 class HomeScreen extends StatelessWidget {
   static const routeName = '/';
@@ -194,6 +198,14 @@ class _TrinaFeaturesState extends State<TrinaFeatures> {
   List<Widget> _buildFeatureItems(BuildContext context) {
     final List<Widget> allItems = [
       TrinaListTile(
+        title: 'Custom Pagination UI',
+        description: 'Customize rows pagination UI',
+        onTapLiveDemo: () {
+          Navigator.pushNamed(context, CustomPaginationScreen.routeName);
+        },
+        trailing: newIcon,
+      ),
+      TrinaListTile(
         title: 'Column Title Renderer',
         description:
             'Fully customize column titles with your own widgets while preserving all column functionality.',
@@ -284,6 +296,16 @@ class _TrinaFeaturesState extends State<TrinaFeatures> {
         },
       ),
       TrinaListTile(
+        title: 'Pagination Footer',
+        description:
+            'Create custom pagination footer widgets at the bottom of the grid using createFooter callback. '
+            'Includes basic, styled, and compact pagination designs.',
+        onTapLiveDemo: () {
+          Navigator.pushNamed(context, CustomFooterScreen.routeName);
+        },
+        trailing: newIcon,
+      ),
+      TrinaListTile(
         title: 'Column hiding',
         description: 'Hide or un-hide the column.',
         onTapLiveDemo: () {
@@ -369,6 +391,14 @@ class _TrinaFeaturesState extends State<TrinaFeatures> {
         description: 'Dynamically change the background color of row.',
         onTapLiveDemo: () {
           Navigator.pushNamed(context, RowColorScreen.routeName);
+        },
+      ),
+      TrinaListTile(
+        title: 'Cell color',
+        description:
+            'Dynamically change the background color of individual cells.',
+        onTapLiveDemo: () {
+          Navigator.pushNamed(context, CellColorScreen.routeName);
         },
       ),
       TrinaListTile(
@@ -613,6 +643,15 @@ class _TrinaFeaturesState extends State<TrinaFeatures> {
           Navigator.pushNamed(context, MultiItemsDelegateDemoScreen.routeName);
         },
       ),
+      TrinaListTile(
+        title: 'Dynamic Row Height',
+        description:
+            'Test dynamic row height functionality with custom setRowHeight method for individual rows.',
+        onTapLiveDemo: () {
+          Navigator.pushNamed(context, DynamicRowHeightDemo.routeName);
+        },
+        trailing: newIcon,
+      ),
     ];
     return allItems;
   }
@@ -696,6 +735,13 @@ class TrinaContributors extends StatelessWidget {
             linkTitle: 'Github',
             onTapLink: () {
               launchUrl('https://github.com/doonfrs');
+            },
+          ),
+          TrinaContributorTile(
+            name: 'Mouayad Alhamwi',
+            linkTitle: 'Github',
+            onTapLink: () {
+              launchUrl('https://github.com/DMouayad');
             },
           ),
           TrinaContributorTile(

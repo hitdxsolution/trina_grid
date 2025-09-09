@@ -21,6 +21,10 @@ class _RowSelectionScreenState extends State<RowSelectionScreen> {
 
   TrinaGridStateManager? stateManager;
 
+  // Debug info for onSelected callback
+  String _selectedInfo = 'No selection event fired yet';
+  int _selectionEventCount = 0;
+
   @override
   void initState() {
     super.initState();
@@ -71,14 +75,45 @@ class _RowSelectionScreenState extends State<RowSelectionScreen> {
         });
   }
 
+  void _onRowSelected(TrinaGridOnSelectedEvent event) {
+    setState(() {
+      _selectionEventCount++;
+      String info = 'onSelected Event #$_selectionEventCount fired!\n';
+      info += 'Row: ${event.row?.key}\n';
+      info += 'Row Index: ${event.rowIdx}\n';
+      info += 'Cell: ${event.cell?.key}\n';
+      info += 'Selected Rows Count: ${event.selectedRows?.length ?? 0}\n';
+      info += 'Current Selecting Rows: ${stateManager?.currentSelectingRows.length ?? 0}\n';
+      if (event.selectedRows != null && event.selectedRows!.isNotEmpty) {
+        info +=
+            'Selected Row Keys: ${event.selectedRows!.map((r) => r.key).toList()}\n';
+      }
+      if (stateManager != null && stateManager!.currentSelectingRows.isNotEmpty) {
+        info +=
+            'Currently Selecting Row Keys: ${stateManager!.currentSelectingRows.map((r) => r.key).toList()}\n';
+      }
+      _selectedInfo = info;
+    });
+
+    print(
+        'onSelected callback fired: rowIdx=${event.rowIdx}, selectedRowsCount=${event.selectedRows?.length}, currentSelectingCount=${stateManager?.currentSelectingRows.length}');
+  }
+
   @override
   Widget build(BuildContext context) {
     return TrinaExampleScreen(
       title: 'Row selection',
       topTitle: 'Row selection',
-      topContents: const [
-        Text(
+      topContents: [
+        const Text(
             'In Row selection mode, Shift + tap or long tap and then move or Control + tap to select a row.'),
+        const Text(
+            'onSelected callback now fires in Normal mode too! Try tapping rows, Ctrl+click, Shift+click, long press, or pressing Enter.'),
+        const SizedBox(height: 8),
+        Text(
+          'onSelected Event Status: $_selectedInfo',
+          style: const TextStyle(fontSize: 12, color: Colors.blue),
+        ),
       ],
       topButtons: [
         TrinaExampleButton(
@@ -103,9 +138,11 @@ class _RowSelectionScreenState extends State<RowSelectionScreen> {
             child: TrinaGrid(
               columns: columns,
               rows: rows,
+              // Now onSelected works in normal mode too!
               onChanged: (TrinaGridOnChangedEvent event) {
                 print(event);
               },
+              onSelected: _onRowSelected, // Add the onSelected callback
               onLoaded: (TrinaGridOnLoadedEvent event) {
                 event.stateManager.setSelectingMode(TrinaGridSelectingMode.row);
 

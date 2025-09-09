@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:trina_grid/trina_grid.dart';
 
 void main() {
@@ -65,7 +66,7 @@ class _TrinaGridExamplePageState extends State<TrinaGridExamplePage> {
           'Designer',
           'Owner',
         ],
-        builder: (item) {
+        menuItemBuilder: (item) {
           return Row(children: [
             Icon(item == 'Programmer' ? Icons.code : Icons.design_services),
             const SizedBox(width: 8),
@@ -91,10 +92,9 @@ class _TrinaGridExamplePageState extends State<TrinaGridExamplePage> {
       footerRenderer: (rendererContext) {
         return TrinaAggregateColumnFooter(
           rendererContext: rendererContext,
-          formatAsCurrency: true,
           type: TrinaAggregateColumnType.sum,
-          format: '#,###',
           alignment: Alignment.center,
+          numberFormat: NumberFormat.simpleCurrency(),
           titleSpanBuilder: (text) {
             return [
               const TextSpan(

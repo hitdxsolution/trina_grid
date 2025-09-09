@@ -310,7 +310,8 @@ mixin LayoutState implements ITrinaGridState {
   double get rowHeight => configuration.style.rowHeight;
 
   @override
-  double get rowTotalHeight => rowHeight + TrinaGridSettings.rowBorderWidth;
+  double get rowTotalHeight =>
+      rowHeight + configuration.style.cellHorizontalBorderWidth;
 
   @override
   double get gridPadding => configuration.style.gridPadding;
@@ -371,16 +372,26 @@ mixin LayoutState implements ITrinaGridState {
   }
 
   @override
-  double get leftFrozenRightOffset =>
-      maxWidth! -
-      leftFrozenColumnsWidth -
-      TrinaGridSettings.totalShadowLineWidth;
+  double get leftFrozenRightOffset {
+    if (maxWidth == null) {
+      return 0;
+    }
+
+    return maxWidth! -
+        leftFrozenColumnsWidth -
+        TrinaGridSettings.totalShadowLineWidth;
+  }
 
   @override
-  double get rightFrozenLeftOffset =>
-      maxWidth! -
-      rightFrozenColumnsWidth -
-      TrinaGridSettings.totalShadowLineWidth;
+  double get rightFrozenLeftOffset {
+    if (maxWidth == null) {
+      return 0;
+    }
+
+    return maxWidth! -
+        rightFrozenColumnsWidth -
+        TrinaGridSettings.totalShadowLineWidth;
+  }
 
   @override
   double get rightBlankOffset =>

@@ -50,6 +50,8 @@ abstract class IRowState {
 
   TrinaRowColorCallback? get rowColorCallback;
 
+  TrinaCellColorCallback? get cellColorCallback;
+
   int? getRowIdxByOffset(double offset);
 
   TrinaRow? getRowByIdx(int rowIdx);
@@ -106,6 +108,18 @@ abstract class IRowState {
     bool flag, {
     bool notify = true,
   });
+
+  /// Set the height of a specific row by index
+  void setRowHeight(int rowIndex, double height);
+
+  /// Reset a specific row to use the default height
+  void resetRowHeight(int rowIndex);
+
+  /// Reset all rows to use the default height
+  void resetAllRowHeights();
+
+  /// Get the effective height of a specific row
+  double getRowHeight(int rowIndex);
 }
 
 mixin RowState implements ITrinaGridState {
@@ -171,12 +185,16 @@ mixin RowState implements ITrinaGridState {
     offset -= bodyTopOffset - scroll.verticalOffset;
 
     double currentOffset = 0.0;
-
     int? indexToMove;
 
     final int rowsLength = refRows.length;
 
     for (var i = 0; i < rowsLength; i += 1) {
+      // Get row-specific height instead of using global height
+      final rowHeight = getRowHeight(i);
+      final rowTotalHeight =
+          rowHeight + configuration.style.cellHorizontalBorderWidth;
+
       if (currentOffset <= offset && offset < currentOffset + rowTotalHeight) {
         indexToMove = i;
         break;
@@ -460,14 +478,84 @@ mixin RowState implements ITrinaGridState {
 
   @override
   void toggleAllRowChecked(
-    bool? flag, {
+    bool flag, {
     bool notify = true,
   }) {
-    for (final row in iterateRowAndGroup) {
-      row.setChecked(flag == true);
+    for (var row in refRows) {
+      row.setChecked(flag);
     }
 
     notifyListeners(notify, toggleAllRowChecked.hashCode);
+  }
+
+  @override
+  void setRowHeight(int rowIndex, double height) {
+    if (rowIndex >= 0 && rowIndex < refRows.length) {
+      // Since height is final, we need to create a new row with the new height
+      final oldRow = refRows[rowIndex];
+      final newRow = TrinaRow(
+        cells: oldRow.cells,
+        type: oldRow.type,
+        sortIdx: oldRow.sortIdx,
+        data: oldRow.data,
+        checked: oldRow.checked ?? false,
+        key: oldRow.key,
+        frozen: oldRow.frozen,
+        height: height,
+      );
+
+      // Copy over internal state
+      newRow.setParent(oldRow.parent);
+      newRow.setState(oldRow.state);
+
+      // Replace the row in the list
+      refRows[rowIndex] = newRow;
+
+      notifyListeners(true);
+    }
+  }
+
+  @override
+  void resetRowHeight(int rowIndex) {
+    if (rowIndex >= 0 && rowIndex < refRows.length) {
+      // Since height is final, we need to create a new row without the height
+      final oldRow = refRows[rowIndex];
+      final newRow = TrinaRow(
+        cells: oldRow.cells,
+        type: oldRow.type,
+        sortIdx: oldRow.sortIdx,
+        data: oldRow.data,
+        checked: oldRow.checked ?? false,
+        key: oldRow.key,
+        frozen: oldRow.frozen,
+        // height will be null by default
+      );
+
+      // Copy over internal state
+      newRow.setParent(oldRow.parent);
+      newRow.setState(oldRow.state);
+
+      // Replace the row in the list
+      refRows[rowIndex] = newRow;
+
+      notifyListeners(true);
+    }
+  }
+
+  @override
+  void resetAllRowHeights() {
+    for (int i = 0; i < refRows.length; i++) {
+      resetRowHeight(i);
+    }
+    // No need to call notifyListeners here since resetRowHeight already does it
+  }
+
+  @override
+  double getRowHeight(int rowIndex) {
+    if (rowIndex >= 0 && rowIndex < refRows.length) {
+      return refRows[rowIndex].height ?? configuration.style.rowHeight;
+    }
+    return configuration.style.rowHeight;
   }
 
   void _insertRows(int index, List<TrinaRow> rows) {

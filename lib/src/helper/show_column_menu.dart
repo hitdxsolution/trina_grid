@@ -93,14 +93,38 @@ Future<T?>? showColumnMenu<T>({
   final RenderBox overlay =
       Overlay.of(context).context.findRenderObject() as RenderBox;
 
+  // Get the physical width and device pixel ratio
+  final double physicalWidth =
+      WidgetsBinding.instance.platformDispatcher.views.first.physicalSize.width;
+  final double devicePixelRatio =
+      WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
+  final double logicalWidth = physicalWidth / devicePixelRatio;
+
+  // Get the physical height and device pixel ratio
+  final double physicalHeight =
+      WidgetsBinding.instance.platformDispatcher.views.first.physicalSize.height;
+  final double logicalHeight = physicalHeight / devicePixelRatio;
+
+  final double widthScalingFactor = MediaQuery.of(context).size.width / logicalWidth;
+  final double heightScalingFactor = MediaQuery.of(context).size.height / logicalHeight;
+
+  // Adjust positions based on scaling
+  final double adjustedLeft = position.dx * widthScalingFactor;
+  final double adjustedTop = position.dy * heightScalingFactor;
+
+  final double adjustedRight =
+      adjustedLeft + (overlay.size.width * widthScalingFactor);
+  final double adjustedBottom =
+      adjustedTop + (overlay.size.height * heightScalingFactor);
+
   return showMenu<T>(
     context: context,
     color: backgroundColor,
     position: RelativeRect.fromLTRB(
-      position.dx,
-      position.dy,
-      position.dx + overlay.size.width,
-      position.dy + overlay.size.height,
+      adjustedLeft,
+      adjustedTop,
+      adjustedRight,
+      adjustedBottom,
     ),
     items: items,
     useRootNavigator: true,

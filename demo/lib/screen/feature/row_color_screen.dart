@@ -31,6 +31,7 @@ class _RowColorScreenState extends State<RowColorScreen> {
     {'name': 'Brown', 'color': Colors.brown[100]!},
     {'name': 'Indigo', 'color': Colors.indigo[100]!},
     {'name': 'Orange', 'color': Colors.orange[100]!},
+    {'name': 'Transparent', 'color': Colors.transparent},
   ];
 
   // Selection colors - different from row colors and more subtle
@@ -52,6 +53,7 @@ class _RowColorScreenState extends State<RowColorScreen> {
   int defaultRowColorIndex = 6; // Grey
   int selectionColorIndex = 0; // Blue selection color
   int activatedBorderColorIndex = 0; // Blue activated border color
+  int readOnlyColorIndex = 6; // Grey read-only color
 
   Color get oneValueColor => colorOptions[oneValueColorIndex]['color'] as Color;
   Color get twoValueColor => colorOptions[twoValueColorIndex]['color'] as Color;
@@ -61,6 +63,7 @@ class _RowColorScreenState extends State<RowColorScreen> {
       selectionColorOptions[selectionColorIndex]['color'] as Color;
   Color get activatedBorderColor =>
       selectionColorOptions[activatedBorderColorIndex]['color'] as Color;
+  Color get readOnlyColor => colorOptions[readOnlyColorIndex]['color'] as Color;
 
   @override
   void initState() {
@@ -150,6 +153,8 @@ class _RowColorScreenState extends State<RowColorScreen> {
             'Use the controls below to customize the row colors and selection color.'),
         Text(
             'This example uses transparent activatedColor and TrinaGridMode.selectWithOneTap to demonstrate row color overlay.'),
+        Text(
+            'Some columns (1, 3, 5) are read-only and will show the read-only cell color.'),
       ],
       topButtons: [
         TrinaExampleButton(
@@ -170,6 +175,10 @@ class _RowColorScreenState extends State<RowColorScreen> {
                   children: [
                     const Text('Color Settings:',
                         style: TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8),
+                    const Text(
+                        'Note: Read-only color can be changed dynamically by recreating the grid configuration.',
+                        style: TextStyle(fontSize: 12, color: Colors.grey)),
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 8,
@@ -211,6 +220,22 @@ class _RowColorScreenState extends State<RowColorScreen> {
                             }
                           });
                         }, selectionColorOptions),
+                        _buildColorDropdown(
+                            'Read-Only Color', readOnlyColorIndex, (index) {
+                          setState(() {
+                            readOnlyColorIndex = index;
+                            if (stateManager != null) {
+                              final newStyle =
+                                  stateManager!.configuration.style.copyWith(
+                                cellReadonlyColor: readOnlyColor,
+                              );
+                              stateManager!.setConfiguration(
+                                  stateManager!.configuration.copyWith(
+                                style: newStyle,
+                              ));
+                            }
+                          });
+                        }, colorOptions),
                       ],
                     ),
                   ],
@@ -229,6 +254,8 @@ class _RowColorScreenState extends State<RowColorScreen> {
                   activatedColor: selectionColor,
                   // Set initial border color
                   activatedBorderColor: activatedBorderColor,
+
+                  cellReadonlyColor: readOnlyColor,
                 ),
               ),
               onChanged: (TrinaGridOnChangedEvent event) {

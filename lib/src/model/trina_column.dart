@@ -90,6 +90,7 @@ class TrinaColumn {
   /// or the text cannot be directly modified, such as in the form of select popup.
   bool applyFormatterInEditing;
 
+  /// Background color of column title.
   Color? backgroundColor;
 
   /// Customize the widget in the default cell.
@@ -128,7 +129,7 @@ class TrinaColumn {
   ///   return TrinaAggregateColumnFooter(
   ///     rendererContext: rendererContext,
   ///     type: TrinaAggregateColumnType.count,
-  ///     format: 'Checked : #,###.###',
+  ///     numberFormat: NumberFormat('Checked : #,###.###'),
   ///     filter: (cell) => cell.row.checked == true,
   ///     alignment: Alignment.center,
   ///   );
@@ -198,8 +199,6 @@ class TrinaColumn {
 
   /// Hide the column.
   bool hide;
-
-  LinearGradient? backgroundGradient;
 
   /// The widget of the filter column, this can be customized with the multiple constructors, defaults to a [TrinaFilterColumnWidgetDelegate.initial()]
   TrinaFilterColumnWidgetDelegate? filterWidgetDelegate;
@@ -400,7 +399,9 @@ class TrinaColumn {
   }
 
   String formattedValueForType(dynamic value) {
-    if (type is TrinaColumnTypeWithNumberFormat) {
+    // Use the generic applyFormat method from the extension
+    // This will handle all column types that implement TrinaColumnTypeHasFormat
+    if (type.hasFormat) {
       return type.applyFormat(value);
     }
 
@@ -510,7 +511,7 @@ class TrinaFilterColumnWidgetDelegate {
     FocusNode focusNode,
     TextEditingController controller,
     bool enabled,
-    void Function(String changed) handleOnChanged,
+    void Function(dynamic changed) handleOnChanged,
     TrinaGridStateManager stateManager,
   )? onFilterSuffixTap;
 
@@ -518,7 +519,7 @@ class TrinaFilterColumnWidgetDelegate {
     FocusNode focusNode,
     TextEditingController controller,
     bool enabled,
-    void Function(String changed) handleOnChanged,
+    void Function(dynamic changed) handleOnChanged,
     TrinaGridStateManager stateManager,
   )? filterWidgetBuilder;
 

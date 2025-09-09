@@ -5,6 +5,7 @@ import 'package:demo/screen/feature/column_title_renderer_screen.dart';
 import 'package:demo/screen/feature/date_time_column_screen.dart';
 import 'package:demo/screen/feature/percentage_type_column_screen.dart';
 import 'package:demo/screen/feature/rtl_scrollbar_screen.dart';
+import 'package:demo/screen/feature/custom_pagination_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'constants/trina_grid_example_colors.dart';
@@ -12,6 +13,7 @@ import 'screen/empty_screen.dart';
 import 'screen/feature/add_and_remove_column_row_screen.dart';
 import 'screen/feature/add_rows_asynchronously.dart';
 import 'screen/feature/column_renderer_screen.dart';
+import 'screen/feature/cell_color_screen.dart';
 import 'screen/feature/cell_renderer_screen.dart';
 import 'screen/feature/cell_selection_screen.dart';
 import 'screen/feature/column_filtering_screen.dart';
@@ -56,6 +58,8 @@ import 'screen/feature/frozen_rows_screen.dart';
 import 'screen/feature/scrollbars.dart';
 import 'screen/feature/row_wrapper_screen.dart';
 import 'screen/feature/multiitems_delegate_demo_screen.dart';
+import 'screen/feature/custom_footer_screen.dart';
+import 'screen/feature/dynamic_row_height_demo.dart';
 
 void main() {
   runApp(const MyApp());
@@ -79,6 +83,7 @@ class MyApp extends StatelessWidget {
             const ColumnRendererScreen(),
         ColumnTitleRendererScreen.routeName: (context) =>
             const ColumnTitleRendererScreen(),
+        CellColorScreen.routeName: (context) => const CellColorScreen(),
         CellRendererScreen.routeName: (context) => const CellRendererScreen(),
         CellSelectionScreen.routeName: (context) => const CellSelectionScreen(),
         ChangeTrackingScreen.routeName: (context) =>
@@ -107,6 +112,8 @@ class MyApp extends StatelessWidget {
         CopyAndPasteScreen.routeName: (context) => const CopyAndPasteScreen(),
         CurrencyTypeColumnScreen.routeName: (context) =>
             const CurrencyTypeColumnScreen(),
+        CustomPaginationScreen.routeName: (context) =>
+            const CustomPaginationScreen(),
         DarkModeScreen.routeName: (context) => const DarkModeScreen(),
         DateTypeColumnScreen.routeName: (context) =>
             const DateTypeColumnScreen(),
@@ -151,7 +158,10 @@ class MyApp extends StatelessWidget {
         RowWrapperScreen.routeName: (context) => const RowWrapperScreen(),
         MultiItemsDelegateDemoScreen.routeName: (context) =>
             const MultiItemsDelegateDemoScreen(),
+        DynamicRowHeightDemo.routeName: (context) =>
+            const DynamicRowHeightDemo(),
         RTLScrollbarScreen.routeName: (context) => const RTLScrollbarScreen(),
+        CustomFooterScreen.routeName: (context) => const CustomFooterScreen(),
       },
       theme: ThemeData(
         primaryColor: TrinaGridExampleColors.primaryColor,

@@ -45,7 +45,8 @@ mixin TextCellState<T extends TextCell> on State<T> implements TextFieldProps {
   @override
   List<TextInputFormatter>? get inputFormatters => [];
 
-  String get formattedValue => widget.column.formattedValueForDisplayInEditing(widget.cell.value);
+  String get formattedValue =>
+      widget.column.formattedValueForDisplayInEditing(widget.cell.value);
 
   @override
   void initState() {
@@ -82,7 +83,8 @@ mixin TextCellState<T extends TextCell> on State<T> implements TextFieldProps {
       _changeValue();
     }
 
-    if (!widget.stateManager.isEditing || widget.stateManager.currentColumn?.enableEditingMode != true) {
+    if (!widget.stateManager.isEditing ||
+        widget.stateManager.currentColumn?.enableEditingMode != true) {
       widget.stateManager.setTextEditingController(null);
     }
 
@@ -183,6 +185,27 @@ mixin TextCellState<T extends TextCell> on State<T> implements TextFieldProps {
       return KeyEventResult.handled;
     }
 
+    // Trigger onKeyPressed callback if it exists
+    if (widget.cell.onKeyPressed != null) {
+      final keyEvent = TrinaGridOnKeyEvent(
+        column: widget.column,
+        row: widget.row,
+        rowIdx: widget.stateManager.refRows.indexOf(widget.row),
+        cell: widget.cell,
+        event: event,
+        isEnter: keyManager.isEnter,
+        isEscape: keyManager.isEsc,
+        isTab: keyManager.isTab,
+        isShiftPressed: keyManager.isShiftPressed,
+        isCtrlPressed: keyManager.isCtrlPressed,
+        isAltPressed: keyManager.isAltPressed,
+        logicalKey: event.logicalKey,
+        currentValue: _textController.text,
+      );
+      
+      widget.cell.onKeyPressed!(keyEvent);
+    }
+
     final skip = !(keyManager.isVertical ||
         _moveHorizontal(keyManager) ||
         keyManager.isEsc ||
@@ -192,9 +215,7 @@ mixin TextCellState<T extends TextCell> on State<T> implements TextFieldProps {
 
     // Movement and enter key, non-editable cell left and right movement, etc. key input is propagated to text field.
     if (skip) {
-      return widget.stateManager.keyManager!.eventResult.skip(
-        KeyEventResult.ignored,
-      );
+      return KeyEventResult.ignored;
     }
 
     if (_debounce.isDebounced(
@@ -207,7 +228,6 @@ mixin TextCellState<T extends TextCell> on State<T> implements TextFieldProps {
     // Enter key is propagated to grid focus handler.
     if (keyManager.isEnter) {
       _handleOnComplete();
-      return KeyEventResult.ignored;
     }
 
     // ESC is propagated to grid focus handler.
@@ -232,24 +252,27 @@ mixin TextCellState<T extends TextCell> on State<T> implements TextFieldProps {
       cellFocus.requestFocus();
     }
 
-    Widget w = TextField(
-      focusNode: cellFocus,
-      controller: _textController,
-      readOnly: widget.column.checkReadOnly(widget.row, widget.cell),
-      onChanged: _handleOnChanged,
-      onEditingComplete: _handleOnComplete,
-      onSubmitted: (_) => _handleOnComplete(),
-      onTap: _handleOnTap,
-      style: widget.stateManager.configuration.style.cellTextStyle,
-      decoration: const InputDecoration(
-        border: OutlineInputBorder(borderSide: BorderSide.none),
-        contentPadding: EdgeInsets.zero,
+    Widget w = Container(
+      alignment: Alignment.center,
+      child: TextField(
+        focusNode: cellFocus,
+        controller: _textController,
+        readOnly: widget.column.checkReadOnly(widget.row, widget.cell),
+        onChanged: _handleOnChanged,
+        onEditingComplete: _handleOnComplete,
+        onSubmitted: (_) => _handleOnComplete(),
+        onTap: _handleOnTap,
+        style: widget.stateManager.configuration.style.cellTextStyle,
+        decoration: const InputDecoration(
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.zero,
+          isDense: true,
+        ),
+        maxLines: 1,
+        keyboardType: keyboardType,
+        inputFormatters: inputFormatters,
+        textAlign: widget.column.textAlign.value,
       ),
-      maxLines: 1,
-      keyboardType: keyboardType,
-      inputFormatters: inputFormatters,
-      textAlignVertical: TextAlignVertical.center,
-      textAlign: widget.column.textAlign.value,
     );
 
     // Use column-level editCellRenderer if available, otherwise fall back to grid-level

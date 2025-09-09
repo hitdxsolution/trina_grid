@@ -12,6 +12,7 @@ Welcome to the official documentation for TrinaGrid, a powerful data grid for Fl
 
 - [Migrating from PlutoGrid](migration/pluto-to-trina.md)
 - [Migration Tool Reference](migration/migration-tool.md)
+- [Dynamic Row Heights Migration](migration/dynamic-row-heights-migration.md)
 
 ## Features
 
@@ -40,6 +41,7 @@ Welcome to the official documentation for TrinaGrid, a powerful data grid for Fl
 - [Row Checking](features/row-checking.md)
 - [Row Groups](features/row-groups.md)
 - [Frozen Rows](features/frozen-rows.md)
+- [Dynamic Row Heights](features/dynamic-row-heights.md)
 
 ### Cell Features
 
@@ -82,19 +84,21 @@ Welcome to the official documentation for TrinaGrid, a powerful data grid for Fl
 - [Filtering and Sorting](examples/filtering-sorting.md)
 - [Pagination](examples/pagination.md)
 - [Row and Cell Selection](examples/selection.md)
+- [Dynamic Row Heights](examples/dynamic-row-heights.md)
 
 ## API Reference
 
-- [TrinaGrid](api/trina-grid.md)
-- [TrinaColumn](api/trina-column.md)
-- [TrinaRow](api/trina-row.md)
-- [TrinaCell](api/trina-cell.md)
-- [TrinaGridStateManager](api/trina-grid-state-manager.md)
+- [TrinaGrid](api/trina-grid.md) - Main grid widget
+- [TrinaColumn](api/trina-column.md) - Column definition
+- [TrinaRow](api/trina-row.md) - Row data model
+- [TrinaCell](api/trina-cell.md) - Cell data model
+- [TrinaGridStateManager](api/trina-grid-state-manager.md) - State management
 
 ## Contributing
 
-- [How to Contribute](contributing/how-to-contribute.md)
-- [Code of Conduct](contributing/code-of-conduct.md)
+- [Contributors](contributing/contributors.md) - Meet our amazing contributors
+- [How to Contribute](contributing/how-to-contribute.md) - Guidelines for contributing
+- [Code of Conduct](contributing/code-of-conduct.md) - Community standards
 
 ## Release Notes
 

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:trina_grid/trina_grid.dart';
 
 /// [TrinaGrid.onLoaded] Argument received by registering callback.
@@ -25,6 +25,7 @@ class TrinaGridOnChangedEvent {
   final TrinaColumn column;
   final int rowIdx;
   final TrinaRow row;
+  final TrinaCell cell;
   final dynamic value;
   final dynamic oldValue;
 
@@ -33,6 +34,7 @@ class TrinaGridOnChangedEvent {
     required this.column,
     required this.rowIdx,
     required this.row,
+    required this.cell,
     this.value,
     this.oldValue,
   });
@@ -284,5 +286,76 @@ class TrinaGridOnLazyFetchCompletedEvent {
   @override
   String toString() {
     return '[TrinaGridOnLazyFetchCompletedEvent] page: $page, totalPage: $totalPage, totalRecords: $totalRecords';
+  }
+}
+
+/// Event triggered when a key is pressed in a cell.
+/// This allows developers to capture keyboard interactions like Enter, Shift, Tab, etc.
+class TrinaGridOnKeyEvent {
+  /// The column where the key was pressed
+  final TrinaColumn column;
+  
+  /// The row where the key was pressed
+  final TrinaRow row;
+  
+  /// The row index
+  final int rowIdx;
+  
+  /// The cell where the key was pressed
+  final TrinaCell cell;
+  
+  /// The raw KeyEvent from Flutter
+  final KeyEvent event;
+  
+  /// Whether the Enter key was pressed
+  final bool isEnter;
+  
+  /// Whether the Escape key was pressed
+  final bool isEscape;
+  
+  /// Whether the Tab key was pressed
+  final bool isTab;
+  
+  /// Whether Shift is pressed
+  final bool isShiftPressed;
+  
+  /// Whether Ctrl/Cmd is pressed
+  final bool isCtrlPressed;
+  
+  /// Whether Alt is pressed
+  final bool isAltPressed;
+  
+  /// The logical key that was pressed
+  final LogicalKeyboardKey logicalKey;
+  
+  /// The current text value in the cell (if editing)
+  final String? currentValue;
+  
+  const TrinaGridOnKeyEvent({
+    required this.column,
+    required this.row,
+    required this.rowIdx,
+    required this.cell,
+    required this.event,
+    required this.isEnter,
+    required this.isEscape,
+    required this.isTab,
+    required this.isShiftPressed,
+    required this.isCtrlPressed,
+    required this.isAltPressed,
+    required this.logicalKey,
+    this.currentValue,
+  });
+  
+  @override
+  String toString() {
+    String out = '[TrinaGridOnKeyEvent] ';
+    out += 'Column: ${column.title}, RowIndex: $rowIdx\n';
+    out += '::: Key: ${logicalKey.debugName}\n';
+    out += '::: Modifiers: Shift=$isShiftPressed, Ctrl=$isCtrlPressed, Alt=$isAltPressed\n';
+    if (currentValue != null) {
+      out += '::: Current value: $currentValue';
+    }
+    return out;
   }
 }

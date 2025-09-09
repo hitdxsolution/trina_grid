@@ -56,6 +56,11 @@ class TrinaGridCellGestureEvent extends TrinaGridEvent {
       stateManager.setEditing(true);
     } else {
       stateManager.setCurrentCell(cell, rowIdx);
+      
+      // In normal mode, also fire onSelected callback when row selection is configured
+      if (stateManager.mode.isNormal && stateManager.selectingMode.isRow && stateManager.onSelected != null) {
+        stateManager.handleOnSelected();
+      }
     }
   }
 
@@ -66,6 +71,13 @@ class TrinaGridCellGestureEvent extends TrinaGridEvent {
 
     if (stateManager.selectingMode.isRow) {
       stateManager.toggleSelectingRow(rowIdx);
+      
+      // Fire onSelected callback for long press selection in normal mode too
+      if ((stateManager.mode.isMultiSelectMode || 
+          (stateManager.mode.isNormal && stateManager.selectingMode.isRow)) && 
+          stateManager.onSelected != null) {
+        stateManager.handleOnSelected();
+      }
     }
   }
 
@@ -126,7 +138,9 @@ class TrinaGridCellGestureEvent extends TrinaGridEvent {
   }
 
   void _selecting(TrinaGridStateManager stateManager) {
-    bool callOnSelected = stateManager.mode.isMultiSelectMode;
+    // Allow onSelected callback to fire in both multiSelect mode and normal mode with row selection
+    bool callOnSelected = stateManager.mode.isMultiSelectMode || 
+                         (stateManager.mode.isNormal && stateManager.selectingMode.isRow);
 
     if (stateManager.keyPressed.shift) {
       final int? columnIdx = stateManager.columnIndex(column);

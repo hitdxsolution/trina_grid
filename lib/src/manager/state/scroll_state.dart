@@ -93,28 +93,44 @@ mixin ScrollState implements ITrinaGridState {
       return;
     }
 
-    final double rowSize = rowTotalHeight;
+    // Calculate the actual offset based on row-specific heights
+    double offsetToMove = 0.0;
+
+    if (direction.isUp) {
+      // Calculate offset to the row above
+      for (int i = 0; i < rowIdx! - 1; i++) {
+        final rowHeight = getRowHeight(i);
+        offsetToMove +=
+            rowHeight + configuration.style.cellHorizontalBorderWidth;
+      }
+    } else {
+      // Calculate offset to the row below
+      for (int i = 0; i < rowIdx! + 1; i++) {
+        final rowHeight = getRowHeight(i);
+        offsetToMove +=
+            rowHeight + configuration.style.cellHorizontalBorderWidth;
+      }
+    }
 
     final double screenOffset = scroll.verticalOffset +
         columnRowContainerHeight -
         columnGroupHeight -
         columnHeight -
         columnFilterHeight -
-        columnFooterHeight -
-        TrinaGridSettings.rowBorderWidth;
-
-    double offsetToMove =
-        direction.isUp ? (rowIdx! - 1) * rowSize : (rowIdx! + 1) * rowSize;
+        configuration.style.cellHorizontalBorderWidth;
 
     final bool inScrollStart = scroll.verticalOffset <= offsetToMove;
 
-    final bool inScrollEnd = offsetToMove + rowSize <= screenOffset;
+    final bool inScrollEnd =
+        offsetToMove + getRowHeight(rowIdx) <= screenOffset;
 
     if (inScrollStart && inScrollEnd) {
       return;
     } else if (inScrollEnd == false) {
-      offsetToMove =
-          scroll.verticalOffset + offsetToMove + rowSize - screenOffset;
+      offsetToMove = scroll.verticalOffset +
+          offsetToMove +
+          getRowHeight(rowIdx) -
+          screenOffset;
     }
 
     scrollByDirection(direction, offsetToMove);

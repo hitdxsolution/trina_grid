@@ -38,7 +38,7 @@ class FilterHelper {
   static TrinaRow createFilterRow({
     String? columnField,
     TrinaFilterType? filterType,
-    String? filterValue,
+    dynamic filterValue,
   }) {
     return TrinaRow(
       cells: {
@@ -512,7 +512,11 @@ class FilterPopupState {
       TrinaColumn(
         title: configuration.localeText.filterType,
         field: FilterHelper.filterFieldType,
-        type: TrinaColumnType.select(configuration.columnFilter.filters),
+        type: TrinaColumnType.select(
+          configuration.columnFilter.filters,
+          // item is a [TrinaFilterType]
+          menuItemBuilder: (item) => Text(item.title.toString()),
+        ),
         enableFilterMenuItem: false,
         applyFormatterInEditing: true,
         formatter: (dynamic value) {

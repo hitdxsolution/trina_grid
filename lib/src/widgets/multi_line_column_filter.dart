@@ -31,7 +31,7 @@ class _MultiLineColumnFilterState extends State<MultiLineColumnFilter> {
 
   @override
   Widget build(BuildContext context) {
-    final fillColor =
+    final fillColor = widget.stateManager.configuration.style.filterHeaderColor ??
         widget.stateManager.configuration.style.cellColorInEditState;
 
     return Stack(
@@ -77,7 +77,8 @@ class _MultiLineColumnFilterState extends State<MultiLineColumnFilter> {
                         },
                         icon: Icon(
                           Icons.clear,
-                          color:
+                          size: 16,
+                          color: widget.stateManager.configuration.style.filterHeaderIconColor ??
                               widget.stateManager.configuration.style.iconColor,
                         ),
                       ),
@@ -119,7 +120,8 @@ class _MultiLineColumnFilterState extends State<MultiLineColumnFilter> {
                       },
                       icon: Icon(
                         Icons.edit,
-                        color:
+                        size: 16,
+                        color: widget.stateManager.configuration.style.filterHeaderIconColor ??
                             widget.stateManager.configuration.style.iconColor,
                       ),
                     ),

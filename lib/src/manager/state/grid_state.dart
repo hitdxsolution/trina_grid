@@ -205,13 +205,16 @@ mixin GridState implements ITrinaGridState {
   @override
   void handleOnSelected() {
     _handleSelectCheckRowBehavior();
-    if (mode.isSelectMode == true && onSelected != null) {
+    // Allow onSelected callback to fire in normal mode as well as select modes
+    if ((mode.isSelectMode || mode.isNormal) && onSelected != null) {
       onSelected!(
         TrinaGridOnSelectedEvent(
           row: currentRow,
           rowIdx: currentRowIdx,
           cell: currentCell,
-          selectedRows: mode.isMultiSelectMode ? currentSelectingRows : null,
+          // Include currentSelectingRows when we have row selection in any mode
+          selectedRows: (mode.isMultiSelectMode || (mode.isNormal && selectingMode.isRow)) 
+                       ? currentSelectingRows : null,
         ),
       );
     }

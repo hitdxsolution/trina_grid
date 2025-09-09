@@ -46,8 +46,9 @@ class TrinaBaseRow extends StatelessWidget {
   }
 
   void _handleOnAccept(DragTargetDetails<TrinaRow> draggingRow) async {
-    final draggingRows = stateManager.currentSelectingRows.isNotEmpty
-        ? stateManager.currentSelectingRows
+    // Use the rows that were actually set for dragging during the drag operation
+    final draggingRows = stateManager.dragRows.isNotEmpty
+        ? stateManager.dragRows
         : [draggingRow.data];
 
     stateManager.eventManager!.addEvent(
@@ -69,13 +70,17 @@ class TrinaBaseRow extends StatelessWidget {
     );
   }
 
-  Widget _dragTargetBuilder(dragContext, candidate, rejected) {
+// BuildContext, List<TrinaRow<dynamic>?>,
+  Widget _dragTargetBuilder(
+    BuildContext dragContext,
+    List<TrinaRow<dynamic>?> candidate,
+    List<dynamic> rejected,
+  ) {
     return _RowContainerWidget(
       stateManager: stateManager,
       rowIdx: rowIdx,
       row: row,
-      enableRowColorAnimation:
-          stateManager.configuration.style.enableRowColorAnimation,
+      enableRowColorAnimation: stateManager.style.enableRowColorAnimation,
       key: ValueKey('rowContainer_${row.key}'),
       child: visibilityLayout
           ? TrinaVisibilityLayout(
@@ -84,6 +89,7 @@ class TrinaBaseRow extends StatelessWidget {
                 stateManager: stateManager,
                 columns: columns,
                 textDirection: stateManager.textDirection,
+                rowIdx: rowIdx,
               ),
               scrollController: stateManager.scroll.bodyRowsHorizontal!,
               initialViewportDimension: MediaQuery.of(dragContext).size.width,
@@ -95,6 +101,7 @@ class TrinaBaseRow extends StatelessWidget {
                 stateManager: stateManager,
                 columns: columns,
                 textDirection: stateManager.textDirection,
+                rowIdx: rowIdx,
               ),
               children: columns.map(_makeCell).toList(growable: false),
             ),
@@ -136,10 +143,13 @@ class _RowCellsLayoutDelegate extends MultiChildLayoutDelegate {
 
   final TextDirection textDirection;
 
+  final int rowIdx;
+
   _RowCellsLayoutDelegate({
     required this.stateManager,
     required this.columns,
     required this.textDirection,
+    required this.rowIdx,
   }) : super(relayout: stateManager.resizingChangeNotifier);
 
   @override
@@ -149,7 +159,10 @@ class _RowCellsLayoutDelegate extends MultiChildLayoutDelegate {
       (previousValue, element) => previousValue + element.width,
     );
 
-    return Size(width, stateManager.rowHeight);
+    // Use row-specific height instead of global height
+    final rowHeight = stateManager.getRowHeight(rowIdx);
+
+    return Size(width, rowHeight);
   }
 
   @override
@@ -158,13 +171,24 @@ class _RowCellsLayoutDelegate extends MultiChildLayoutDelegate {
     final items = isLTR ? columns : columns.reversed;
     double dx = 0;
 
+    // Get row-specific height
+    final rowHeight = stateManager.getRowHeight(rowIdx);
+
     for (var element in items) {
       var width = element.width;
 
       if (hasChild(element.field)) {
         layoutChild(
           element.field,
-          BoxConstraints.tightFor(width: width, height: stateManager.rowHeight),
+          BoxConstraints.tightFor(
+            width: width,
+            height: stateManager.style.enableCellBorderHorizontal
+                ? rowHeight
+                // we add `cellHorizontalBorderWidth` to the row height so the cells are not
+                // vertically-separated by the disabled horizontal border
+                : rowHeight +
+                    stateManager.style.cellHorizontalBorderWidth,
+          ),
         );
 
         positionChild(element.field, Offset(dx, 0));
@@ -289,11 +313,11 @@ class _RowContainerWidgetState extends TrinaStateWithChange<_RowContainerWidget>
     final frozenBorder = widget.row.frozen != TrinaRowFrozen.none
         ? Border(
             top: BorderSide(
-              width: TrinaGridSettings.rowBorderWidth,
+              width: stateManager.configuration.style.cellHorizontalBorderWidth,
               color: stateManager.configuration.style.frozenRowBorderColor,
             ),
             bottom: BorderSide(
-              width: TrinaGridSettings.rowBorderWidth,
+              width: stateManager.configuration.style.cellHorizontalBorderWidth,
               color: stateManager.configuration.style.frozenRowBorderColor,
             ),
           )
@@ -305,21 +329,20 @@ class _RowContainerWidgetState extends TrinaStateWithChange<_RowContainerWidget>
           Border(
             top: isTopDragTarget
                 ? BorderSide(
-                    width: TrinaGridSettings.rowBorderWidth,
+                    width: stateManager.style.cellHorizontalBorderWidth,
                     color:
                         stateManager.configuration.style.activatedBorderColor,
                   )
                 : BorderSide.none,
             bottom: isBottomDragTarget
                 ? BorderSide(
-                    width: TrinaGridSettings.rowBorderWidth,
-                    color:
-                        stateManager.configuration.style.activatedBorderColor,
+                    width: stateManager.style.cellHorizontalBorderWidth,
+                    color: stateManager.style.activatedBorderColor,
                   )
-                : stateManager.configuration.style.enableCellBorderHorizontal
+                : stateManager.style.enableCellBorderHorizontal
                     ? BorderSide(
-                        width: TrinaGridSettings.rowBorderWidth,
-                        color: stateManager.configuration.style.borderColor,
+                        width: stateManager.style.cellHorizontalBorderWidth,
+                        color: stateManager.style.borderColor,
                       )
                     : BorderSide.none,
           ),

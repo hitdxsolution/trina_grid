@@ -20,7 +20,7 @@ TrinaColumn(
     return TrinaAggregateColumnFooter(
       rendererContext: rendererContext,
       type: TrinaAggregateColumnType.sum,
-      format: 'Total: #,###.##',
+      numberFormat: NumberFormat('Total: #,###.##'),
       alignment: Alignment.center,
     );
   },
@@ -54,7 +54,7 @@ TrinaColumn(
     return TrinaAggregateColumnFooter(
       rendererContext: rendererContext,
       type: TrinaAggregateColumnType.sum,
-      format: '#,###.##',
+      numberFormat: NumberFormat('#,###.##'),
       alignment: Alignment.center,
     );
   },
@@ -63,25 +63,24 @@ TrinaColumn(
 
 ### Customizing the Display Format
 
-You can customize the format of the displayed value using the `format` parameter:
+You can customize the format of the displayed value using the `numberFormat` parameter:
 
 ```dart
 TrinaAggregateColumnFooter(
   rendererContext: rendererContext,
   type: TrinaAggregateColumnType.sum,
-  format: 'Total: #,###.##',
+  numberFormat: NumberFormat('Total: #,###.##'),  
   alignment: Alignment.center,
 )
 ```
 
-For currency formatting, you can set `formatAsCurrency` to `true`:
+For example, to format the aggregated value as currency, you can use:
 
 ```dart
 TrinaAggregateColumnFooter(
   rendererContext: rendererContext,
   type: TrinaAggregateColumnType.sum,
-  formatAsCurrency: true,
-  locale: 'en_US', // Optional: specify locale for currency format
+  numberFormat: NumberFormat.simpleCurrency(),
   alignment: Alignment.center,
 )
 ```
@@ -94,7 +93,7 @@ You can use the `filter` parameter to specify which cells should be included in 
 TrinaAggregateColumnFooter(
   rendererContext: rendererContext,
   type: TrinaAggregateColumnType.count,
-  format: 'Checked: #,###',
+  numberFormat: NumberFormat('checked: #,###'),
   filter: (cell) => cell.row.checked == true,
   alignment: Alignment.center,
 )
@@ -108,7 +107,7 @@ You can customize the appearance of the text using the `titleSpanBuilder` parame
 TrinaAggregateColumnFooter(
   rendererContext: rendererContext,
   type: TrinaAggregateColumnType.sum,
-  format: '#,###.##',
+  numberFormat: NumberFormat('#,###.##'),
   alignment: Alignment.center,
   titleSpanBuilder: (text) {
     return [
@@ -137,7 +136,7 @@ TrinaAggregateColumnFooter(
   rendererContext: rendererContext,
   type: TrinaAggregateColumnType.sum,
   iterateRowType: TrinaAggregateColumnIterateRowType.all,
-  format: 'Total (All): #,###.##',
+  numberFormat: NumberFormat('Total (All): #,###.##'),
 )
 ```
 
@@ -155,7 +154,7 @@ TrinaAggregateColumnFooter(
   rendererContext: rendererContext,
   type: TrinaAggregateColumnType.sum,
   groupedRowType: TrinaAggregateColumnGroupedRowType.rows,
-  format: 'Total (Non-Group): #,###.##',
+  numberFormat: NumberFormat('Total (Non-Group): #,###.##'),
 )
 ```
 
@@ -215,7 +214,7 @@ class _ColumnFooterExampleState extends State<ColumnFooterExample> {
           return TrinaAggregateColumnFooter(
             rendererContext: rendererContext,
             type: TrinaAggregateColumnType.count,
-            format: 'Checked: #,###',
+            numberFormat: NumberFormat('Checked: #,###'),
             filter: (cell) => cell.row.checked == true,
             alignment: Alignment.center,
           );
@@ -230,7 +229,7 @@ class _ColumnFooterExampleState extends State<ColumnFooterExample> {
           return TrinaAggregateColumnFooter(
             rendererContext: rendererContext,
             type: TrinaAggregateColumnType.sum,
-            format: '#,###',
+            numberFormat: NumberFormat('#,###'),
             alignment: Alignment.center,
             titleSpanBuilder: (text) {
               return [
@@ -254,7 +253,7 @@ class _ColumnFooterExampleState extends State<ColumnFooterExample> {
           return TrinaAggregateColumnFooter(
             rendererContext: rendererContext,
             type: TrinaAggregateColumnType.average,
-            format: '#,###.###',
+            numberFormat: NumberFormat('#,###.###'),
             alignment: Alignment.center,
             titleSpanBuilder: (text) {
               return [
@@ -274,7 +273,7 @@ class _ColumnFooterExampleState extends State<ColumnFooterExample> {
           return TrinaAggregateColumnFooter(
             rendererContext: rendererContext,
             type: TrinaAggregateColumnType.min,
-            format: '#,###',
+            numberFormat: NumberFormat('#,###'),
             alignment: Alignment.center,
             titleSpanBuilder: (text) {
               return [
@@ -294,7 +293,7 @@ class _ColumnFooterExampleState extends State<ColumnFooterExample> {
           return TrinaAggregateColumnFooter(
             rendererContext: rendererContext,
             type: TrinaAggregateColumnType.max,
-            format: '#,###',
+            numberFormat: NumberFormat('#,###'),
             alignment: Alignment.center,
             titleSpanBuilder: (text) {
               return [
@@ -314,7 +313,7 @@ class _ColumnFooterExampleState extends State<ColumnFooterExample> {
             rendererContext: rendererContext,
             type: TrinaAggregateColumnType.count,
             filter: (cell) => cell.value == 'Electronics',
-            format: 'Electronics: #,###',
+            numberFormat: NumberFormat('Electronics: #,###'),
             alignment: Alignment.center,
           );
         },

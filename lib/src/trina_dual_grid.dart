@@ -81,7 +81,7 @@ class TrinaDualGrid extends StatefulWidget {
 }
 
 class TrinaDualGridResizeNotifier extends ChangeNotifier {
-  resize() {
+  void resize() {
     notifyListeners();
   }
 }
@@ -207,6 +207,7 @@ class TrinaDualGridState extends State<TrinaDualGrid> {
         createFooter: props.createFooter,
         noRowsWidget: props.noRowsWidget,
         rowColorCallback: props.rowColorCallback,
+        cellColorCallback: props.cellColorCallback,
         columnMenuDelegate: props.columnMenuDelegate,
         configuration: props.configuration,
         mode: mode,
@@ -642,6 +643,9 @@ class TrinaDualGridProps {
   /// {@macro trina_grid_property_rowColorCallback}
   final TrinaRowColorCallback? rowColorCallback;
 
+  /// {@macro trina_grid_property_cellColorCallback}
+  final TrinaCellColorCallback? cellColorCallback;
+
   /// {@macro trina_grid_property_columnMenuDelegate}
   final TrinaColumnMenuDelegate? columnMenuDelegate;
 
@@ -678,6 +682,7 @@ class TrinaDualGridProps {
     this.createFooter,
     this.noRowsWidget,
     this.rowColorCallback,
+    this.cellColorCallback,
     this.columnMenuDelegate,
     this.configuration = const TrinaGridConfiguration(),
     this.mode,
@@ -700,6 +705,7 @@ class TrinaDualGridProps {
     TrinaOptional<CreateFooterCallBack?>? createFooter,
     TrinaOptional<Widget?>? noRowsWidget,
     TrinaOptional<TrinaRowColorCallback?>? rowColorCallback,
+    TrinaOptional<TrinaCellColorCallback?>? cellColorCallback,
     TrinaOptional<TrinaColumnMenuDelegate?>? columnMenuDelegate,
     TrinaGridConfiguration? configuration,
     TrinaOptional<TrinaGridMode?>? mode,
@@ -732,6 +738,9 @@ class TrinaDualGridProps {
       rowColorCallback: rowColorCallback == null
           ? this.rowColorCallback
           : rowColorCallback.value,
+      cellColorCallback: cellColorCallback == null
+          ? this.cellColorCallback
+          : cellColorCallback.value,
       columnMenuDelegate: columnMenuDelegate == null
           ? this.columnMenuDelegate
           : columnMenuDelegate.value,

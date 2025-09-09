@@ -16,6 +16,7 @@ class TrinaRow<T> {
     bool checked = false,
     Key? key,
     TrinaRowFrozen? frozen,
+    this.height,
   })  : type = type ?? TrinaRowTypeNormal.instance,
         _checked = checked,
         _state = TrinaRowState.none,
@@ -33,6 +34,10 @@ class TrinaRow<T> {
   /// TrinaRowFrozen.start means the row is frozen at the top
   /// TrinaRowFrozen.end means the row is frozen at the bottom
   final TrinaRowFrozen frozen;
+
+  /// Custom height for this specific row
+  /// If null, uses the global rowHeight from configuration
+  final double? height;
 
   Map<String, TrinaCell> cells;
 
@@ -294,7 +299,7 @@ class TrinaRow<T> {
   /// //       'column3': 'child1 value3',
   /// //     },
   /// //     {
-  /// //       'column1': 'child2 value1',
+  /// //       'child1': 'child2 value1',
   /// //       'column2': 'child2 value2',
   /// //       'column3': 'child2 value3',
   /// //     },

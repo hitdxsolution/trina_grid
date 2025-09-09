@@ -88,6 +88,8 @@ TrinaColumn(
 | `endDate` | `DateTime?` | Maximum selectable date |
 | `firstDate` | `DateTime?` | First date visible in calendar |
 | `lastDate` | `DateTime?` | Last date visible in calendar |
+| `closePopupOnSelection` | `bool` | Whether to close the popup immediately after a date is selected. Defaults to `true`. |
+| `popupIcon` | `IconData?` | Custom icon for the popup button (defaults to `Icons.date_range`) |
 
 ### Time Column
 
@@ -108,8 +110,10 @@ TrinaColumn(
 | Property | Type | Description |
 |----------|------|-------------|
 | `format` | `String` | Time format pattern |
-| `use24HourFormat` | `bool` | Whether to use 24-hour format |
-| `minuteInterval` | `int` | Interval between selectable minutes |
+| `minTime` | `TimeOfDay?` | The minimum selectable time. |
+| `maxTime` | `TimeOfDay?` | The maximum selectable time. |
+| `saveAndClosePopupWithEnter` | `bool` | If true, pressing Enter will save the value and close the popup. |
+
 
 ### DateTime Column
 
@@ -140,31 +144,17 @@ TrinaColumn(
 | `applyFormatOnInit` | `bool` | Whether to apply format when initializing (defaults to `true`) |
 | `popupIcon` | `IconData?` | Custom icon for the popup button (defaults to calendar icon) |
 
-#### DateTime Selection Process
-
-The DateTime column opens a two-step selection process:
-
-1. First, a date picker appears where the user can select a date
-2. After selecting a date, a time picker appears with hour and minute selection
-3. The combined date and time value is then set in the cell
-
-This approach provides a more intuitive way to select both date and time components compared to separate columns.
-
 ### Select Column
 
-For selecting from predefined options.
+For selecting a value from a predefined list of items.  
 
 ```dart
 TrinaColumn(
   title: 'Status',
   field: 'status',
   type: TrinaColumnType.select(
-    items: [
-      SelectItem(value: 'pending', label: 'Pending'),
-      SelectItem(value: 'in_progress', label: 'In Progress'),
-      SelectItem(value: 'completed', label: 'Completed'),
-      SelectItem(value: 'cancelled', label: 'Cancelled'),
-    ],
+    items: ['pending', 'in_progress', 'completed', 'cancelled'],
+    itemToString: (value) => value.toString().toUpperCase(),
   ),
 )
 ```
@@ -173,10 +163,15 @@ TrinaColumn(
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `items` | `List<SelectItem>` | List of selectable items |
-| `enableSearch` | `bool` | Whether to enable search in dropdown |
-| `enableFilter` | `bool` | Whether to enable filtering in dropdown |
-| `enableMultiSelect` | `bool` | Whether to allow selecting multiple items |
+| `items` | `List<dynamic>` | The list of items to display in the select menu. |
+| `itemToString` | `String Function(dynamic)?` | A function that returns the string representation of an item. This is required for search and filtering. |
+| `itemToValue` | `dynamic Function(dynamic)?` | A function that returns a unique value for an item, used for comparison and selection. |
+| `variant` | `TrinaDropdownMenuVariant` | The select menu variant; one of `select`, `selectWithSearch`, or `selectWithFilters`. |
+| `filters` | `List<TrinaDropdownMenuFilter>` | A list of filters to be used when `variant` is `TrinaDropdownMenuVariant.selectWithFilters`. |
+| `filtersInitiallyExpanded` | `bool` | Whether the filters section is initially expanded. Defaults to `true`. |
+| `emptySearchResultBuilder` | `WidgetBuilder?` | A builder function to create a widget to display when a search yields no results. |
+| `emptyFilterResultBuilder` | `WidgetBuilder?` | A builder function to create a widget to display when filtering yields no results. |
+| `menuItemBuilder` | `Widget Function(dynamic item)?` | A builder function to create a custom widget for each item in the list. |
 
 ### Boolean Column
 
@@ -193,10 +188,8 @@ TrinaColumn(
     defaultValue: false,
     width: 120,
     popupIcon: Icons.check_box,
-    builder: (item) => CustomBooleanWidget(value: item),
-    onItemSelected: (event) {
-      // Handle selection event
-    },
+    menuItemBuilder: (bool item) => CustomBooleanWidget(value: item),
+    onItemSelected: (bool item) {},
   ),
 )
 ```
@@ -211,8 +204,8 @@ TrinaColumn(
 | `falseText` | `String` | Text to display for false values (defaults to "No") |
 | `width` | `double?` | Width of the popup selector |
 | `popupIcon` | `IconData?` | Icon to display for opening the popup selector |
-| `builder` | `Widget Function(dynamic item)?` | Custom widget builder for rendering boolean values |
-| `onItemSelected` | `Function(TrinaGridOnSelectedEvent event)?` | Callback when a value is selected |
+| `menuItemBuilder` | `Widget Function(dynamic item)?` | Custom widget builder for rendering boolean values |
+| `onItemSelected` | `void Function(dynamic value)?` | Callback when a value is selected |
 
 ### Currency Column
 
@@ -429,19 +422,14 @@ List<TrinaColumn> columns = [
   TrinaColumn(
     title: 'Active',
     field: 'isActive',
-    type: TrinaColumnType.boolean(useCheckbox: true),
+    type: TrinaColumnType.boolean(),
     width: 100,
   ),
   TrinaColumn(
     title: 'Department',
     field: 'department',
     type: TrinaColumnType.select(
-      items: [
-        SelectItem(value: 'engineering', label: 'Engineering'),
-        SelectItem(value: 'marketing', label: 'Marketing'),
-        SelectItem(value: 'sales', label: 'Sales'),
-        SelectItem(value: 'hr', label: 'HR'),
-      ],
+      items: ['engineering', 'marketing', 'sales', 'hr'],
     ),
     width: 150,
   ),

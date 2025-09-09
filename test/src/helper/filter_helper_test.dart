@@ -755,6 +755,7 @@ void main() {
           column: columns.first,
           rowIdx: 0,
           row: rows.first,
+          cell: rows.first.cells[columns.first.field]!,
         ),
       );
 

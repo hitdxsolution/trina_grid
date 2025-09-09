@@ -69,9 +69,10 @@ class TrinaColumnFilterState extends TrinaStateWithChange<TrinaColumnFilter> {
         borderRadius: BorderRadius.zero,
       );
 
-  Color get _textFieldColor => _enabled
-      ? stateManager.configuration.style.cellColorInEditState
-      : stateManager.configuration.style.cellColorInReadOnlyState;
+  Color get _textFieldColor => stateManager.configuration.style.filterHeaderColor ??
+      (_enabled
+          ? stateManager.configuration.style.cellColorInEditState
+          : stateManager.configuration.style.cellColorInReadOnlyState);
 
   EdgeInsets get _padding =>
       widget.column.filterPadding ??
@@ -157,9 +158,7 @@ class TrinaColumnFilterState extends TrinaStateWithChange<TrinaColumnFilter> {
         stateManager.configuration.enterKeyAction;
 
     if (enterKeyAction.isNone) {
-      return stateManager.keyManager!.eventResult.skip(
-        KeyEventResult.ignored,
-      );
+      return KeyEventResult.ignored;
     }
 
     if (keyManager.isKeyUpEvent) {
@@ -167,9 +166,7 @@ class TrinaColumnFilterState extends TrinaStateWithChange<TrinaColumnFilter> {
     }
     // If it's Enter key and the action is none, handle it here
     if (keyManager.isEnter && enterKeyAction.isNone) {
-      return stateManager.keyManager!.eventResult.skip(
-        KeyEventResult.ignored,
-      );
+      return KeyEventResult.ignored;
     }
 
     final handleMoveDown = (keyManager.isDown ||
@@ -187,9 +184,7 @@ class TrinaColumnFilterState extends TrinaStateWithChange<TrinaColumnFilter> {
         return KeyEventResult.handled;
       }
 
-      return stateManager.keyManager!.eventResult.skip(
-        KeyEventResult.ignored,
-      );
+      return KeyEventResult.ignored;
     }
 
     if (handleMoveDown) {
@@ -239,7 +234,7 @@ class TrinaColumnFilterState extends TrinaStateWithChange<TrinaColumnFilter> {
     stateManager.setKeepFocus(false);
   }
 
-  void _handleOnChanged(String changed) {
+  void _handleOnChanged(dynamic changed) {
     stateManager.eventManager!.addEvent(
       TrinaGridChangeColumnFilterEvent(
         column: widget.column,
@@ -343,6 +338,7 @@ class TrinaColumnFilterState extends TrinaStateWithChange<TrinaColumnFilter> {
       height: stateManager.columnFilterHeight,
       child: DecoratedBox(
         decoration: BoxDecoration(
+          color: style.filterHeaderColor,
           border: BorderDirectional(
             top: BorderSide(color: style.borderColor),
             end: style.enableColumnBorderVertical

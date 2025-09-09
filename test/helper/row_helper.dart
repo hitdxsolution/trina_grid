@@ -26,9 +26,11 @@ class RowHelper {
             } else if (column.type.isTime) {
               return cellOfTimeColumn(column, rowIdx);
             } else if (column.type.isSelect) {
-              return cellOfTimeColumn(column, rowIdx);
+              return cellOfSelectColumn(column, rowIdx);
             } else if (column.type.isNumber || column.type.isCurrency) {
               return cellOfNumberColumn(column, rowIdx);
+            } else if (column.type.isDateTime) {
+              return cellOfDateTimeColumn(column, rowIdx);
             }
 
             throw Exception('Column is not implemented.');
@@ -64,7 +66,11 @@ class RowHelper {
     return TrinaCell(value: Random().nextInt(10000));
   }
 
-  static double resolveRowTotalHeight(double rowHeight) {
-    return rowHeight + TrinaGridSettings.rowBorderWidth;
+  static TrinaCell cellOfDateTimeColumn(TrinaColumn column, int rowIdx) {
+    return TrinaCell(value: DateTime.now().toString());
+  }
+
+  static double resolveRowTotalHeight(TrinaGridStyleConfig style) {
+    return style.rowHeight + style.cellHorizontalBorderWidth;
   }
 }

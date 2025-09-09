@@ -179,7 +179,7 @@ class TrinaBodyRowsState extends TrinaStateWithChange<TrinaBodyRows> {
       visibilityLayout: true,
     );
 
-    return stateManager.rowWrapper?.call(context, rowWidget, stateManager) ??
+    return stateManager.rowWrapper?.call(context, rowWidget, row, stateManager) ??
         rowWidget;
   }
 
@@ -230,9 +230,7 @@ class TrinaBodyRowsState extends TrinaStateWithChange<TrinaBodyRows> {
                               scrollDirection: Axis.vertical,
                               physics: const ClampingScrollPhysics(),
                               itemCount: _scrollableRows.length,
-                              itemExtent: stateManager.rowWrapper != null
-                                  ? null
-                                  : stateManager.rowTotalHeight,
+                              // Remove fixed itemExtent for variable heights
                               addRepaintBoundaries: false,
                               itemBuilder: (ctx, i) => _buildRow(
                                 context,

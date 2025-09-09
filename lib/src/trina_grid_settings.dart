@@ -30,11 +30,14 @@ abstract class TrinaGridSettings {
   /// Row - Default row height
   static const double rowHeight = 45.0;
 
-  /// Row - border width
-  static const double rowBorderWidth = 1.0;
+  /// Cell vertical border width (between rows)
+  static const double cellVerticalBorderWidth = 1.0;
+
+  /// Cell horizontal border width (between columns)
+  static const double cellHorizontalBorderWidth = 1.0;
 
   /// Row - total height
-  static const double rowTotalHeight = rowHeight + rowBorderWidth;
+  static const double rowTotalHeight = rowHeight + cellHorizontalBorderWidth;
 
   /// Cell - padding
   static const EdgeInsets cellPadding = EdgeInsets.symmetric(horizontal: 10);
