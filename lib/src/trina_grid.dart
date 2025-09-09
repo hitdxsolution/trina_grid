@@ -785,6 +785,10 @@ class TrinaGridState extends TrinaStateWithChange<TrinaGrid> {
                       shadow: style.enableGridBorderShadow,
                     ),
                   ),
+                  Container(
+                    height: 16,
+                    color: Colors.teal,
+                  ),
                   if (showColumnFooter)
                     LayoutId(
                       id: _StackName.leftFrozenColumnFooters,
