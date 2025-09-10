@@ -109,13 +109,6 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
     // Resize the column, inverting offset for RTL layouts
     stateManager.resizeColumn(widget.column, isLTR ? moveOffset : -moveOffset);
 
-    if (stateManager.onColumnsResized != null) {
-      stateManager.onColumnsResized!(TrinaGridOnColumnsResizedEvent(
-        column: widget.column,
-        width: widget.column.width,
-      ));
-    }
-
     // Update the column's right position for next movement tracking
     _columnRightPosition = event.position;
   }
@@ -123,6 +116,13 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
   void _handleOnPointUp(PointerUpEvent event) {
     if (_isPointMoving) {
       stateManager.updateCorrectScrollOffset();
+
+      if (stateManager.onColumnsResized != null) {
+        stateManager.onColumnsResized!(TrinaGridOnColumnsResizedEvent(
+          column: widget.column,
+          width: widget.column.width,
+        ));
+      }
     } else if (mounted && widget.column.enableContextMenu) {
       _showContextMenu(context, event.position);
     }
