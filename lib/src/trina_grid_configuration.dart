@@ -718,6 +718,7 @@ class TrinaGridStyleConfig {
     Color? filterPopupHeaderColor,
     Color? filterHeaderColor,
     Color? filterHeaderIconColor,
+    Widget Function(TrinaColumn column)? trinaColumnContextIcon,
   }) {
     // Preserve the dark style flag by using the appropriate constructor
     if (isDarkStyle) {
@@ -779,6 +780,7 @@ class TrinaGridStyleConfig {
         filterHeaderColor: filterHeaderColor ?? this.filterHeaderColor,
         filterPopupHeaderColor: filterPopupHeaderColor ?? this.filterPopupHeaderColor,
         filterHeaderIconColor: filterHeaderIconColor ?? this.filterHeaderIconColor,
+        trinaColumnContextIcon: trinaColumnContextIcon ?? this.trinaColumnContextIcon,
       );
     } else {
       return TrinaGridStyleConfig(
@@ -839,6 +841,7 @@ class TrinaGridStyleConfig {
         filterHeaderColor: filterHeaderColor ?? this.filterHeaderColor,
         filterPopupHeaderColor: filterPopupHeaderColor ?? this.filterPopupHeaderColor,
         filterHeaderIconColor: filterHeaderIconColor ?? this.filterHeaderIconColor,
+        trinaColumnContextIcon: trinaColumnContextIcon ?? this.trinaColumnContextIcon,
       );
     }
   }
