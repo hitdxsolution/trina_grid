@@ -186,6 +186,7 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
         if (showContextIcon)
           Positioned.directional(
             textDirection: stateManager.textDirection,
+            //! 건들면 계산 로직 깨지며 UI 박살남
             end: -3,
             child: contextMenuIcon,
           ),
@@ -194,24 +195,32 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
   }
 
   Widget _buildContextMenuIcon(TrinaGridStyleConfig style) {
-    return SizedBox(
-      height: widget.height,
-      child: Align(
-        alignment: Alignment.center,
-        child: IconButton(
-          icon: TrinaGridColumnIcon(
-            sort: _sort,
-            color: style.iconColor,
-            icon: widget.column.enableContextMenu ? style.columnContextIcon : style.columnResizeIcon,
-            ascendingIcon: style.columnAscendingIcon,
-            descendingIcon: style.columnDescendingIcon,
-          ),
-          iconSize: style.iconSize,
-          mouseCursor: contextMenuCursor,
-          onPressed: null,
-        ),
+    return MouseRegion(
+      cursor: contextMenuCursor,
+      child: SizedBox(
+        height: widget.height,
+        width: 10,
       ),
     );
+
+    // return SizedBox(
+    //   height: widget.height,
+    //   child: Align(
+    //     alignment: Alignment.center,
+    //     child: IconButton(
+    //       icon: TrinaGridColumnIcon(
+    //         sort: _sort,
+    //         color: style.iconColor,
+    //         icon: widget.column.enableContextMenu ? style.columnContextIcon : style.columnResizeIcon,
+    //         ascendingIcon: style.columnAscendingIcon,
+    //         descendingIcon: style.columnDescendingIcon,
+    //       ),
+    //       iconSize: style.iconSize,
+    //       mouseCursor: contextMenuCursor,
+    //       onPressed: null,
+    //     ),
+    //   ),
+    // );
   }
 
   TrinaColumnTitleRendererContext _createTitleRendererContext(
@@ -422,7 +431,7 @@ class _DefaultColumnTitleContent extends StatelessWidget {
       decoration: BoxDecoration(
         color: column.backgroundColor,
         border: BorderDirectional(
-          end: style.enableColumnBorderVertical ? BorderSide(color: style.borderColor, width: 1.0) : BorderSide.none,
+          end: style.enableColumnBorderVertical && column.enableRightBorder ? BorderSide(color: style.borderColor, width: 1.0) : BorderSide.none,
         ),
       ),
       child: Row(

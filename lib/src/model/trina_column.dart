@@ -3,15 +3,12 @@ import 'package:trina_grid/trina_grid.dart';
 
 typedef TrinaColumnValueFormatter = String Function(dynamic value);
 
-typedef TrinaColumnRenderer = Widget Function(
-    TrinaColumnRendererContext rendererContext);
+typedef TrinaColumnRenderer = Widget Function(TrinaColumnRendererContext rendererContext);
 
-typedef TrinaColumnFooterRenderer = Widget Function(
-    TrinaColumnFooterRendererContext context);
+typedef TrinaColumnFooterRenderer = Widget Function(TrinaColumnFooterRendererContext context);
 
 /// Renderer for customizing the column title widget
-typedef TrinaColumnTitleRenderer = Widget Function(
-    TrinaColumnTitleRendererContext rendererContext);
+typedef TrinaColumnTitleRenderer = Widget Function(TrinaColumnTitleRendererContext rendererContext);
 
 /// It dynamically determines whether the cells of the column are in the edit state.
 ///
@@ -205,8 +202,7 @@ class TrinaColumn {
 
   /// Optional validator function that returns an error message string if validation fails,
   /// or null if validation passes. This is called before the cell value is updated.
-  final String? Function(dynamic value, TrinaValidationContext context)?
-      validator;
+  final String? Function(dynamic value, TrinaValidationContext context)? validator;
 
   /// Custom renderer for the edit cell widget.
   /// This allows customizing the edit cell UI for this specific column.
@@ -285,6 +281,9 @@ class TrinaColumn {
   //옵션 추가
   final bool isColumnCheckboxHide;
 
+  //right border enable
+  final bool enableRightBorder;
+
   TrinaColumn({
     required this.title,
     required this.field,
@@ -323,12 +322,12 @@ class TrinaColumn {
     this.enableAutoEditing = false,
     this.enableEditingMode = true,
     this.hide = false,
-    this.filterWidgetDelegate =
-        const TrinaFilterColumnWidgetDelegate.textField(),
+    this.filterWidgetDelegate = const TrinaFilterColumnWidgetDelegate.textField(),
     this.disableRowCheckboxWhen,
     this.validator,
     this.editCellRenderer,
     this.filterEnterKeyAction,
+    this.enableRightBorder = true,
   })  : _key = UniqueKey(),
         _checkReadOnly = checkReadOnly;
 
@@ -352,11 +351,9 @@ class TrinaColumn {
 
   TrinaFilterType? _defaultFilter;
 
-  TrinaFilterType get defaultFilter =>
-      _defaultFilter ?? const TrinaFilterTypeContains();
+  TrinaFilterType get defaultFilter => _defaultFilter ?? const TrinaFilterTypeContains();
 
-  bool get isShowRightIcon =>
-      enableContextMenu || enableDropToResize || !sort.isNone;
+  bool get isShowRightIcon => enableContextMenu || enableDropToResize || !sort.isNone;
 
   TrinaColumnGroup? group;
 
@@ -430,10 +427,7 @@ class TrinaColumn {
     if (type is TrinaColumnTypeWithNumberFormat) {
       return value.toString().replaceFirst(
             '.',
-            (type as TrinaColumnTypeWithNumberFormat)
-                .numberFormat
-                .symbols
-                .DECIMAL_SEP,
+            (type as TrinaColumnTypeWithNumberFormat).numberFormat.symbols.DECIMAL_SEP,
           );
     } else if (type is TrinaColumnTypeBoolean) {
       switch (value) {
@@ -447,8 +441,7 @@ class TrinaColumn {
     }
 
     if (formatter != null) {
-      final bool allowFormatting =
-          readOnly || type.isSelect || type.isTime || type.isDate;
+      final bool allowFormatting = readOnly || type.isSelect || type.isTime || type.isDate;
 
       if (applyFormatterInEditing && allowFormatting) {
         return formatter!(value).toString();
