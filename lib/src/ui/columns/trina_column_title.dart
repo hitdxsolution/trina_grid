@@ -114,6 +114,7 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
   }
 
   void _handleOnPointUp(PointerUpEvent event) {
+    final style = stateManager.configuration.style;
     if (_isPointMoving) {
       stateManager.updateCorrectScrollOffset();
 
@@ -123,7 +124,7 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
           width: widget.column.width,
         ));
       }
-    } else if (mounted && widget.column.enableContextMenu) {
+    } else if (mounted && widget.column.enableContextMenu && style.trinaColumnContextIcon == null) {
       _showContextMenu(context, event.position);
     }
 
