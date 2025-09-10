@@ -135,7 +135,7 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
     final style = stateManager.configuration.style;
     final bool isCustom = widget.column.hasTitleRenderer;
 
-    var contextMenuIcon = _buildContextMenuIcon(style);
+    var contextMenuIcon = _buildContextMenuIcon(style, widget.column);
     contextMenuIcon = _buildContextMenuWidget(
       contextMenuIcon,
       hasTitleRenderer: isCustom,
@@ -193,8 +193,11 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
     );
   }
 
-  Widget _buildContextMenuIcon(TrinaGridStyleConfig style) {
-    //TODO icon 변경 시점
+  Widget _buildContextMenuIcon(TrinaGridStyleConfig style, TrinaColumn column) {
+    if (style.trinaColumnContextIcon != null) {
+      return style.trinaColumnContextIcon!(column);
+    }
+
     return SizedBox(
       height: widget.height,
       child: Align(
