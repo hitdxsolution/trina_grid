@@ -194,6 +194,7 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
   }
 
   Widget _buildContextMenuIcon(TrinaGridStyleConfig style) {
+    //TODO icon 변경 시점
     return SizedBox(
       height: widget.height,
       child: Align(
