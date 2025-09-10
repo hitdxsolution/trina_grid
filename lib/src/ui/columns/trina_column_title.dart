@@ -181,15 +181,23 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
       return title;
     }
 
-    return Stack(
+    // return Stack(
+    //   children: [
+    //     Positioned(left: 0, right: 0, child: title),
+    //     if (showContextIcon)
+    //       Positioned.directional(
+    //         textDirection: stateManager.textDirection,
+    //         end: -3,
+    //         child: contextMenuIcon,
+    //       ),
+    //   ],
+    // );
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Positioned(left: 0, right: 0, child: title),
-        if (showContextIcon)
-          Positioned.directional(
-            textDirection: stateManager.textDirection,
-            end: -3,
-            child: contextMenuIcon,
-          ),
+        title,
+        if (showContextIcon) contextMenuIcon,
       ],
     );
   }
