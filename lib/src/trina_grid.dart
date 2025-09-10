@@ -34,6 +34,8 @@ typedef TrinaOnRowsMovedEventCallback = void Function(TrinaGridOnRowsMovedEvent 
 
 typedef TrinaOnColumnsMovedEventCallback = void Function(TrinaGridOnColumnsMovedEvent event);
 
+typedef TrinaOnColumnsResizedEventCallback = void Function(TrinaGridOnColumnsResizedEvent event);
+
 typedef CreateHeaderCallBack = Widget Function(TrinaGridStateManager stateManager);
 
 typedef CreateFooterCallBack = Widget Function(TrinaGridStateManager stateManager);
@@ -86,6 +88,7 @@ class TrinaGrid extends TrinaStatefulWidget {
     this.onRowsMoved,
     this.onActiveCellChanged,
     this.onColumnsMoved,
+    this.onColumnsResized,
     this.createHeader,
     this.createFooter,
     this.noRowsWidget,
@@ -252,6 +255,8 @@ class TrinaGrid extends TrinaStatefulWidget {
   /// or frozen it to the left or right.
   /// {@endtemplate}
   final TrinaOnColumnsMovedEventCallback? onColumnsMoved;
+
+  final TrinaOnColumnsResizedEventCallback? onColumnsResized;
 
   /// {@template trina_grid_property_createHeader}
   /// [createHeader] is a user-definable area located above the upper column area of [TrinaGrid].
@@ -589,6 +594,7 @@ class TrinaGridState extends TrinaStateWithChange<TrinaGrid> {
         vertical: _verticalScroll,
         horizontal: _horizontalScroll,
       ),
+      onColumnsResized: widget.onColumnsResized,
       rowsCacheExtent: widget.rowsCacheExtent,
       rowWrapper: widget.rowWrapper,
       editCellRenderer: widget.editCellRenderer,

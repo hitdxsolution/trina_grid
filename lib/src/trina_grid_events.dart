@@ -129,8 +129,7 @@ class TrinaGridOnRowCheckedOneEvent extends TrinaGridOnRowCheckedEvent {
 
 /// Argument of [TrinaGrid.onRowChecked] callback when all checkboxes of the column are tapped.
 class TrinaGridOnRowCheckedAllEvent extends TrinaGridOnRowCheckedEvent {
-  const TrinaGridOnRowCheckedAllEvent({super.isChecked})
-      : super(row: null, rowIdx: null);
+  const TrinaGridOnRowCheckedAllEvent({super.isChecked}) : super(row: null, rowIdx: null);
 }
 
 /// The argument of the [TrinaGrid.onRowDoubleTap] callback
@@ -213,13 +212,23 @@ class TrinaGridOnColumnsMovedEvent {
 
   @override
   String toString() {
-    String text =
-        '[TrinaGridOnColumnsMovedEvent] idx: $idx, visualIdx: $visualIdx\n';
+    String text = '[TrinaGridOnColumnsMovedEvent] idx: $idx, visualIdx: $visualIdx\n';
 
     text += columns.map((e) => e.title).join(',');
 
     return text;
   }
+}
+
+/// When resized the column this callback is called
+class TrinaGridOnColumnsResizedEvent {
+  final TrinaColumn column;
+  final double width;
+
+  const TrinaGridOnColumnsResizedEvent({
+    required this.column,
+    required this.width,
+  });
 }
 
 /// When the active cell changes this callback is called
@@ -294,43 +303,43 @@ class TrinaGridOnLazyFetchCompletedEvent {
 class TrinaGridOnKeyEvent {
   /// The column where the key was pressed
   final TrinaColumn column;
-  
+
   /// The row where the key was pressed
   final TrinaRow row;
-  
+
   /// The row index
   final int rowIdx;
-  
+
   /// The cell where the key was pressed
   final TrinaCell cell;
-  
+
   /// The raw KeyEvent from Flutter
   final KeyEvent event;
-  
+
   /// Whether the Enter key was pressed
   final bool isEnter;
-  
+
   /// Whether the Escape key was pressed
   final bool isEscape;
-  
+
   /// Whether the Tab key was pressed
   final bool isTab;
-  
+
   /// Whether Shift is pressed
   final bool isShiftPressed;
-  
+
   /// Whether Ctrl/Cmd is pressed
   final bool isCtrlPressed;
-  
+
   /// Whether Alt is pressed
   final bool isAltPressed;
-  
+
   /// The logical key that was pressed
   final LogicalKeyboardKey logicalKey;
-  
+
   /// The current text value in the cell (if editing)
   final String? currentValue;
-  
+
   const TrinaGridOnKeyEvent({
     required this.column,
     required this.row,
@@ -346,7 +355,7 @@ class TrinaGridOnKeyEvent {
     required this.logicalKey,
     this.currentValue,
   });
-  
+
   @override
   String toString() {
     String out = '[TrinaGridOnKeyEvent] ';

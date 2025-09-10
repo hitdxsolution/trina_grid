@@ -25,49 +25,11 @@ import 'state/selecting_state.dart';
 import 'state/visibility_layout_state.dart';
 import 'state/hovering_state.dart';
 
-abstract class ITrinaGridState
-    implements
-        TrinaChangeNotifier,
-        ICellState,
-        IColumnGroupState,
-        IColumnSizingState,
-        IColumnState,
-        IDraggingRowState,
-        IEditingState,
-        IFilteringRowState,
-        IFocusState,
-        IGridState,
-        IKeyboardState,
-        ILayoutState,
-        IPaginationRowState,
-        IRowGroupState,
-        IRowState,
-        IScrollState,
-        ISelectingState,
-        IVisibilityLayoutState,
-        IHoveringState {}
+abstract class ITrinaGridState implements TrinaChangeNotifier, ICellState, IColumnGroupState, IColumnSizingState, IColumnState, IDraggingRowState, IEditingState, IFilteringRowState, IFocusState, IGridState, IKeyboardState, ILayoutState, IPaginationRowState, IRowGroupState, IRowState, IScrollState, ISelectingState, IVisibilityLayoutState, IHoveringState {}
 
-class TrinaGridStateChangeNotifier extends TrinaChangeNotifier
-    with
-        CellState,
-        ColumnGroupState,
-        ColumnSizingState,
-        ColumnState,
-        DraggingRowState,
-        EditingState,
-        FilteringRowState,
-        FocusState,
-        GridState,
-        KeyboardState,
-        LayoutState,
-        PaginationRowState,
-        RowGroupState,
-        RowState,
-        ScrollState,
-        SelectingState,
-        VisibilityLayoutState,
-        HoveringState {
+class TrinaGridStateChangeNotifier extends TrinaChangeNotifier with CellState, ColumnGroupState, ColumnSizingState, ColumnState, DraggingRowState, EditingState, FilteringRowState, FocusState, GridState, KeyboardState, LayoutState, PaginationRowState, RowGroupState, RowState, ScrollState, SelectingState, VisibilityLayoutState, HoveringState {
   TrinaGridStateChangeNotifier({
+    this.onColumnsResized,
     required List<TrinaColumn> columns,
     required List<TrinaRow> rows,
     required this.gridFocusNode,
@@ -103,10 +65,8 @@ class TrinaGridStateChangeNotifier extends TrinaChangeNotifier
         refColumnGroups = FilteredList<TrinaColumnGroup>(
           initialList: columnGroups,
         ),
-        columnMenuDelegate =
-            columnMenuDelegate ?? const TrinaColumnMenuDelegateDefault(),
-        notifierFilterResolver = notifierFilterResolver ??
-            const TrinaNotifierFilterResolverDefault(),
+        columnMenuDelegate = columnMenuDelegate ?? const TrinaColumnMenuDelegateDefault(),
+        notifierFilterResolver = notifierFilterResolver ?? const TrinaNotifierFilterResolverDefault(),
         gridKey = GlobalKey(),
         _enableChangeTracking = false {
     setConfiguration(configuration);
@@ -177,6 +137,7 @@ class TrinaGridStateChangeNotifier extends TrinaChangeNotifier
   @override
   final TrinaOnColumnsMovedEventCallback? onColumnsMoved;
 
+  final TrinaOnColumnsResizedEventCallback? onColumnsResized;
   @override
   final TrinaRowColorCallback? rowColorCallback;
 
@@ -325,6 +286,7 @@ class TrinaGridStateManager extends TrinaGridStateChangeNotifier {
     super.onRowsMoved,
     super.onActiveCellChanged,
     super.onColumnsMoved,
+    super.onColumnsResized,
     super.rowColorCallback,
     super.cellColorCallback,
     super.selectDateCallback,
@@ -341,9 +303,7 @@ class TrinaGridStateManager extends TrinaGridStateChangeNotifier {
   TrinaChangeNotifierFilter<T> resolveNotifierFilter<T>() {
     return TrinaChangeNotifierFilter<T>(
       notifierFilterResolver.resolve(this, T),
-      TrinaChangeNotifierFilter.debug
-          ? TrinaChangeNotifierFilterResolver.notifierNames(this)
-          : null,
+      TrinaChangeNotifierFilter.debug ? TrinaChangeNotifierFilterResolver.notifierNames(this) : null,
     );
   }
 
@@ -364,17 +324,14 @@ class TrinaGridStateManager extends TrinaGridStateChangeNotifier {
   List<TrinaColumn> getViewPortVisibleColumns() {
     if (refColumns.isEmpty) return [];
 
-    return refColumns
-        .where((column) => isColumnVisibleInViewport(column))
-        .toList();
+    return refColumns.where((column) => isColumnVisibleInViewport(column)).toList();
   }
 
   /// Checks if a specific column is currently visible in the viewport
   bool isColumnVisibleInViewport(TrinaColumn column) {
     if (column.hide) return false;
 
-    final RenderBox? gridRenderBox =
-        gridKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? gridRenderBox = gridKey.currentContext?.findRenderObject() as RenderBox?;
 
     if (gridRenderBox == null) {
       return false;
@@ -582,11 +539,7 @@ class TrinaGridCellPosition {
 
   @override
   bool operator ==(covariant Object other) {
-    return identical(this, other) ||
-        other is TrinaGridCellPosition &&
-            runtimeType == other.runtimeType &&
-            columnIdx == other.columnIdx &&
-            rowIdx == other.rowIdx;
+    return identical(this, other) || other is TrinaGridCellPosition && runtimeType == other.runtimeType && columnIdx == other.columnIdx && rowIdx == other.rowIdx;
   }
 
   @override
@@ -601,11 +554,7 @@ class TrinaGridSelectingCellPosition {
 
   @override
   bool operator ==(covariant Object other) {
-    return identical(this, other) ||
-        other is TrinaGridSelectingCellPosition &&
-            runtimeType == other.runtimeType &&
-            field == other.field &&
-            rowIdx == other.rowIdx;
+    return identical(this, other) || other is TrinaGridSelectingCellPosition && runtimeType == other.runtimeType && field == other.field && rowIdx == other.rowIdx;
   }
 
   @override
@@ -616,15 +565,13 @@ class TrinaGridKeyPressed {
   bool get shift {
     final keysPressed = HardwareKeyboard.instance.logicalKeysPressed;
 
-    return !(!keysPressed.contains(LogicalKeyboardKey.shiftLeft) &&
-        !keysPressed.contains(LogicalKeyboardKey.shiftRight));
+    return !(!keysPressed.contains(LogicalKeyboardKey.shiftLeft) && !keysPressed.contains(LogicalKeyboardKey.shiftRight));
   }
 
   bool get ctrl {
     final keysPressed = HardwareKeyboard.instance.logicalKeysPressed;
 
-    return !(!keysPressed.contains(LogicalKeyboardKey.controlLeft) &&
-        !keysPressed.contains(LogicalKeyboardKey.controlRight));
+    return !(!keysPressed.contains(LogicalKeyboardKey.controlLeft) && !keysPressed.contains(LogicalKeyboardKey.controlRight));
   }
 }
 
