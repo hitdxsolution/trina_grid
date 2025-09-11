@@ -176,9 +176,9 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
       );
     }
 
-    if (isCustom) {
-      return title;
-    }
+    // if (isCustom) {
+    //   return title;
+    // }
 
     return Stack(
       children: [
@@ -186,7 +186,6 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
         if (showContextIcon)
           Positioned.directional(
             textDirection: stateManager.textDirection,
-            //! 건들면 계산 로직 깨지며 UI 박살남
             end: -3,
             child: contextMenuIcon,
           ),
@@ -195,11 +194,11 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
   }
 
   Widget _buildContextMenuIcon(TrinaGridStyleConfig style) {
-    return MouseRegion(
-      cursor: contextMenuCursor,
-      child: SizedBox(
-        height: widget.height,
-        width: 10,
+    return SizedBox(
+      height: widget.height,
+      width: 10,
+      child: MouseRegion(
+        cursor: contextMenuCursor,
       ),
     );
 
@@ -324,6 +323,7 @@ class _DraggableWidget extends StatelessWidget {
   });
 
   void _handleOnPointerMove(PointerMoveEvent event) {
+    print('handleOnPointerMove');
     stateManager.eventManager!.addEvent(
       TrinaGridScrollUpdateEvent(
         offset: event.position,
@@ -333,6 +333,7 @@ class _DraggableWidget extends StatelessWidget {
   }
 
   void _handleOnPointerUp(PointerUpEvent event) {
+    print('handleOnPointerUp');
     TrinaGridScrollUpdateEvent.stopScroll(
       stateManager,
       TrinaGridScrollUpdateDirection.horizontal,
