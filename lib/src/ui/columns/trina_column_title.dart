@@ -323,7 +323,6 @@ class _DraggableWidget extends StatelessWidget {
   });
 
   void _handleOnPointerMove(PointerMoveEvent event) {
-    print('handleOnPointerMove');
     stateManager.eventManager!.addEvent(
       TrinaGridScrollUpdateEvent(
         offset: event.position,
@@ -333,7 +332,6 @@ class _DraggableWidget extends StatelessWidget {
   }
 
   void _handleOnPointerUp(PointerUpEvent event) {
-    print('handleOnPointerUp');
     TrinaGridScrollUpdateEvent.stopScroll(
       stateManager,
       TrinaGridScrollUpdateDirection.horizontal,
