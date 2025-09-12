@@ -24,13 +24,12 @@ class TrinaShadowLine extends StatelessWidget {
           color: color ?? Colors.black,
           boxShadow: shadow == true
               ? [
+                  //* boxshadow 스타일 custom하여 사용중.
                   BoxShadow(
-                    color: Colors.grey.withAlpha((0.15 * 255).toInt()),
-                    spreadRadius: 1,
-                    blurRadius: 3,
-                    offset: reverse == true
-                        ? const Offset(-3, -3)
-                        : const Offset(3, 3), // changes position of shadow
+                    color: Color(0xFF000000).withAlpha(25),
+                    spreadRadius: 0,
+                    blurRadius: 4,
+                    offset: reverse == true ? const Offset(-4, 0) : const Offset(4, 0), // changes position of shadow
                   ),
                 ]
               : [],

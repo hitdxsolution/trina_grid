@@ -25,10 +25,7 @@ class TrinaBaseRow extends StatelessWidget {
   });
 
   bool _checkSameDragRows(DragTargetDetails<TrinaRow> draggingRow) {
-    final List<TrinaRow> selectedRows =
-        stateManager.currentSelectingRows.isNotEmpty
-            ? stateManager.currentSelectingRows
-            : [draggingRow.data];
+    final List<TrinaRow> selectedRows = stateManager.currentSelectingRows.isNotEmpty ? stateManager.currentSelectingRows : [draggingRow.data];
 
     final end = rowIdx + selectedRows.length;
 
@@ -47,9 +44,7 @@ class TrinaBaseRow extends StatelessWidget {
 
   void _handleOnAccept(DragTargetDetails<TrinaRow> draggingRow) async {
     // Use the rows that were actually set for dragging during the drag operation
-    final draggingRows = stateManager.dragRows.isNotEmpty
-        ? stateManager.dragRows
-        : [draggingRow.data];
+    final draggingRows = stateManager.dragRows.isNotEmpty ? stateManager.dragRows : [draggingRow.data];
 
     stateManager.eventManager!.addEvent(
       TrinaGridDragRowsEvent(rows: draggingRows, targetIdx: rowIdx),
@@ -186,8 +181,7 @@ class _RowCellsLayoutDelegate extends MultiChildLayoutDelegate {
                 ? rowHeight
                 // we add `cellHorizontalBorderWidth` to the row height so the cells are not
                 // vertically-separated by the disabled horizontal border
-                : rowHeight +
-                    stateManager.style.cellHorizontalBorderWidth,
+                : rowHeight + stateManager.style.cellHorizontalBorderWidth,
           ),
         );
 
@@ -228,23 +222,15 @@ class _RowContainerWidget extends TrinaStatefulWidget {
   State<_RowContainerWidget> createState() => _RowContainerWidgetState();
 }
 
-class _RowContainerWidgetState extends TrinaStateWithChange<_RowContainerWidget>
-    with
-        AutomaticKeepAliveClientMixin,
-        TrinaStateWithKeepAlive<_RowContainerWidget> {
+class _RowContainerWidgetState extends TrinaStateWithChange<_RowContainerWidget> with AutomaticKeepAliveClientMixin, TrinaStateWithKeepAlive<_RowContainerWidget> {
   @override
   TrinaGridStateManager get stateManager => widget.stateManager;
 
   BoxDecoration _decoration = const BoxDecoration();
 
-  Color get _oddRowColor => stateManager.configuration.style.oddRowColor == null
-      ? stateManager.configuration.style.rowColor
-      : stateManager.configuration.style.oddRowColor!;
+  Color get _oddRowColor => stateManager.configuration.style.oddRowColor == null ? stateManager.configuration.style.rowColor : stateManager.configuration.style.oddRowColor!;
 
-  Color get _evenRowColor =>
-      stateManager.configuration.style.evenRowColor == null
-          ? stateManager.configuration.style.rowColor
-          : stateManager.configuration.style.evenRowColor!;
+  Color get _evenRowColor => stateManager.configuration.style.evenRowColor == null ? stateManager.configuration.style.rowColor : stateManager.configuration.style.evenRowColor!;
 
   Color get _rowColor {
     if (widget.row.frozen != TrinaRowFrozen.none) {
@@ -299,14 +285,12 @@ class _RowContainerWidgetState extends TrinaStateWithChange<_RowContainerWidget>
 
     // Only apply non-transparent activated color here
     // For transparent colors, we'll overlay them in the build method
-    final isActiveRow =
-        (isCurrentRow && stateManager.hasFocus) || isSelectedRow;
+    final isActiveRow = (isCurrentRow && stateManager.hasFocus) || isSelectedRow;
     if (isActiveRow && stateManager.configuration.style.activatedColor.a > 0) {
       rowColor = stateManager.configuration.style.activatedColor;
     } else if (isCheckedRow) {
       rowColor = stateManager.configuration.style.rowCheckedColor;
-    } else if (isHoveredRow &&
-        stateManager.configuration.style.enableRowHoverColor) {
+    } else if (isHoveredRow && stateManager.configuration.style.enableRowHoverColor) {
       rowColor = stateManager.configuration.style.rowHoveredColor;
     }
 
@@ -323,6 +307,7 @@ class _RowContainerWidgetState extends TrinaStateWithChange<_RowContainerWidget>
           )
         : null;
 
+    //* row 한줄 감싸는 박스 영역
     return BoxDecoration(
       color: rowColor,
       border: frozenBorder ??
@@ -330,8 +315,7 @@ class _RowContainerWidgetState extends TrinaStateWithChange<_RowContainerWidget>
             top: isTopDragTarget
                 ? BorderSide(
                     width: stateManager.style.cellHorizontalBorderWidth,
-                    color:
-                        stateManager.configuration.style.activatedBorderColor,
+                    color: stateManager.configuration.style.activatedBorderColor,
                   )
                 : BorderSide.none,
             bottom: isBottomDragTarget

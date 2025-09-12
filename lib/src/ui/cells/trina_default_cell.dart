@@ -30,9 +30,7 @@ class TrinaDefaultCell extends TrinaStatefulWidget {
 
   static String groupCountText(TrinaRowGroupDelegate delegate, TrinaRow row) {
     final compactCount = delegate.enableCompactCount;
-    final count = compactCount
-        ? delegate.compactNumber(row.type.group.children.length)
-        : row.type.group.children.length.toString();
+    final count = compactCount ? delegate.compactNumber(row.type.group.children.length) : row.type.group.children.length.toString();
     return '($count)';
   }
 
@@ -53,10 +51,7 @@ class TrinaDefaultCell extends TrinaStatefulWidget {
 
   static bool showGroupCount(TrinaRowGroupDelegate? delegate, TrinaCell cell) {
     if (delegate == null) return false;
-    return delegate.enabled &&
-        delegate.isExpandableCell(cell) &&
-        cell.row.type.isGroup &&
-        delegate.showCount;
+    return delegate.enabled && delegate.isExpandableCell(cell) && cell.row.type.isGroup && delegate.showCount;
   }
 }
 
@@ -73,20 +68,17 @@ class _TrinaDefaultCellState extends TrinaStateWithChange<TrinaDefaultCell> {
   TrinaGridStateManager get stateManager => widget.stateManager;
 
   bool get _showSpacing {
-    if (!stateManager.enabledRowGroups ||
-        !stateManager.rowGroupDelegate!.showFirstExpandableIcon) {
+    if (!stateManager.enabledRowGroups || !stateManager.rowGroupDelegate!.showFirstExpandableIcon) {
       return false;
     }
 
-    if (TrinaDefaultCell.canExpand(
-        stateManager.rowGroupDelegate!, widget.cell)) {
+    if (TrinaDefaultCell.canExpand(stateManager.rowGroupDelegate!, widget.cell)) {
       return true;
     }
 
     final parentCell = widget.row.parent?.cells[widget.column.field];
 
-    return parentCell != null &&
-        stateManager.rowGroupDelegate!.isExpandableCell(parentCell);
+    return parentCell != null && stateManager.rowGroupDelegate!.isExpandableCell(parentCell);
   }
 
   bool get _isEmptyGroup => widget.row.type.group.children.isEmpty;
@@ -100,8 +92,7 @@ class _TrinaDefaultCellState extends TrinaStateWithChange<TrinaDefaultCell> {
 
   @override
   void updateState(TrinaNotifierEvent event) {
-    final disable =
-        widget.column.disableRowCheckboxWhen?.call(widget.row) ?? false;
+    final disable = widget.column.disableRowCheckboxWhen?.call(widget.row) ?? false;
     if (disable) return;
 
     _hasFocus = update<bool>(
@@ -160,8 +151,7 @@ class _TrinaDefaultCellState extends TrinaStateWithChange<TrinaDefaultCell> {
     }
 
     Widget? expandIcon;
-    if (TrinaDefaultCell.canExpand(
-        stateManager.rowGroupDelegate, widget.cell)) {
+    if (TrinaDefaultCell.canExpand(stateManager.rowGroupDelegate, widget.cell)) {
       expandIcon = IconButton(
         padding: const EdgeInsets.only(bottom: 0.0),
         onPressed: _isEmptyGroup ? null : _handleToggleExpandedRowGroup,
@@ -202,8 +192,7 @@ class _TrinaDefaultCellState extends TrinaStateWithChange<TrinaDefaultCell> {
             ),
           ),
         ),
-      if (widget.column.enableRowChecked &&
-          depth >= widget.column.rowCheckBoxGroupDepth)
+      if (widget.column.enableRowChecked && depth >= widget.column.rowCheckBoxGroupDepth)
         Flexible(
           flex: 0,
           child: CheckboxSelectionWidget(
@@ -216,11 +205,9 @@ class _TrinaDefaultCellState extends TrinaStateWithChange<TrinaDefaultCell> {
       if (spacingWidget != null) spacingWidget,
       if (expandIcon != null) expandIcon,
       Expanded(child: cellWidget),
-      if (TrinaDefaultCell.showGroupCount(
-          stateManager.rowGroupDelegate, widget.cell))
+      if (TrinaDefaultCell.showGroupCount(stateManager.rowGroupDelegate, widget.cell))
         Text(
-          TrinaDefaultCell.groupCountText(
-              stateManager.rowGroupDelegate!, widget.row),
+          TrinaDefaultCell.groupCountText(stateManager.rowGroupDelegate!, widget.row),
           style: TrinaDefaultCell.groupCountTextStyle(stateManager.style),
         ),
     ]);
@@ -317,10 +304,8 @@ class _RowDragIconWidget extends StatelessWidget {
             child: TrinaShadowContainer(
               width: column.width,
               height: stateManager.rowHeight,
-              backgroundColor:
-                  stateManager.configuration.style.gridBackgroundColor,
-              borderColor:
-                  stateManager.configuration.style.activatedBorderColor,
+              backgroundColor: stateManager.configuration.style.gridBackgroundColor,
+              borderColor: stateManager.configuration.style.activatedBorderColor,
               child: Row(
                 children: [
                   Flexible(flex: 0, child: dragIcon),
@@ -359,8 +344,7 @@ class CheckboxSelectionWidget extends TrinaStatefulWidget {
   CheckboxSelectionWidgetState createState() => CheckboxSelectionWidgetState();
 }
 
-class CheckboxSelectionWidgetState
-    extends TrinaStateWithChange<CheckboxSelectionWidget> {
+class CheckboxSelectionWidgetState extends TrinaStateWithChange<CheckboxSelectionWidget> {
   bool _tristate = false;
 
   bool? _checked;
@@ -378,8 +362,7 @@ class CheckboxSelectionWidgetState
 
   @override
   void updateState(TrinaNotifierEvent event) {
-    final disable =
-        widget.column.disableRowCheckboxWhen?.call(widget.row) ?? false;
+    final disable = widget.column.disableRowCheckboxWhen?.call(widget.row) ?? false;
     if (disable) {
       _checked = _pureValue;
       return;
@@ -428,8 +411,7 @@ class CheckboxSelectionWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final disable =
-        widget.column.disableRowCheckboxWhen?.call(widget.row) ?? false;
+    final disable = widget.column.disableRowCheckboxWhen?.call(widget.row) ?? false;
 
     return TrinaScaledCheckbox(
       value: _checked,
@@ -470,8 +452,7 @@ class _DefaultCellWidget extends StatelessWidget {
       return true;
     }
 
-    return stateManager.rowGroupDelegate!.isExpandableCell(cell) ||
-        stateManager.rowGroupDelegate!.isEditableCell(cell);
+    return stateManager.rowGroupDelegate!.isExpandableCell(cell) || stateManager.rowGroupDelegate!.isEditableCell(cell);
   }
 
   String get _text {
@@ -479,11 +460,8 @@ class _DefaultCellWidget extends StatelessWidget {
 
     dynamic cellValue = cell.value;
 
-    if (stateManager.enabledRowGroups &&
-        stateManager.rowGroupDelegate!.showFirstExpandableIcon &&
-        stateManager.rowGroupDelegate!.type.isByColumn) {
-      final delegate =
-          stateManager.rowGroupDelegate as TrinaRowGroupByColumnDelegate;
+    if (stateManager.enabledRowGroups && stateManager.rowGroupDelegate!.showFirstExpandableIcon && stateManager.rowGroupDelegate!.type.isByColumn) {
+      final delegate = stateManager.rowGroupDelegate as TrinaRowGroupByColumnDelegate;
 
       if (row.depth < delegate.columns.length) {
         cellValue = row.cells[delegate.columns[row.depth].field]!.value;

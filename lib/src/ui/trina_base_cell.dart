@@ -7,8 +7,7 @@ import 'package:trina_grid/src/ui/cells/trina_date_time_cell.dart';
 
 import 'ui.dart';
 
-class TrinaBaseCell extends StatelessWidget
-    implements TrinaVisibilityLayoutChild {
+class TrinaBaseCell extends StatelessWidget implements TrinaVisibilityLayoutChild {
   final TrinaCell cell;
 
   final TrinaColumn column;
@@ -50,9 +49,7 @@ class TrinaBaseCell extends StatelessWidget
   }
 
   void _handleOnTapUp(TapUpDetails details) {
-    if (PlatformHelper.isDesktop &&
-        TrinaDoubleTapDetector.isDoubleTap(cell) &&
-        stateManager.onRowDoubleTap != null) {
+    if (PlatformHelper.isDesktop && TrinaDoubleTapDetector.isDoubleTap(cell) && stateManager.onRowDoubleTap != null) {
       _handleOnDoubleTap();
       return;
     }
@@ -111,9 +108,7 @@ class TrinaBaseCell extends StatelessWidget
   }
 
   void Function(TapDownDetails details)? _onSecondaryTapOrNull() {
-    return stateManager.onRowSecondaryTap == null
-        ? null
-        : _handleOnSecondaryTap;
+    return stateManager.onRowSecondaryTap == null ? null : _handleOnSecondaryTap;
   }
 
   @override
@@ -133,9 +128,7 @@ class TrinaBaseCell extends StatelessWidget
         rowIdx: rowIdx,
         row: row,
         column: column,
-        cellPadding: cell.padding ??
-            column.cellPadding ??
-            stateManager.configuration.style.defaultCellPadding,
+        cellPadding: cell.padding ?? column.cellPadding ?? stateManager.configuration.style.defaultCellPadding,
         stateManager: stateManager,
         child: _Cell(
           stateManager: stateManager,
@@ -209,8 +202,7 @@ class _CellContainerState extends TrinaStateWithChange<_CellContainer> {
           widget.column,
           widget.rowIdx,
         ),
-        isGroupedRowCell: stateManager.enabledRowGroups &&
-            stateManager.rowGroupDelegate!.isExpandableCell(widget.cell),
+        isGroupedRowCell: stateManager.enabledRowGroups && stateManager.rowGroupDelegate!.isExpandableCell(widget.cell),
         enableCellVerticalBorder: style.enableCellBorderVertical,
         borderColor: style.borderColor,
         activatedBorderColor: style.activatedBorderColor,
@@ -325,7 +317,7 @@ class _CellContainerState extends TrinaStateWithChange<_CellContainer> {
               : cellDefaultColor;
 
       final bool hasCustomColor = isDirty || cellCallbackColor != null;
-      
+
       return BoxDecoration(
         color: isDirty ? dirtyColor : cellCallbackColor ?? defaultColor,
         border: hasCustomColor
@@ -358,6 +350,8 @@ class _CellContainerState extends TrinaStateWithChange<_CellContainer> {
     return DecoratedBox(
       //사용하지 않아 제거 함.
       decoration: BoxDecoration(
+        // color: Colors.teal,
+        border: stateManager.style.rowCellBorder,
       ),
       // decoration: _decoration,
       child: Padding(padding: widget.cellPadding, child: widget.child),
