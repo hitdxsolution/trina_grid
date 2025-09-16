@@ -109,8 +109,7 @@ class _TrinaTimePickerState extends State<TrinaTimePicker> {
 
   /// Updates the hour value and notifies listeners.
   void _updateHour(int hour) {
-    if (currentTime.tryReplacing(hour: hour) case TimeOfDay newTime
-        when _isTimeInRange(newTime)) {
+    if (currentTime.tryReplacing(hour: hour) case TimeOfDay newTime when _isTimeInRange(newTime)) {
       currentTime = newTime;
       widget.onChanged(currentTime);
     }
@@ -118,8 +117,7 @@ class _TrinaTimePickerState extends State<TrinaTimePicker> {
 
   /// Updates the minute value and notifies listeners.
   void _updateMinute(int minute) {
-    if (currentTime.tryReplacing(minute: minute) case TimeOfDay newTime
-        when _isTimeInRange(newTime)) {
+    if (currentTime.tryReplacing(minute: minute) case TimeOfDay newTime when _isTimeInRange(newTime)) {
       currentTime = newTime;
       widget.onChanged(currentTime);
     }
@@ -129,9 +127,7 @@ class _TrinaTimePickerState extends State<TrinaTimePicker> {
     if (time == null) {
       return false;
     }
-    return (time.isBefore(widget.maxTime) && time.isAfter(widget.minTime)) ||
-        time.isAtSameTimeAs(widget.minTime) ||
-        time.isAtSameTimeAs(widget.maxTime);
+    return (time.isBefore(widget.maxTime) && time.isAfter(widget.minTime)) || time.isAtSameTimeAs(widget.minTime) || time.isAtSameTimeAs(widget.maxTime);
   }
 
   /// Handles the Enter key event, validating the form and calling the callback.
@@ -142,13 +138,11 @@ class _TrinaTimePickerState extends State<TrinaTimePicker> {
   }
 
   String getMinTimeErrorText(BuildContext context) {
-    return widget.minTimeErrorText ??
-        'Min time is ${widget.minTime.format(context)}';
+    return widget.minTimeErrorText ?? 'Min time is ${widget.minTime.format(context)}';
   }
 
   String getMaxTimeErrorText(BuildContext context) {
-    return widget.maxTimeErrorText ??
-        'Max time is ${widget.maxTime.format(context)}';
+    return widget.maxTimeErrorText ?? 'Max time is ${widget.maxTime.format(context)}';
   }
 
   String? _validateTimeRange(TimeOfDay? time) {
@@ -193,8 +187,7 @@ class _TrinaTimePickerState extends State<TrinaTimePicker> {
             validator: (value) {
               final hourInt = int.tryParse(value);
               if (hourInt == null || hourInt < 0 || hourInt > 23) {
-                return widget.invalidHourText ??
-                    'Hour must be between 0 and 23';
+                return widget.invalidHourText ?? 'Hour must be between 0 and 23';
               }
               return _validateTimeRange(
                 currentTime.tryReplacing(hour: hourInt),
@@ -223,14 +216,12 @@ class _TrinaTimePickerState extends State<TrinaTimePicker> {
                     ? TextInputAction.next
                     : TextInputAction.done
                 : null,
-            isValidTime: (minute) =>
-                _isTimeInRange(currentTime.tryReplacing(minute: minute)),
+            isValidTime: (minute) => _isTimeInRange(currentTime.tryReplacing(minute: minute)),
             validator: (value) {
               final minuteInt = int.tryParse(value);
 
               if (minuteInt == null || minuteInt < 0 || minuteInt > 59) {
-                return widget.invalidMinuteText ??
-                    'Minute must be between 0 and 59';
+                return widget.invalidMinuteText ?? 'Minute must be between 0 and 59';
               }
               return _validateTimeRange(
                 currentTime.tryReplacing(minute: minuteInt),
@@ -361,8 +352,7 @@ class _TimeDigitInputState extends State<_TimeDigitInput> {
                 bindings: {
                   LogicalKeySet(LogicalKeyboardKey.enter): () {
                     FocusScope.of(context).nextFocus();
-                    widget.onEnterKeyEvent
-                        ?.call(controller.text.padLeft(2, '0'));
+                    widget.onEnterKeyEvent?.call(controller.text.padLeft(2, '0'));
                   },
                   LogicalKeySet(LogicalKeyboardKey.arrowUp): _increment,
                   LogicalKeySet(LogicalKeyboardKey.arrowDown): _decrement,
@@ -391,7 +381,7 @@ class _TimeDigitInputState extends State<_TimeDigitInput> {
                   maxLines: 1,
                   autofocus: widget.autoFocus,
                   canRequestFocus: true,
-                  errorBuilder: (context, errorText) => const SizedBox.shrink(),
+                  // errorBuilder: (context, errorText) => const SizedBox.shrink(),
                   buildCounter: (
                     context, {
                     required currentLength,
@@ -406,11 +396,9 @@ class _TimeDigitInputState extends State<_TimeDigitInput> {
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
                     helperText: widget.label,
-                    border:
-                        const OutlineInputBorder(borderSide: BorderSide.none),
+                    border: const OutlineInputBorder(borderSide: BorderSide.none),
                     focusedBorder: const OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Colors.blueAccent, width: 2),
+                      borderSide: BorderSide(color: Colors.blueAccent, width: 2),
                     ),
                     filled: true,
                     isDense: false,
@@ -437,8 +425,7 @@ class _TimeDigitInputState extends State<_TimeDigitInput> {
                       child: errorText != null
                           ? Text(
                               errorText,
-                              style: const TextStyle(
-                                  color: Colors.red, fontSize: 12),
+                              style: const TextStyle(color: Colors.red, fontSize: 12),
                               textAlign: TextAlign.center,
                             )
                           : const SizedBox.shrink(),
@@ -459,10 +446,8 @@ extension on TimeOfDay {
   ///
   /// Returns `null` if the resulting hour or minute would be out of their valid ranges.
   TimeOfDay? tryReplacing({int? hour, int? minute}) {
-    final hourInBounds =
-        hour == null || hour >= 0 && hour < TimeOfDay.hoursPerDay;
-    final minuteInBounds =
-        minute == null || minute >= 0 && minute < TimeOfDay.minutesPerHour;
+    final hourInBounds = hour == null || hour >= 0 && hour < TimeOfDay.hoursPerDay;
+    final minuteInBounds = minute == null || minute >= 0 && minute < TimeOfDay.minutesPerHour;
 
     if (hourInBounds && minuteInBounds) {
       return replacing(hour: hour, minute: minute);
