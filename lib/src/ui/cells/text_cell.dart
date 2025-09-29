@@ -45,8 +45,7 @@ mixin TextCellState<T extends TextCell> on State<T> implements TextFieldProps {
   @override
   List<TextInputFormatter>? get inputFormatters => [];
 
-  String get formattedValue =>
-      widget.column.formattedValueForDisplayInEditing(widget.cell.value);
+  String get formattedValue => widget.column.formattedValueForDisplayInEditing(widget.cell.value);
 
   @override
   void initState() {
@@ -83,8 +82,7 @@ mixin TextCellState<T extends TextCell> on State<T> implements TextFieldProps {
       _changeValue();
     }
 
-    if (!widget.stateManager.isEditing ||
-        widget.stateManager.currentColumn?.enableEditingMode != true) {
+    if (!widget.stateManager.isEditing || widget.stateManager.currentColumn?.enableEditingMode != true) {
       widget.stateManager.setTextEditingController(null);
     }
 
@@ -181,6 +179,8 @@ mixin TextCellState<T extends TextCell> on State<T> implements TextFieldProps {
   KeyEventResult _handleOnKey(FocusNode node, KeyEvent event) {
     var keyManager = TrinaKeyManagerEvent(focusNode: node, event: event);
 
+    print('logicalKey: ${keyManager.event.logicalKey}');
+
     if (keyManager.isKeyUpEvent) {
       return KeyEventResult.handled;
     }
@@ -202,16 +202,11 @@ mixin TextCellState<T extends TextCell> on State<T> implements TextFieldProps {
         logicalKey: event.logicalKey,
         currentValue: _textController.text,
       );
-      
+
       widget.cell.onKeyPressed!(keyEvent);
     }
 
-    final skip = !(keyManager.isVertical ||
-        _moveHorizontal(keyManager) ||
-        keyManager.isEsc ||
-        keyManager.isTab ||
-        keyManager.isF3 ||
-        keyManager.isEnter);
+    final skip = !(keyManager.isVertical || _moveHorizontal(keyManager) || keyManager.isEsc || keyManager.isTab || keyManager.isF3 || keyManager.isEnter);
 
     // Movement and enter key, non-editable cell left and right movement, etc. key input is propagated to text field.
     if (skip) {
