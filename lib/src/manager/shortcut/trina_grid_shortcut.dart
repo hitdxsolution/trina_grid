@@ -23,12 +23,20 @@ class TrinaGridShortcut {
   ///
   /// If there is no matching shortcut and returns false ,
   /// the default shortcut behavior is processed.
+  Map<String, dynamic> _logicalKeyToJson(LogicalKeyboardKey logicalKey) {
+    return {
+      'keyId': logicalKey.keyId,
+      'keyLabel': logicalKey.keyLabel,
+      'keyCode': logicalKey.debugName,
+    };
+  }
+
   bool handle({
     required TrinaKeyManagerEvent keyEvent,
     required TrinaGridStateManager stateManager,
     required HardwareKeyboard state,
   }) {
-    print('trina_grid_shortcut handle: ${keyEvent.event.logicalKey}');
+    print('logicalKey: ${_logicalKeyToJson(keyEvent.event.logicalKey)}');
 
     for (final action in actions.entries) {
       if (action.key.accepts(keyEvent.event, state)) {
