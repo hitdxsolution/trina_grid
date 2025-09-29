@@ -176,10 +176,18 @@ mixin TextCellState<T extends TextCell> on State<T> implements TextFieldProps {
     });
   }
 
+  Map<String, dynamic> _logicalKeyToJson(LogicalKeyboardKey logicalKey) {
+    return {
+      'keyId': logicalKey.keyId,
+      'keyLabel': logicalKey.keyLabel,
+      'keyCode': logicalKey.debugName,
+    };
+  }
+
   KeyEventResult _handleOnKey(FocusNode node, KeyEvent event) {
     var keyManager = TrinaKeyManagerEvent(focusNode: node, event: event);
 
-    print('logicalKey: ${keyManager.event.logicalKey}');
+    print('logicalKey: ${_logicalKeyToJson(keyManager.event.logicalKey)}');
 
     if (keyManager.isKeyUpEvent) {
       return KeyEventResult.handled;
