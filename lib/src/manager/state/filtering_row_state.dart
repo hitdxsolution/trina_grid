@@ -39,8 +39,7 @@ mixin FilteringRowState implements ITrinaGridState {
   List<TrinaRow> get filterRows => _state._filterRows;
 
   @override
-  bool get hasFilter =>
-      refRows.hasFilter || (filterOnlyEvent && filterRows.isNotEmpty);
+  bool get hasFilter => refRows.hasFilter || (filterOnlyEvent && filterRows.isNotEmpty);
 
   @override
   void setFilter(FilteredListFilter<TrinaRow>? filter, {bool notify = true}) {
@@ -66,12 +65,15 @@ mixin FilteringRowState implements ITrinaGridState {
         return !row.state.isNone || filter(row);
       };
     }
+    print('여기 들어왔다3');
 
     if (enabledRowGroups) {
       setRowGroupFilter(savedFilter);
     } else {
+      print('여기 들어왔다3-3');
       refRows.setFilter(savedFilter);
     }
+    print('여기 들어왔다4');
 
     resetCurrentState(notify: false);
 
@@ -79,11 +81,11 @@ mixin FilteringRowState implements ITrinaGridState {
   }
 
   @override
-  void setFilterWithFilterRows(List<TrinaRow> rows, {bool notify = true}) {
-    setFilterRows(rows);
+  void setFilterWithFilterRows(List<TrinaRow> rows, {bool notify = true, bool isAllColumnFilter = false}) {
+    print('여기 들어왔다1');
+    setFilterRows(rows, isAllColumnFilter: isAllColumnFilter);
 
-    var enabledFilterColumnFields =
-        refColumns.where((element) => element.enableFilterMenuItem).toList();
+    var enabledFilterColumnFields = refColumns.where((element) => element.enableFilterMenuItem).toList();
 
     setFilter(
       FilterHelper.convertRowsToFilter(filterRows, enabledFilterColumnFields),
@@ -96,22 +98,25 @@ mixin FilteringRowState implements ITrinaGridState {
   }
 
   @override
-  void setFilterRows(List<TrinaRow> rows) {
-    _state._filterRows = rows.where(
-      (element) {
-        final value = element.cells[FilterHelper.filterFieldValue]!.value;
-        return value != null && value.toString().isNotEmpty;
-      },
-    ).toList();
+  void setFilterRows(List<TrinaRow> rows, {bool isAllColumnFilter = false}) {
+    print('여기 setFilterRows');
+    if (isAllColumnFilter) {
+      _state._filterRows = rows;
+    } else {
+      _state._filterRows = rows.where(
+        (element) {
+          final value = element.cells[FilterHelper.filterFieldValue]!.value;
+          return value != null && value.toString().isNotEmpty;
+        },
+      ).toList();
+    }
   }
 
   @override
   List<TrinaRow> filterRowsByField(String columnField) {
     return filterRows
         .where(
-          (element) =>
-              element.cells[FilterHelper.filterFieldColumn]!.value ==
-              columnField,
+          (element) => element.cells[FilterHelper.filterFieldColumn]!.value == columnField,
         )
         .toList();
   }
@@ -149,15 +154,12 @@ mixin FilteringRowState implements ITrinaGridState {
     TrinaColumn? calledColumn,
     void Function()? onClosed,
   }) {
-    var shouldProvideDefaultFilterRow =
-        filterRows.isEmpty && calledColumn != null;
+    var shouldProvideDefaultFilterRow = filterRows.isEmpty && calledColumn != null;
 
     var rows = shouldProvideDefaultFilterRow
         ? [
             FilterHelper.createFilterRow(
-              columnField: calledColumn.enableFilterMenuItem
-                  ? calledColumn.field
-                  : FilterHelper.filterFieldAllColumns,
+              columnField: calledColumn.enableFilterMenuItem ? calledColumn.field : FilterHelper.filterFieldAllColumns,
               filterType: calledColumn.defaultFilter,
             ),
           ]

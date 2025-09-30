@@ -152,8 +152,7 @@ class FilteredList<E> extends ListBase<E> implements AbstractFilteredList<E> {
   /// Returns the length of all elements, regardless of filtering or ranging.
   int get originalLength => _list.length;
 
-  int get filterOrOriginalLength =>
-      hasFilter ? _filteredList.length : _list.length;
+  int get filterOrOriginalLength => hasFilter ? _filteredList.length : _list.length;
 
   @override
   set length(int length) {
@@ -165,6 +164,7 @@ class FilteredList<E> extends ListBase<E> implements AbstractFilteredList<E> {
   @override
   void setFilter(FilteredListFilter<E>? filter) {
     _filter = filter;
+    print('여기 들어왔다3-3-1');
 
     _updateFilteredList();
   }
@@ -441,17 +441,12 @@ class FilteredList<E> extends ListBase<E> implements AbstractFilteredList<E> {
 
     final originalValue = _effectiveList[index];
 
-    final valueIndexes = _list
-        .asMap()
-        .entries
-        .map((e) => _compare(e.value, originalValue) ? e.key : -1)
-        .where((element) => element != -1);
+    final valueIndexes = _list.asMap().entries.map((e) => _compare(e.value, originalValue) ? e.key : -1).where((element) => element != -1);
 
     final found = valueIndexes.length;
 
     if (found < 1) {
-      throw Exception(
-          'With the filter applied, the value cannot be found in the list by that index.');
+      throw Exception('With the filter applied, the value cannot be found in the list by that index.');
     }
 
     if (found == 1) {
@@ -472,6 +467,12 @@ class FilteredList<E> extends ListBase<E> implements AbstractFilteredList<E> {
   }
 
   void _updateFilteredList() {
+    print('여기 들어왔다3-3-2');
+
+    print('_filter : ${_filter}');
+    print('_list : ${_list}');
+
     _filteredList = _filter == null ? [] : _list.where(_filter!).toList();
+    print('여기 들어왔다3-3-3');
   }
 }
