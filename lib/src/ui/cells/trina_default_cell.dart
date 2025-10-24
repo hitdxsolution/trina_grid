@@ -332,11 +332,14 @@ class CheckboxSelectionWidget extends TrinaStatefulWidget {
 
   final int rowIdx;
 
+  final bool isActive;
+
   const CheckboxSelectionWidget({
     required this.stateManager,
     required this.column,
     required this.row,
     required this.rowIdx,
+    this.isActive = true,
     super.key,
   });
 
@@ -415,7 +418,7 @@ class CheckboxSelectionWidgetState extends TrinaStateWithChange<CheckboxSelectio
 
     return TrinaScaledCheckbox(
       value: _checked,
-      handleOnChanged: disable ? null : _handleOnChanged,
+      handleOnChanged: widget.isActive && disable ? null : _handleOnChanged,
       tristate: _tristate,
       scale: 0.86,
       unselectedColor: stateManager.configuration.style.unSelectedCheckboxColor ?? stateManager.configuration.style.cellUnselectedColor,
