@@ -418,7 +418,11 @@ class CheckboxSelectionWidgetState extends TrinaStateWithChange<CheckboxSelectio
 
     return TrinaScaledCheckbox(
       value: _checked,
-      handleOnChanged: widget.isActive && disable ? null : _handleOnChanged,
+      handleOnChanged: widget.isActive
+          ? disable
+              ? null
+              : _handleOnChanged
+          : null,
       tristate: _tristate,
       scale: 0.86,
       unselectedColor: stateManager.configuration.style.unSelectedCheckboxColor ?? stateManager.configuration.style.cellUnselectedColor,
