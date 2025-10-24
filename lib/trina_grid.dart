@@ -29,8 +29,7 @@ export './src/manager/trina_grid_event_manager.dart';
 export './src/manager/trina_grid_key_manager.dart';
 export './src/manager/trina_grid_state_manager.dart';
 export './src/manager/shortcut/shortcut.dart';
-export './src/model/trina_cell.dart'
-    show TrinaCell, TrinaCellRenderer, TrinaCellRendererContext;
+export './src/model/trina_cell.dart' show TrinaCell, TrinaCellRenderer, TrinaCellRendererContext;
 export './src/model/trina_column.dart';
 export './src/model/trina_column_group.dart';
 export './src/model/trina_column_type.dart';
@@ -78,3 +77,4 @@ export 'package:pdf/pdf.dart' show PdfPageFormat;
 
 //추가 export
 export './src/ui/columns/trina_column_title.dart';
+export './src/ui/cells/trina_default_cell.dart';
