@@ -456,8 +456,9 @@ class _DefaultColumnTitleContent extends StatelessWidget {
 
 class CheckboxAllSelectionWidget extends TrinaStatefulWidget {
   final TrinaGridStateManager stateManager;
+  final bool isActive;
 
-  const CheckboxAllSelectionWidget({required this.stateManager, super.key});
+  const CheckboxAllSelectionWidget({required this.stateManager, this.isActive = true, super.key});
 
   @override
   CheckboxAllSelectionWidgetState createState() => CheckboxAllSelectionWidgetState();
@@ -507,7 +508,7 @@ class CheckboxAllSelectionWidgetState extends TrinaStateWithChange<CheckboxAllSe
   Widget build(BuildContext context) {
     return TrinaScaledCheckbox(
       value: _checked,
-      handleOnChanged: _handleOnChanged,
+      handleOnChanged: widget.isActive ? _handleOnChanged : null,
       tristate: true,
       scale: 1,
       unselectedColor: stateManager.configuration.style.columnUnselectedColor,
