@@ -57,11 +57,13 @@ mixin TrinaColumnTypeWithNumberFormat {
       match += numberFormat.symbols.MINUS_SIGN;
     }
 
-    formatted = formatted.replaceAll(RegExp('[^$match]'), '').replaceFirst(numberFormat.symbols.DECIMAL_SEP, '.');
+    formatted = formatted
+        .replaceAll(RegExp('[^$match]'), '')
+        .replaceFirst(numberFormat.symbols.DECIMAL_SEP, '.');
 
-    final num? formattedNumber = num.tryParse(formatted);
+    final num formattedNumber = num.tryParse(formatted) ?? 0;
 
-    return formattedNumber;
+    return formattedNumber.isFinite ? formattedNumber : 0;
   }
 
   bool isNumeric(dynamic s) {
