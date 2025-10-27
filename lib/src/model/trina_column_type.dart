@@ -32,7 +32,7 @@ abstract interface class TrinaColumnType {
   /// - [locale]: The locale for number formatting.
   factory TrinaColumnType.number({
     /// {@macro TrinaColumnType.defaultValue}
-    dynamic defaultValue = 0,
+    dynamic defaultValue,
     bool negative = true,
     String format = '#,###',
     bool applyFormatOnInit = true,
@@ -339,8 +339,7 @@ abstract interface class TrinaColumnType {
   factory TrinaColumnType.time({
     dynamic defaultValue = '00:00',
     IconData? popupIcon = Icons.access_time,
-    TrinaTimePickerAutoFocusMode autoFocusMode =
-        TrinaTimePickerAutoFocusMode.hourField,
+    TrinaTimePickerAutoFocusMode autoFocusMode = TrinaTimePickerAutoFocusMode.hourField,
     bool saveAndClosePopupWithEnter = true,
     TimeOfDay minTime = const TimeOfDay(hour: 0, minute: 0),
     TimeOfDay maxTime = const TimeOfDay(hour: 23, minute: 59),
@@ -444,6 +443,5 @@ abstract interface class TrinaColumnType {
 ///
 /// The default implementation is a pass-through that does not alter the value.
 mixin TrinaColumnTypeDefaultMixin {
-  (bool, dynamic) filteredValue({dynamic newValue, dynamic oldValue}) =>
-      (false, newValue);
+  (bool, dynamic) filteredValue({dynamic newValue, dynamic oldValue}) => (false, newValue);
 }
