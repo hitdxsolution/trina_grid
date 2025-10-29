@@ -559,21 +559,17 @@ mixin ColumnState implements ITrinaGridState {
     String maxValue = '';
     bool hasExpandableRowGroup = false;
     for (final row in refRows) {
-      final cell = row.cells.entries
-          .firstWhere((element) => element.key == column.field)
-          .value;
+      final cell = row.cells.entries.firstWhere((element) => element.key == column.field).value;
       var value = column.formattedValueForDisplay(cell.value);
       if (hasRowGroups) {
         if (TrinaDefaultCell.showGroupCount(rowGroupDelegate!, cell)) {
-          final groupCountValue =
-              TrinaDefaultCell.groupCountText(rowGroupDelegate!, row);
+          final groupCountValue = TrinaDefaultCell.groupCountText(rowGroupDelegate!, row);
           if (groupCountValue.isNotEmpty) {
             value = '$value $groupCountValue';
           }
         }
 
-        hasExpandableRowGroup |=
-            TrinaDefaultCell.canExpand(rowGroupDelegate!, cell);
+        hasExpandableRowGroup |= TrinaDefaultCell.canExpand(rowGroupDelegate!, cell);
       }
       if (maxValue.length < value.length) {
         maxValue = value;
@@ -582,8 +578,7 @@ mixin ColumnState implements ITrinaGridState {
 
     // Get size after rendering virtually
     // https://stackoverflow.com/questions/54351655/flutter-textfield-width-should-match-width-of-contained-text
-    final titleTextWidth =
-        _visualTextWidth(column.title, style.columnTextStyle);
+    final titleTextWidth = _visualTextWidth(column.title, style.columnTextStyle);
     final maxValueTextWidth = _visualTextWidth(maxValue, style.cellTextStyle);
 
     // todo : Handle (renderer) width
@@ -592,8 +587,7 @@ mixin ColumnState implements ITrinaGridState {
         column.width +
         [
           (column.titlePadding ?? style.defaultColumnTitlePadding).horizontal,
-          if (column.enableRowChecked)
-            _getEffectiveButtonWidth(context, checkBox: true),
+          if (column.enableRowChecked) _getEffectiveButtonWidth(context, checkBox: true),
           if (column.isShowRightIcon) style.iconSize,
           8,
         ].reduce((acc, a) => acc + a);
@@ -603,8 +597,7 @@ mixin ColumnState implements ITrinaGridState {
         [
           (column.cellPadding ?? style.defaultCellPadding).horizontal,
           if (hasExpandableRowGroup) _getEffectiveButtonWidth(context),
-          if (column.enableRowChecked)
-            _getEffectiveButtonWidth(context, checkBox: true),
+          if (column.enableRowChecked) _getEffectiveButtonWidth(context, checkBox: true),
           if (column.isShowRightIcon) style.iconSize,
           2,
         ].reduce((acc, a) => acc + a);
@@ -666,10 +659,18 @@ mixin ColumnState implements ITrinaGridState {
 
     if (sortOnlyEvent) return;
 
-    compare(a, b) => column.type.compare(
-          a.cells[column.field]!.valueForSorting,
-          b.cells[column.field]!.valueForSorting,
-        );
+    compare(a, b) {
+      var aValue = a.cells[column.field]!.valueForSorting;
+      var bValue = b.cells[column.field]!.valueForSorting;
+
+      // String 타입일 경우 대소문자 무시
+      if (aValue is String && bValue is String) {
+        return aValue.toLowerCase().compareTo(bValue.toLowerCase());
+      }
+
+      // 기본 비교
+      return column.type.compare(aValue, bValue);
+    }
 
     if (enabledRowGroups) {
       sortRowGroup(column: column, compare: compare);
@@ -688,10 +689,18 @@ mixin ColumnState implements ITrinaGridState {
 
     if (sortOnlyEvent) return;
 
-    compare(b, a) => column.type.compare(
-          a.cells[column.field]!.valueForSorting,
-          b.cells[column.field]!.valueForSorting,
-        );
+    compare(b, a) {
+      var aValue = a.cells[column.field]!.valueForSorting;
+      var bValue = b.cells[column.field]!.valueForSorting;
+
+      // String 타입일 경우 대소문자 무시
+      if (aValue is String && bValue is String) {
+        return aValue.toLowerCase().compareTo(bValue.toLowerCase());
+      }
+
+      // 기본 비교
+      return column.type.compare(aValue, bValue);
+    }
 
     if (enabledRowGroups) {
       sortRowGroup(column: column, compare: compare);
@@ -735,16 +744,7 @@ mixin ColumnState implements ITrinaGridState {
     const columnField = 'field';
 
     final columns = [
-      TrinaColumn(
-          title: configuration.localeText.setColumnsTitle,
-          field: titleField,
-          type: TrinaColumnType.text(),
-          enableRowChecked: true,
-          enableEditingMode: false,
-          enableDropToResize: true,
-          enableContextMenu: false,
-          enableColumnDrag: false,
-          backgroundColor: configuration.style.filterPopupHeaderColor),
+      TrinaColumn(title: configuration.localeText.setColumnsTitle, field: titleField, type: TrinaColumnType.text(), enableRowChecked: true, enableEditingMode: false, enableDropToResize: true, enableContextMenu: false, enableColumnDrag: false, backgroundColor: configuration.style.filterPopupHeaderColor),
       TrinaColumn(
         title: 'hidden column',
         field: columnField,
@@ -773,9 +773,7 @@ mixin ColumnState implements ITrinaGridState {
     }
 
     // Use dark configuration if the current configuration is in dark mode
-    final baseConfiguration = configuration.style.isDarkStyle
-        ? const TrinaGridConfiguration.dark()
-        : const TrinaGridConfiguration();
+    final baseConfiguration = configuration.style.isDarkStyle ? const TrinaGridConfiguration.dark() : const TrinaGridConfiguration();
 
     TrinaGridPopup(
       context: context,
@@ -993,9 +991,7 @@ mixin ColumnState implements ITrinaGridState {
       return false;
     }
 
-    final columns = showFrozenColumn
-        ? leftFrozenColumns + bodyColumns + rightFrozenColumns
-        : refColumns;
+    final columns = showFrozenColumn ? leftFrozenColumns + bodyColumns + rightFrozenColumns : refColumns;
 
     final resizeHelper = getColumnsResizeHelper(
       columns: columns,
@@ -1006,8 +1002,7 @@ mixin ColumnState implements ITrinaGridState {
     return resizeHelper.update();
   }
 
-  double _getEffectiveButtonWidth(BuildContext context,
-      {bool checkBox = false}) {
+  double _getEffectiveButtonWidth(BuildContext context, {bool checkBox = false}) {
     final theme = Theme.of(context);
     late double width;
     switch (theme.materialTapTargetSize) {
