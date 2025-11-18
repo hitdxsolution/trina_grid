@@ -224,6 +224,8 @@ class TrinaBodyRowsState extends TrinaStateWithChange<TrinaBodyRows> {
                                 if (i == _scrollableRows.length) {
                                   //* Pagination widget
                                   if (_paginationWidget != null) return _paginationWidget!;
+
+                                  return const SizedBox.shrink();
                                 }
 
                                 return _buildRow(
