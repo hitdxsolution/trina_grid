@@ -101,7 +101,10 @@ class TrinaGrid extends TrinaStatefulWidget {
     this.mode = TrinaGridMode.normal,
     this.onValidationFailed,
     this.onLazyFetchCompleted,
+    this.createPagination,
   });
+
+  final Widget? createPagination;
 
   final double? rowsCacheExtent;
 
@@ -621,6 +624,7 @@ class TrinaGridState extends TrinaStateWithChange<TrinaGrid> {
       notifierFilterResolver: widget.notifierFilterResolver,
       configuration: widget.configuration,
       mode: widget.mode,
+      createPagination: widget.createPagination,
     );
 
     // Dispose

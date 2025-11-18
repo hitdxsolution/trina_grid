@@ -22,6 +22,7 @@ class TrinaBodyRowsState extends TrinaStateWithChange<TrinaBodyRows> {
   List<TrinaRow> _frozenTopRows = [];
   List<TrinaRow> _frozenBottomRows = [];
   List<TrinaRow> _scrollableRows = [];
+  Widget? _paginationWidget;
 
   late final ScrollController _verticalScroll;
   late final ScrollController _horizontalScroll;
@@ -146,6 +147,8 @@ class TrinaBodyRowsState extends TrinaStateWithChange<TrinaBodyRows> {
         });
       }
     }
+
+    _paginationWidget = stateManager.createPagination;
   }
 
   List<TrinaColumn> _getColumns() {
@@ -192,6 +195,7 @@ class TrinaBodyRowsState extends TrinaStateWithChange<TrinaBodyRows> {
                     physics: const ClampingScrollPhysics(),
                     child: CustomSingleChildLayout(
                       delegate: ListResizeDelegate(stateManager, _columns),
+                      //*
                       child: Column(
                         children: [
                           // Frozen top rows
@@ -212,14 +216,22 @@ class TrinaBodyRowsState extends TrinaStateWithChange<TrinaBodyRows> {
                               controller: _verticalScroll,
                               scrollDirection: Axis.vertical,
                               physics: const ClampingScrollPhysics(),
-                              itemCount: _scrollableRows.length,
+                              //* 마지막 페이지네이터 추가
+                              itemCount: _scrollableRows.length + (_paginationWidget != null ? 1 : 0),
                               // Remove fixed itemExtent for variable heights
                               addRepaintBoundaries: false,
-                              itemBuilder: (ctx, i) => _buildRow(
-                                context,
-                                _scrollableRows[i],
-                                i + _frozenTopRows.length,
-                              ),
+                              itemBuilder: (ctx, i) {
+                                if (i == _scrollableRows.length) {
+                                  //* Pagination widget
+                                  if (_paginationWidget != null) return _paginationWidget!;
+                                }
+
+                                return _buildRow(
+                                  context,
+                                  _scrollableRows[i],
+                                  i + _frozenTopRows.length,
+                                );
+                              },
                             ),
                           ),
                           // Frozen bottom rows

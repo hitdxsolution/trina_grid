@@ -298,7 +298,10 @@ class TrinaGridStateManager extends TrinaGridStateChangeNotifier {
     super.notifierFilterResolver,
     super.configuration,
     super.mode,
+    this.createPagination,
   });
+
+  final Widget? createPagination;
 
   TrinaChangeNotifierFilter<T> resolveNotifierFilter<T>() {
     return TrinaChangeNotifierFilter<T>(
