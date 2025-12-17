@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trina_grid/trina_grid.dart';
 
-typedef TrinaCellRenderer = Widget Function(
-    TrinaCellRendererContext rendererContext);
+typedef TrinaCellRenderer = Widget Function(TrinaCellRendererContext rendererContext);
 
 class TrinaCellRendererContext {
   final TrinaColumn column;
@@ -106,6 +105,11 @@ class TrinaCell {
       _applyFormatOnInit();
     }
 
+    return _value;
+  }
+
+  // no format applied value
+  dynamic get rawValue {
     return _value;
   }
 
