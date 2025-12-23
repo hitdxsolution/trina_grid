@@ -182,7 +182,7 @@ class TrinaColumnTitleState extends TrinaStateWithChange<TrinaColumnTitle> {
 
     return Stack(
       children: [
-        Positioned(left: 0, right: 0, child: title),
+        Positioned.fill(child: title),
         if (showContextIcon)
           Positioned.directional(
             textDirection: stateManager.textDirection,
