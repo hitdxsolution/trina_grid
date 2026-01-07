@@ -13,6 +13,7 @@ class TrinaRow<T> {
     TrinaRowType? type,
     this.sortIdx = 0,
     this.data,
+    this.tooltipMessage,
     bool checked = false,
     Key? key,
     TrinaRowFrozen? frozen,
@@ -22,6 +23,11 @@ class TrinaRow<T> {
         _state = TrinaRowState.none,
         _key = key ?? UniqueKey(),
         frozen = frozen ?? TrinaRowFrozen.none;
+
+  //! Row tooltip message
+  String? tooltipMessage;
+
+  set setTooltipMessage(String? value) => this.tooltipMessage = value;
 
   final TrinaRowType type;
 
@@ -206,12 +212,9 @@ class TrinaRow<T> {
   }) {
     final Map<String, TrinaCell> cells = {};
 
-    final bool hasChildren =
-        childrenField != null && json.containsKey(childrenField);
+    final bool hasChildren = childrenField != null && json.containsKey(childrenField);
 
-    final entries = hasChildren
-        ? json.entries.where((e) => e.key != childrenField)
-        : json.entries;
+    final entries = hasChildren ? json.entries.where((e) => e.key != childrenField) : json.entries;
 
     assert(!hasChildren || json.length - 1 == entries.length);
 

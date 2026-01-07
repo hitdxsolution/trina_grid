@@ -156,6 +156,20 @@ class TrinaBodyRowsState extends TrinaStateWithChange<TrinaBodyRows> {
   }
 
   Widget _buildRow(BuildContext context, TrinaRow row, int index) {
+    if (row.tooltipMessage != null) {
+      return Tooltip(
+        message: row.tooltipMessage!,
+        child: TrinaBaseRow(
+          key: ValueKey('body_row_${row.key}'),
+          rowIdx: index,
+          row: row,
+          columns: _columns,
+          stateManager: stateManager,
+          visibilityLayout: true,
+        ),
+      );
+    }
+
     Widget rowWidget = TrinaBaseRow(
       key: ValueKey('body_row_${row.key}'),
       rowIdx: index,
