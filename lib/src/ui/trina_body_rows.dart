@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:trina_grid/src/widgets/trina_horizontal_scroll_bar.dart';
 import 'package:trina_grid/src/widgets/trina_vertical_scroll_bar.dart';
 import 'package:trina_grid/trina_grid.dart';
+import 'package:weddingpro_ui/views/widgets/tooltip/app_mouse_follow_tooltip.dart';
 
 import 'ui.dart';
 
@@ -157,7 +158,7 @@ class TrinaBodyRowsState extends TrinaStateWithChange<TrinaBodyRows> {
 
   Widget _buildRow(BuildContext context, TrinaRow row, int index) {
     if (row.tooltipMessage != null) {
-      return Tooltip(
+      return AppMouseFollowTooltip(
         message: row.tooltipMessage!,
         child: TrinaBaseRow(
           key: ValueKey('body_row_${row.key}'),
