@@ -157,19 +157,19 @@ class TrinaBodyRowsState extends TrinaStateWithChange<TrinaBodyRows> {
   }
 
   Widget _buildRow(BuildContext context, TrinaRow row, int index) {
-    if (row.tooltipMessage != null) {
-      return AppMouseFollowTooltip(
-        message: row.tooltipMessage!,
-        child: TrinaBaseRow(
-          key: ValueKey('body_row_${row.key}'),
-          rowIdx: index,
-          row: row,
-          columns: _columns,
-          stateManager: stateManager,
-          visibilityLayout: true,
-        ),
-      );
-    }
+    // if (row.tooltipMessage != null) {
+    //   return AppMouseFollowTooltip(
+    //     message: row.tooltipMessage!,
+    //     child: TrinaBaseRow(
+    //       key: ValueKey('body_row_${row.key}'),
+    //       rowIdx: index,
+    //       row: row,
+    //       columns: _columns,
+    //       stateManager: stateManager,
+    //       visibilityLayout: true,
+    //     ),
+    //   );
+    // }
 
     Widget rowWidget = TrinaBaseRow(
       key: ValueKey('body_row_${row.key}'),
@@ -180,7 +180,18 @@ class TrinaBodyRowsState extends TrinaStateWithChange<TrinaBodyRows> {
       visibilityLayout: true,
     );
 
-    return stateManager.rowWrapper?.call(context, rowWidget, row, stateManager) ?? rowWidget;
+    // 1. rowWrapper 먼저 적용 (우클릭 메뉴)
+    rowWidget = stateManager.rowWrapper?.call(context, rowWidget, row, stateManager) ?? rowWidget;
+
+    // 2. tooltip이 있으면 감싸기
+    if (row.tooltipMessage != null) {
+      rowWidget = AppMouseFollowTooltip(
+        message: row.tooltipMessage!,
+        child: rowWidget,
+      );
+    }
+
+    return rowWidget;
   }
 
   // Build the fake vertical scrollbar using ValueListenableBuilder
