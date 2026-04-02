@@ -21,13 +21,14 @@ import 'state/pagination_row_state.dart';
 import 'state/row_group_state.dart';
 import 'state/row_state.dart';
 import 'state/scroll_state.dart';
+import 'state/scroll_to_state.dart';
 import 'state/selecting_state.dart';
 import 'state/visibility_layout_state.dart';
 import 'state/hovering_state.dart';
 
-abstract class ITrinaGridState implements TrinaChangeNotifier, ICellState, IColumnGroupState, IColumnSizingState, IColumnState, IDraggingRowState, IEditingState, IFilteringRowState, IFocusState, IGridState, IKeyboardState, ILayoutState, IPaginationRowState, IRowGroupState, IRowState, IScrollState, ISelectingState, IVisibilityLayoutState, IHoveringState {}
+abstract class ITrinaGridState implements TrinaChangeNotifier, ICellState, IColumnGroupState, IColumnSizingState, IColumnState, IDraggingRowState, IEditingState, IFilteringRowState, IFocusState, IGridState, IKeyboardState, ILayoutState, IPaginationRowState, IRowGroupState, IRowState, IScrollState, IScrollToState, ISelectingState, IVisibilityLayoutState, IHoveringState {}
 
-class TrinaGridStateChangeNotifier extends TrinaChangeNotifier with CellState, ColumnGroupState, ColumnSizingState, ColumnState, DraggingRowState, EditingState, FilteringRowState, FocusState, GridState, KeyboardState, LayoutState, PaginationRowState, RowGroupState, RowState, ScrollState, SelectingState, VisibilityLayoutState, HoveringState {
+class TrinaGridStateChangeNotifier extends TrinaChangeNotifier with CellState, ColumnGroupState, ColumnSizingState, ColumnState, DraggingRowState, EditingState, FilteringRowState, FocusState, GridState, KeyboardState, LayoutState, PaginationRowState, RowGroupState, RowState, ScrollState, ScrollToState, SelectingState, VisibilityLayoutState, HoveringState {
   TrinaGridStateChangeNotifier({
     this.onColumnsResized,
     required List<TrinaColumn> columns,
@@ -310,7 +311,8 @@ class TrinaGridStateManager extends TrinaGridStateChangeNotifier {
     );
   }
 
-  void scrollToColumn(TrinaColumn column) {
+  @Deprecated('scrollToColumn({column: column}) 사용')
+  void scrollToColumnLegacy(TrinaColumn column) {
     final index = refColumns.indexOf(column);
 
     if (index == -1) return;
