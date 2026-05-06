@@ -247,6 +247,7 @@ class TrinaGridStyleConfig {
     this.enableCellBorderHorizontal = true,
     this.enableRowColorAnimation = false,
     this.enableRowHoverColor = false,
+    this.enableRowActiveColor = false,
     this.filterIcon = const Icon(Icons.filter_alt_outlined),
     this.gridBackgroundColor = Colors.white,
     this.rowColor = Colors.white,
@@ -339,6 +340,7 @@ class TrinaGridStyleConfig {
     this.enableCellBorderHorizontal = true,
     this.enableRowColorAnimation = false,
     this.enableRowHoverColor = false,
+    this.enableRowActiveColor = false,
     this.filterIcon = const Icon(Icons.filter_alt_outlined),
     this.gridBackgroundColor = const Color(0xFF111111),
     this.rowColor = const Color(0xFF111111),
@@ -449,6 +451,9 @@ class TrinaGridStyleConfig {
   /// the background color of the row is the same as [rowColor].
   /// [rowHoveredColor] is therefore not used.
   final bool enableRowHoverColor;
+
+  /// Active color 사용할지
+  final bool enableRowActiveColor;
 
   /// Filter icon shown in column titles when columns are filtered.
   /// Set to null to hide filter icons. Customize by providing a different icon.

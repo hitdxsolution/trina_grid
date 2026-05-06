@@ -286,7 +286,7 @@ class _RowContainerWidgetState extends TrinaStateWithChange<_RowContainerWidget>
     // Only apply non-transparent activated color here
     // For transparent colors, we'll overlay them in the build method
     final isActiveRow = (isCurrentRow && stateManager.hasFocus) || isSelectedRow;
-    if (isActiveRow && stateManager.configuration.style.activatedColor.a > 0) {
+    if (isActiveRow && stateManager.configuration.style.activatedColor.a > 0 && stateManager.configuration.style.enableRowActiveColor) {
       rowColor = stateManager.configuration.style.activatedColor;
     } else if (isCheckedRow) {
       rowColor = stateManager.configuration.style.rowCheckedColor;
