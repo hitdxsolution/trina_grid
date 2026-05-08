@@ -37,7 +37,7 @@ dependencies:
     # path: ../weddingpro_ui
     git:
       url: https://github.com/hitdxsolution/weddingpro_ui.git
-      ref: wedding-pro-dev-3.18
+      ref: wedding-pro-dev-3.18.2
   
 dependency_overrides:
   shadcn_ui: ^0.27.1 #weddingpro_ui 에서 사용하는 버전이랑 flutter version 간 충돌
